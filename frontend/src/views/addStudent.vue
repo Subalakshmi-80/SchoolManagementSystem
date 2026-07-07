@@ -1,13 +1,13 @@
 <template>
 
-    <AdminNavbar/>
+    <AdminNavbar>
 
     <div class="student-box">
         <h2>Add Student</h2>
         <h3>Fill in the student details below.</h3>
         <form @submit.prevent="saveStudent()">
             <div class="form-group">
- <label>Reg Number</label>
+            <label>Reg Number</label>
             <input type="text" v-model="student.regno" required>
             </div>
 
@@ -74,14 +74,34 @@
             </div>
 
             <div class="form-group">
-                <label>Address</label>
-                <textarea v-model="student.address"></textarea>
+                <label>Address Line1</label>
+                <input type="text" v-model="student.address_line1">
             </div>
 
-            <button>Save Student</button>
+             <div class="form-group">
+                <label>Address Line2</label>
+                <input type="text" v-model="student.address_line2"/>
+            </div>
+
+            <div class="form-group">
+                <label>City</label>
+                <input v-model="student.city"/>
+            </div>
+
+             <div class="form-group">
+                <label>State</label>
+                <input v-model="student.state"/>
+            </div>
+
+            <div class="button-group">
+<button>Save Student</button>
             <button type="button" @click="router.push('/studentlist')">Cancel</button>
+            </div>
+
+            
         </form>
     </div>
+    </AdminNavbar>
     </template>
 
 
@@ -105,7 +125,11 @@ const router = useRouter();
     class:"",
     section:"",
     phone:"",
-    address:""
+    address_line1:"",
+    address_line2:"",
+    city:"",
+    state:""
+
  })
 const saveStudent = async() =>{
     try{
@@ -158,8 +182,17 @@ const saveStudent = async() =>{
     grid-template-columns:1fr 1fr;
     gap:20px;
 }
+.button-group{
+    grid-column: 1/3;
+   
+     width:100%;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    margin-top:30px;
+}
 .student-box form button{
-     margin:10px 30px;
+  
     padding:10px 35px; 
     background-color: rgb(102, 30, 30);
     color:white;

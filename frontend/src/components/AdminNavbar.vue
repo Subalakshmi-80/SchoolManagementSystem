@@ -1,82 +1,72 @@
 <template>
-<div class="container">
-    <div class="header">
 
-     <h1>School Management System</h1>
-     <p>{{role}}</p>
- </div>
-     <nav class="nav-links">
+    <div class="layout">
 
-        <ul>
-            <li><router-link to="/admin">Dashboard</router-link></li>
-            <li><router-link to="/studentlist">Students</router-link></li>
-            <li @click.prevent="logout">Logout</li>
-        </ul>
-
-     </nav>
    
+<sidebar/>
+<div class="content">
+  <div class="header">
 
+     <h1>Welcome, {{ role }}</h1>
+     
+ </div>
+<slot></slot>
 </div>
+  
+
+     
+    </div>
+
+
 </template>
 
 
 <script setup>
 import {ref} from 'vue';
-import {useRouter} from 'vue-router';
 
-const router = useRouter();
+import Sidebar from './Sidebar.vue';
+
+
 
 const getrole = localStorage.getItem("role");
 const role = ref(getrole);
 
-function logout(){
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
 
-    router.push("/")
-}
 </script>
 
 
 <style scoped>
-
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin:30px;
-}
-.header h1{
-     font-size:40px;
-      color:rgb(97, 32, 19);
+.layout{
+    display: flex;
+    justify-content: start;
+    align-items: stretch;
+    
     
 }
-.header p{
-    color:rgb(97, 32, 19);
-    font-size:20px;
-      text-transform:capitalize;
+.content{
+    flex: 1;
+    margin-left: 230px;;
 }
-.nav-links {
-    background-color:rgb(151, 142, 140);
-    padding:20px;
-    color:white;
-    font-size:20px;
-}
-.nav-links ul{
+.header {
     display:flex;
     justify-content:space-between;
     align-items:center;
-    list-style-type:none;
+    background-color: rgb(247, 244, 244);
+     flex:1;
+    padding:30px;
+    box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+    position: static;
+    z-index:1000;
+    top:0;
+   
+   
 
 }
-.nav-links ul li a{
-    text-decoration:none;
-    color:white;
-}
-
-.nav-links ul li:hover{
-    text-decoration:underline;
-    cursor:pointer;
+.header  h1{
+     font-size:30px;
+      color:rgb(97, 32, 19);
+      text-transform:capitalize;
+    
 }
 
 </style>

@@ -1,6 +1,7 @@
 <template>
 
-<AdminNavbar/>
+<AdminNavbar></AdminNavbar>
+
 </template>
 
 

@@ -2,7 +2,9 @@ const pool = require("../db/db");
 const bcrypt = require("bcrypt");
 
 const createStudent = (req, res) => {
-    const { name, email, password, regno, first_name, last_name, gender, dob, phone, class: studentClass, section, address } = req.body;
+    const { name, email, password, regno, first_name,
+         last_name, gender, dob, phone, class: studentClass, section, 
+         address_line1,address_line2,city,state } = req.body;
     if (!name || !email || !password || !regno) {
         return res.status(400).send("Please provide mandatory fields");
     }
@@ -25,9 +27,9 @@ const createStudent = (req, res) => {
                             return res.status(500).send("error");
                         } else {
 
-                            pool.query(`INSERT INTO students(user_id,regno,first_name,last_name,gender,dob,phone,class,section,address)
-                                    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
-                                [result.rows[0].id, regno, first_name, last_name, gender, dob, phone, studentClass, section, address],
+                            pool.query(`INSERT INTO students(user_id,regno,first_name,last_name,gender,dob,phone,class,section,address_line1,address_line2,city,state)
+                                    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+                                [result.rows[0].id, regno, first_name, last_name, gender, dob, phone, studentClass, section, address_line1,address_line2,city,state],
                                 (err, result1) => {
                                     if (err) {
                                         return res.status(500).send("error");
@@ -59,7 +61,10 @@ const getStudents = (req, res) => {
     s.phone,
     s.class,
     s.section,
-    s.address,
+    s.address_line1,
+    s.address_line2,
+    s.city,
+    s.state,
     u.name,
     u.email,
     u.role FROM students s JOIN users u ON s.user_id = u.id`, (err, result) => {
@@ -84,7 +89,10 @@ const getOneStd = (req, res) => {
     s.phone,
     s.class,
     s.section,
-    s.address,
+    s.address_line1,
+    s.address_line2,
+    s.city,
+    s.state,
     u.name,
     u.email,
     u.role FROM students s JOIN users u ON S.user_id = u.id WHERE s.id=$1`, [stdId],
@@ -100,7 +108,7 @@ const getOneStd = (req, res) => {
 const updateStd = (req, res) => {
     const studentId = req.params.id;
 
-    const { regno,first_name, last_name, gender, dob, phone, class: studentClass, section, address } = req.body;
+    const { regno,first_name, last_name, gender, dob, phone, class: studentClass, section, address_line1,address_line2,city,state } = req.body;
 
     pool.query(
         "SELECT * FROM students WHERE id = $1", [studentId],
@@ -123,13 +131,17 @@ const updateStd = (req, res) => {
             const updatedPhone = phone || student.phone;
             const updatedClass = studentClass || student.class;
             const updatedSection = section || student.section;
-            const updatedAddress = address || student.address;
+            const updatedAddressLine1 = address_line1 || student.address_line1;
+            const updatedAddressLine2 = address_line2 || student.address_line2;
+            const updatedCity= city || student.city;
+            const updatedState = state || student.state;
+
             const fullName = updatedFirstName +" "+ updatedLastName;
             pool.query(
                 `UPDATE students 
-                 SET regno=$1,first_name=$2,last_name=$3,gender=$4,dob=$5,phone=$6,class=$7,section=$8,address=$9  WHERE id=$10`,
+                 SET regno=$1,first_name=$2,last_name=$3,gender=$4,dob=$5,phone=$6,class=$7,section=$8,address_line1=$9 ,address_line2=$10,city=$11,state=$12 WHERE id=$13`,
                 [
-                   updatedRegno, updatedFirstName, updatedLastName, updatedGender, updatedDob, updatedPhone, updatedClass, updatedSection, updatedAddress,studentId
+                   updatedRegno, updatedFirstName, updatedLastName, updatedGender, updatedDob, updatedPhone, updatedClass, updatedSection, updatedAddressLine1,updatedAddressLine2,updatedCity,updatedState,studentId
                 ],
                 (err) => {
                     if (err) {

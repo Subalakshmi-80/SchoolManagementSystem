@@ -1,6 +1,6 @@
 <template>
 
-    <AdminNavbar/>
+    <AdminNavbar>
 
     <div class="student-box">
         <h2>Edit Student</h2>
@@ -59,15 +59,32 @@
             </div>
 
             <div class="form-group">
-                <label>Address</label>
-                <textarea v-model="student.address"></textarea>
+                <label>Address Line1</label>
+                <input type="text" v-model="student.address_line1"/>
             </div>
+
+             <div class="form-group">
+                <label>Address Line2</label>
+                <input type="text" v-model="student.address_line2"/>
+            </div>
+
+            <div class="form-group">
+                <label>City</label>
+                <input v-model="student.city"/>
+            </div>
+
+             <div class="form-group">
+                <label>State</label>
+                <input v-model="student.state"/>
+            </div>
+
 <div class="button-group">
             <button>Update</button>
             <button type="button" @click="router.push('/studentlist')">Cancel</button>
             </div>
         </form> 
     </div>
+    </AdminNavbar>
     </template>
 
 
@@ -93,7 +110,10 @@ const student = ref({
     class:"",
     section:"",
     phone:"",
-    address:""
+    address_line1:"",
+    address_line2:"",
+    city:"",
+    state:""
 });
 
 
@@ -160,10 +180,11 @@ const updateStudent =async ()=>{
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
      display:grid;
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1fr 1fr ;
     gap:20px;
 }
 .button-group{
+    grid-column: 1/3;
     width:100%;
     display:flex;
     justify-content:center;

@@ -1,9 +1,10 @@
 <template>
-    <AdminNavbar/>
 
+   <AdminNavbar>
+    
     <div class="student-list">
 <div class="page-header">
-        <h1>students List</h1>
+        <h1>Students List</h1>
         <button @click="router.push(`/student/create`)">Add Student</button>
 </div>
 
@@ -12,15 +13,18 @@
         <tr>
             <th>Reg No</th>
             <th>Full Name</th>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <!-- <th>First Name</th>
+            <th>Last Name</th> -->
             <th>Email</th>
             <th>Gender</th>
             <th>DOB</th>
             <th>Class</th>
             <th>Section</th>
             <th>Phone</th>
-            <th>Address</th>
+            <th>AddressLine1</th>
+            <th>AddressLine2</th>
+            <th>City</th>
+            <th>State</th>
             <th>Actions</th>
 
            
@@ -33,15 +37,19 @@
 
     <td>{{student.regno}}</td>
     <td>{{student.name}}</td>
-    <td>{{student.first_name}}</td>
-    <td>{{student.last_name}}</td>
+    <!-- <td>{{student.first_name}}</td>
+    <td>{{student.last_name}}</td> -->
     <td>{{student.email}}</td>
     <td>{{student.gender}}</td>
     <td>{{formatDate(student.dob)}}</td>
     <td>{{student.class}}</td>
     <td>{{student.section}}</td>
     <td>{{student.phone}}</td>
-    <td>{{student.address}}</td>
+    <td>{{student.address_line1}}</td>
+    <td>{{student.address_line2}}</td>
+    <td>{{ student.city }}</td>
+    <td>{{ student.state }}</td>
+
     <td>
         <button @click="router.push(`/student/edit/${student.id}`)">Edit</button>
         <button @click="deleteStudent(student.id)">Delete</button>
@@ -54,7 +62,9 @@
 </table>
 
 <p v-if="students.length === 0">No students Found</p>
-    </div>
+</div>
+</AdminNavbar>
+    
 </template>
 
 
@@ -62,16 +72,21 @@
 
 import AdminNavbar from "../components/AdminNavbar.vue";
 
+
 import axios from "axios";
 import {ref,onMounted} from 'vue';
 import {useRouter} from 'vue-router'
 
+
 const router = useRouter();
 
-const students = ref([])
+const students = ref([]);
+
+
 const  getStudents = async() =>{
 try{
     const token = localStorage.getItem("token");
+    
     const res = await axios.get("http://localhost:5000/api/students",{
         headers:{
             Authorization:`Bearer ${token}`
@@ -79,6 +94,7 @@ try{
     
     })
     students.value= res.data
+   
     
 }catch(err){
 console.log("Error Fetching Students ",err)
@@ -154,14 +170,12 @@ table{
     display: block;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-table th{
-    padding:10px;
-}
-table td{
-    padding:10px;
-}
+
 table th,td{
-    border:1px solid rgb(136, 132, 132)
+    border:1px solid rgb(136, 132, 132);
+    text-align: center;
+    padding: 6px;
+    font-size: 14px;
 }
 table td button{
     min-width:100px;
