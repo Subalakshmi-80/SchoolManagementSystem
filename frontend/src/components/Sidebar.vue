@@ -6,6 +6,7 @@
 
     <router-link to="/admin">Dashboard</router-link>
            <router-link to="/studentlist">Students</router-link>
+           <router-link to="/standardlist">Standards</router-link>
             <button @click.prevent="logout">Logout</button>
         
     </div>
@@ -35,7 +36,7 @@ function logout(){
 .sidebar{
     width:230px;
    min-height:100vh;
-  background-color: rgba(156, 157, 158, 0.952);
+  background-color: rgb(156, 157, 158);
     display: flex;
     flex-direction: column;
     padding: 20px;
