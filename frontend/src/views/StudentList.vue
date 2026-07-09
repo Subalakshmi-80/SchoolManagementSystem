@@ -7,8 +7,8 @@
         <h1>Students List</h1>
         <button @click="router.push(`/student/create`)">Add Student</button>
 </div>
-
-<table >
+<p v-if="students.length === 0">No students Found</p>
+<table v-else>
     <thead>
         <tr>
             <th>Reg No</th>
@@ -57,7 +57,7 @@
     </tbody>
 </table>
 
-<p v-if="students.length === 0">No students Found</p>
+
 </div>
 </AdminNavbar>
     

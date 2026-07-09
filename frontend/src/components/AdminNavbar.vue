@@ -55,7 +55,7 @@ const role = ref(getrole);
      flex:1;
     padding:30px;
     box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
-    position: static;
+    position: sticky;
     z-index:1000;
     top:0;
    

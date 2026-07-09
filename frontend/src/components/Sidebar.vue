@@ -7,6 +7,7 @@
     <router-link to="/admin">Dashboard</router-link>
            <router-link to="/studentlist">Students</router-link>
            <router-link to="/standardlist">Standards</router-link>
+           <router-link to="/classlist">Class</router-link>
             <button @click.prevent="logout">Logout</button>
         
     </div>

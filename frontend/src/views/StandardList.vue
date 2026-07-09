@@ -6,8 +6,8 @@
                 <h1>Standard List</h1>
                 <button @click="router.push('/standard/create')">Add Standard</button>
             </div>
-
-            <table>
+<p v-if="standards.length === 0">No standards Found</p>
+            <table v-else>
                 <thead>
                     <tr>
                      
@@ -31,7 +31,7 @@
                 </tbody>
                             
             </table>
-<p v-if="standards.length === 0">No standards Found</p>
+
 
 
         </div>

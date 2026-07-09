@@ -28,6 +28,7 @@ app.use("/api",require("./routes/authRoutes")); //login
 app.use("/api",require("./routes/studentRoutes")); //students CRUD
 app.use("/api",require("./routes/teacherRoutes")); //Teacher CRUD
 app.use("/api",require("./routes/standardRoute")); //Standard CRUD
+app.use("/api",require("./routes/classesRoute"));  //class CRUD
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`);

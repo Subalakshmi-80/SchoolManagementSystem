@@ -8,7 +8,10 @@ import addStudent from "../views/addStudent.vue";
 import editStudent from "../views/editStudent.vue";
 import standardList from "../views/StandardList.vue";
 import addStandard from "../views/addStandard.vue";
-import editStandard from "../views//editStandard.vue"
+import editStandard from "../views/editStandard.vue"
+import ClassList from "../views/classes/classList.vue";
+import addClass from "../views/classes/addClass.vue";
+import editClass from "../views/classes/editClass.vue"
 
 const routes =[
 {path:"/",component:Login},
@@ -19,7 +22,10 @@ const routes =[
 {path:'/student/edit/:id',component:editStudent,meta:{role:"admin"}},
 {path:'/standardlist',component:standardList,meta:{role:"admin"}},
 {path:'/standard/create',component:addStandard,meta:{role:"admin"}},
-{path:'/standard/edit/:id',component:editStandard,meta:{role:"admin"}}
+{path:'/standard/edit/:id',component:editStandard,meta:{role:"admin"}},
+{path:'/classlist',component:ClassList,meta:{role:"admin"}},
+{path:'/class/create',component:addClass,meta:{role:"admin"}},
+{path:'/class/edit/:id',component:editClass,meta:{role:"admin"}}
 ]
 
 const router = createRouter({
