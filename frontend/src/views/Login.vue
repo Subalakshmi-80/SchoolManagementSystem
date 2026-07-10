@@ -86,7 +86,7 @@ const checkLogin = () => {
 input:focus{
     outline:none;
     box-shadow: none;
-    border-color: black;
+    border-color: rgb(43, 42, 42);
 }
 .pointer{
     cursor: pointer;
