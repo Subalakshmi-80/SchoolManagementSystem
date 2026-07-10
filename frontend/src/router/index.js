@@ -15,8 +15,8 @@ import editClass from "../views/classes/editClass.vue"
 
 const routes =[
 {path:"/",component:Login},
-{path:"/admin",component:Admin,meta:{role:"admin"}},
 {path:"/student",component:Student,meta:{role:"student"}},
+{path:"/admin",component:Admin,meta:{role:"admin"}},
 {path:"/studentlist",component:studentList,meta:{role:"admin"}},
 {path:"/student/create",component:addStudent,meta:{role:"admin"}},
 {path:'/student/edit/:id',component:editStudent,meta:{role:"admin"}},

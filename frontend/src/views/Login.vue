@@ -2,21 +2,50 @@
 
 
 <template>
-   <div class="login-page">
-    <h1>School Management System</h1>
-<div class="login">
- <h2>Login</h2>
+    <div class="container-fluid vh-100  ">
 
-    <form @submit.prevent="checkLogin" class="form">
-        <input v-model="email" placeholder="Enter Email Address" type="email" required/><br/>
-        <input v-model="password" placeholder ="Enter Password" type="password" required/><br/>
-<button>Login</button>
-        
+        <div class="row h-100 ">
+            <div class="h-100 d-none d-md-flex col-md-6 col-lg-7  justify-content-center align-items-center">
+                <img src="../assets/illustration.jpg" class="img-fluid h-75 " alt="Illustration">
+            </div>
 
-    </form>
-
+            <div class="shadow col-12 col-md-6 col-lg-5 d-flex align-items-center">
+               <div  class="w-100">
+              <div class="d-flex align-items-center mb-5 mx-5">
+    <i class="bi bi-mortarboard-fill fs-1 text-success me-3"></i>
+    <h1 class="fw-bold text-success m-0">SCHOOL MS</h1>
 </div>
-</div>
+
+                <form @submit.prevent="checkLogin">
+                    <div class="mb-3 mx-5">
+                        <label class="fs-6 fw-bold">Email *</label>
+                        <input v-model="email" required type="email" placeholder="Enter Your Email" class=" form-control rounded-4 p-3 mt-2 rounded"/>
+                    </div>
+
+                     <div class="mb-3 mx-5 ">
+                        <label class="fs-6 fw-bold">Password *</label>
+
+                        <div class="position-relative">
+                             <input v-model="password" required
+                        :type="showPassword?'text':'password'" 
+                        placeholder="Enter Your Password" 
+                        class="rounded-4  form-control p-3 mt-2 rounded"/>
+                       
+
+                        <i :class="showPassword? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'" 
+                        class="pointer fs-5 position-absolute top-50 end-0 me-3 translate-middle-y "@click="showPassword = !showPassword"></i>
+                    </div>
+                     </div>
+                       
+
+                    <button class="btn btn-success px-5 py-2 mt-3 mx-5 my-2 fs-5 mb-5  rounded-5 pointer">Login</button>
+                </form>
+
+               </div>
+            </div>
+        </div>
+    </div>
+ 
 </template>
 
 <script setup>
@@ -27,6 +56,7 @@ import axios from 'axios';
 const router = useRouter();
   const email = ref("");
     const password = ref("");
+    const showPassword = ref(false)
 const checkLogin = () => {
 
     axios.post("http://localhost:5000/api/login",{
@@ -53,56 +83,12 @@ const checkLogin = () => {
 <style scoped>
 
 
-.login-page {
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-margin-top:100px;
-  
-}
-.login-page h1{
-      font-size:45px;
-      color:rgb(97, 32, 19);
-}
-.login{
-    background-color:white;
-    margin-top:40px;
-    padding:30px 60px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    border-radius:20px;
-    width:350px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-.login h2{
-    text-align:center;
-    margin:10px 0;
-    font-size:30px;
-    color:rgb(87, 27, 27)
-}
-.login input{
-    margin:10px 5px;
-    padding:15px;
-    border:none;
-    border-bottom:1px solid rgb(102, 30, 30);
-}
-.login input:focus{
+input:focus{
     outline:none;
+    box-shadow: none;
+    border-color: black;
 }
-.login button{
-    margin:10px 60px;
-    padding:10px 35px; 
-    background-color: rgb(102, 30, 30);
-    color:white;
-    border:none;
-    border-radius:7px;
-    cursor:pointer;
-    font-size:15px;
-}
-.login button:hover{
-    background-color: rgb(177, 81, 81);
+.pointer{
+    cursor: pointer;
 }
 </style>

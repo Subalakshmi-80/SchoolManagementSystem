@@ -80,7 +80,7 @@ const deleteClass = async(id) =>{
                 Authorization:`Bearer ${token}`
             }
         })
-        alert("Data Deleted Successfully");
+        alert("Class Deleted Successfully");
         await getClass();
     }catch(err){
         console.log("Error deleting data",err)
@@ -125,8 +125,8 @@ table{
     border-collapse: collapse;
     background-color: white;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-margin: 30px auto;
-border-radius: 10px;
+    margin: 30px auto;
+    border-radius: 10px;
 }
 
 table th,td{
