@@ -1,6 +1,9 @@
 import {createRouter,createWebHistory} from "vue-router";
 
-import Login from "../views/Login.vue"
+import Login from "../views/Login.vue";
+import forgotPassword from "../views/forgot-password.vue";
+import otpVerification from "../views/otpVerification.vue";
+import resetPassword from "../views/resetPassword.vue";
 import Admin from "../views/admin-dashboard.vue";
 import Student from "../views/student-dashboard.vue";
 import studentList from "../views/Studentlist.vue";
@@ -15,6 +18,9 @@ import editClass from "../views/classes/editClass.vue"
 
 const routes =[
 {path:"/",component:Login},
+{path:"/forgot-password",component:forgotPassword},
+{path:"/otp-verification",component:otpVerification},
+{path:"/reset-password",component:resetPassword},
 {path:"/student",component:Student,meta:{role:"student"}},
 {path:"/admin",component:Admin,meta:{role:"admin"}},
 {path:"/studentlist",component:studentList,meta:{role:"admin"}},
@@ -38,7 +44,7 @@ const router = createRouter({
     const role = localStorage.getItem("role");
     const requiredRole = to.meta.role;
 
-    if(to.path === "/"){
+    if(to.path === "/" || to.path === "/forgot-password" || to.path === "/otp-verification" || to.path === "/reset-password"){
         next()
     }
     else if(!token){

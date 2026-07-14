@@ -17,11 +17,15 @@ const loginController = (req,res)=>{
             const user = result.rows[0];
 
             bcrypt.compare(password,user.password,(err,isMatch)=>{
+                console.log("Entered Password:", password);
+   
                 if(err){
                     return res.status(500).send("Error,Try Again Later");
                 }
                 if(!isMatch){
+                    
                     return res.status(401).send("invalid Credentials");
+                    
                 }
                 else{
                     const token = jwt.sign(

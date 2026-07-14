@@ -38,10 +38,16 @@
                      </div>
                        
 
-                    <button class="btn btn-success px-5 py-2 mt-3 mx-5 my-2 fs-5 mb-5  rounded-5 pointer">Login</button>
+                    <button class="btn btn-success px-5 py-2 mt-3 mx-5 my-2 fs-5 mb-4  rounded-5 pointer">Login</button>
+
+                      <router-link to="/forgot-password"class="text-decoration-underline d-block text-success fs-6 fw-bold mx-5  ">Forgot password?</router-link>
+
                 </form>
 
+                
                </div>
+
+             
             </div>
         </div>
     </div>

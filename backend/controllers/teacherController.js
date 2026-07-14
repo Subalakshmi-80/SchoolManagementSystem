@@ -24,8 +24,8 @@ const createTeacher = (req,res)=>{
                     if(err){
                         return res.status(500).send(err.message);
                     }
-                    pool.query(`INSERT INTO teachers(user_id,empid,first_name,last_name,gender,dob,phone,classIncharge,classsection,subject,qualification,address)
-                        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+                    pool.query(`INSERT INTO teachers(user_id,empid,first_name,last_name,gender,dob,phone,classIncharge,classsection,subject,qualification,address_line1,address_line2,state,city)
+                        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
                         [result.rows[0].id,empid,first_name,last_name,gender,dob,phone,classIncharge,classsection,subject,qualification,address],
                         (err,result)=>{
                             if(err){
