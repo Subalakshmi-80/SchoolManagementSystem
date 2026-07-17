@@ -17,7 +17,6 @@
             <th>Gender</th>
             <th>DOB</th>
             <th>Class</th>
-            <th>Section</th>
             <th>Phone</th>
             <th>AddressLine1</th>
             <th>AddressLine2</th>
@@ -38,8 +37,8 @@
     <td>{{student.email}}</td>
     <td>{{student.gender}}</td>
     <td>{{formatDate(student.dob)}}</td>
-    <td>{{student.class}}</td>
-    <td>{{student.section}}</td>
+    <td>{{student.class_name}}</td>
+  
     <td>{{student.phone}}</td>
     <td>{{student.address_line1}}</td>
     <td>{{student.address_line2}}</td>
@@ -90,6 +89,7 @@ try{
     
     })
     students.value= res.data
+     console.log(students.value)
    
     
 }catch(err){
@@ -97,7 +97,7 @@ console.log("Error Fetching Students ",err)
 }
 }
 onMounted(getStudents);
-
+  
 
 const formatDate = (date) =>{
     if(!date) return "";

@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 
 const createTeacher = (req,res)=>{
-    const {name,email,password,empid,first_name,last_name,gender,dob,phone, classIncharge,classsection,subject,qualification,address}=req.body;
+    const {name,email,password,empid,first_name,last_name,gender,dob,phone, classIncharge,classsection,subject,qualification,address_line1,address_line2,city,state}=req.body;
 
     if(!email || !password || !name || !empid){
         return res.status(400).send("please provide mandatory fields");
@@ -26,7 +26,7 @@ const createTeacher = (req,res)=>{
                     }
                     pool.query(`INSERT INTO teachers(user_id,empid,first_name,last_name,gender,dob,phone,classIncharge,classsection,subject,qualification,address_line1,address_line2,state,city)
                         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
-                        [result.rows[0].id,empid,first_name,last_name,gender,dob,phone,classIncharge,classsection,subject,qualification,address],
+                        [result.rows[0].id,empid,first_name,last_name,gender,dob,phone,classIncharge,classsection,subject,qualification,address_line1,address_line2,city,state],
                         (err,result)=>{
                             if(err){
                                 return res.status(500).send(err.message);

@@ -8,6 +8,7 @@
            <router-link to="/studentlist">Students</router-link>
            <router-link to="/standardlist">Standards</router-link>
            <router-link to="/classlist">Class</router-link>
+           <router-link to="/subjectlist">Subjects</router-link>
             <button @click.prevent="logout">Logout</button>
         
     </div>

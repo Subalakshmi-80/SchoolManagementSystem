@@ -29,7 +29,7 @@
 
                       <button class="btn btn-success px-5 py-2 mt-3 mx-5 my-2 fs-5 mb-4  rounded-5 pointer">Submit</button>
 
-                      <router-link to="/" class="text-decoration-underline  text-success fs-6 fw-bold mx-5  ">Login with Password</router-link>
+                      <router-link to="/" class="pointer text-decoration-underline  text-success fs-6 fw-bold mx-5  ">Login with Password</router-link>
 
                 </form>
 

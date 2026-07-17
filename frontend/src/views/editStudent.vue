@@ -45,12 +45,10 @@
 
             <div class="form-group">
                 <label >Class</label>
-                <input type="text" v-model="student.class"/>
-            </div>
-
-            <div class="form-group">
-                <label>Section</label>
-                <input type="text" v-model="student.section"/>
+                <select v-model="student.class_id">
+                <option disabled value="">Select Class</option>
+                <option v-for="cls in classes" :key="cls.id" :value="cls.id">{{ cls.standard_name }} - {{ cls.class_name }}</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -107,14 +105,34 @@ const student = ref({
     last_name:"",
     gender:"",
     dob:"",
-    class:"",
-    section:"",
+    class_id:"",
     phone:"",
     address_line1:"",
     address_line2:"",
     city:"",
     state:""
 });
+
+
+const classes = ref([]);
+
+const getClasses = async() =>{
+try{
+    const token = localStorage.getItem("token");
+
+    const res = await axios.get("http://localhost:5000/api/classes",{
+        headers:{
+            Authorization:`Bearer ${token}`
+        }
+    })
+    classes.value = res.data;
+
+}catch(err){
+    console.log(err)
+}
+}
+
+onMounted(getClasses)
 
 
 
@@ -126,9 +144,9 @@ const getStudent =async () =>{
                 Authorization:`Bearer ${token}`
             }
         })
-        student.value = res.data[0]
+        student.value = res.data
         student.value.dob = student.value.dob.split("T")[0]
-        
+       
 
     }catch(err){
         console.log(err)

@@ -42,6 +42,15 @@
                 <input type="date" v-model="student.dob"/>
             </div>
 
+               <div class="form-group">
+                <label >Class</label>
+                <select v-model="student.class_id">
+                <option disabled value="">Select Class</option>
+                <option v-for="cls in classes" :key="cls.id" :value="cls.id">{{cls.standard_name}}-{{ cls.class_name }}</option>
+                </select>
+            </div>
+
+
             <div class="form-group">
                     <label>Gender</label>
                         <div class="gender-box">
@@ -58,16 +67,7 @@
 
             </div>
 
-            <div class="form-group">
-                <label >Class</label>
-                <input type="text" v-model="student.class"/>
-            </div>
-
-            <div class="form-group">
-                <label>Section</label>
-                <input type="text" v-model="student.section"/>
-            </div>
-
+         
             <div class="form-group">
                 <label>Phone Number</label>
                 <input type="text" v-model="student.phone"/>
@@ -107,12 +107,31 @@
 
 <script setup>
  import AdminNavbar from '../components/AdminNavbar.vue';
- import {ref} from 'vue';
+ import {ref,onMounted} from 'vue';
 import axios from 'axios';
 import {useRouter} from 'vue-router';
 
 const router = useRouter();
 
+const classes = ref([]);
+
+const getClasses = async() =>{
+try{
+    const token = localStorage.getItem("token");
+
+    const res = await axios.get("http://localhost:5000/api/classes",{
+        headers:{
+            Authorization:`Bearer ${token}`
+        }
+    })
+    classes.value = res.data;
+
+}catch(err){
+    console.log(err)
+}
+}
+
+onMounted(getClasses)
  const student = ref({
     regno:"",
     name:"",
@@ -122,8 +141,7 @@ const router = useRouter();
     last_name:"",
     gender:"",
     dob:"",
-    class:"",
-    section:"",
+    class_id:"",
     phone:"",
     address_line1:"",
     address_line2:"",
@@ -131,10 +149,12 @@ const router = useRouter();
     state:""
 
  })
+
+
 const saveStudent = async() =>{
     try{
         const token = localStorage.getItem("token");
-
+        
         const res = await axios.post("http://localhost:5000/api/students",student.value,
             {
                 headers:{
@@ -142,6 +162,7 @@ const saveStudent = async() =>{
                 }
             }
         )
+        
         alert("Student Added Successfully");
         router.push("/studentlist")
 

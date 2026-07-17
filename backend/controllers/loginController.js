@@ -17,8 +17,7 @@ const loginController = (req,res)=>{
             const user = result.rows[0];
 
             bcrypt.compare(password,user.password,(err,isMatch)=>{
-                console.log("Entered Password:", password);
-   
+              
                 if(err){
                     return res.status(500).send("Error,Try Again Later");
                 }

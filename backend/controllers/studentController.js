@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const createStudent = (req, res) => {
     const { name, email, password, regno, first_name,
-         last_name, gender, dob, phone, class: studentClass, section, 
+         last_name, gender, dob, phone, class_id, 
          address_line1,address_line2,city,state } = req.body;
     if (!name || !email || !password || !regno) {
         return res.status(400).send("Please provide mandatory fields");
@@ -27,9 +27,9 @@ const createStudent = (req, res) => {
                             return res.status(500).send("error");
                         } else {
 
-                            pool.query(`INSERT INTO students(user_id,regno,first_name,last_name,gender,dob,phone,class,section,address_line1,address_line2,city,state)
-                                    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
-                                [result.rows[0].id, regno, first_name, last_name, gender, dob, phone, studentClass, section, address_line1,address_line2,city,state],
+                            pool.query(`INSERT INTO students(user_id,regno,first_name,last_name,gender,dob,phone,class_id,address_line1,address_line2,city,state)
+                                    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+                                [result.rows[0].id, regno, first_name, last_name, gender, dob, phone,class_id, address_line1,address_line2,city,state],
                                 (err, result1) => {
                                     if (err) {
                                         return res.status(500).send("error");
@@ -59,15 +59,17 @@ const getStudents = (req, res) => {
     s.gender,
     s.dob,
     s.phone,
-    s.class,
-    s.section,
+    s.class_id,
+    st.name || '-' || c.name as class_name,
     s.address_line1,
     s.address_line2,
     s.city,
     s.state,
     u.name,
     u.email,
-    u.role FROM students s JOIN users u ON s.user_id = u.id`, (err, result) => {
+    u.role FROM students s JOIN users u ON s.user_id = u.id
+    JOIN classes c ON  s.class_id = c.id
+    JOIN standards st ON c.standard_id = st.id ORDER BY s.regno ASC`, (err, result) => {
         if (err) {
             return res.status(500).send("Database Error");
         }
@@ -87,20 +89,25 @@ const getOneStd = (req, res) => {
     s.gender,
     s.dob,
     s.phone,
-    s.class,
-    s.section,
+    s.class_id,
+     st.name || '-' || c.name as class_name,
+    
     s.address_line1,
     s.address_line2,
     s.city,
     s.state,
     u.name,
     u.email,
-    u.role FROM students s JOIN users u ON S.user_id = u.id WHERE s.id=$1`, [stdId],
+    u.role FROM students s JOIN users u ON S.user_id = u.id 
+    JOIN classes c ON  s.class_id = c.id
+    JOIN standards st ON c.standard_id = st.id WHERE s.id=$1`, [stdId],
         (err, result) => {
             if (err) {
-                return res.status(500).send("Database Error");
+                console.log(err)
+                return res.status(500).send(err);
             } else {
-                return res.status(200).json(result.rows);
+                
+                return res.status(200).json(result.rows[0]);
             }
         })
 }
@@ -108,7 +115,7 @@ const getOneStd = (req, res) => {
 const updateStd = (req, res) => {
     const studentId = req.params.id;
 
-    const { regno,first_name, last_name, gender, dob, phone, class: studentClass, section, address_line1,address_line2,city,state } = req.body;
+    const { regno,first_name, last_name, gender, dob, phone, class_id, address_line1,address_line2,city,state } = req.body;
 
     pool.query(
         "SELECT * FROM students WHERE id = $1", [studentId],
@@ -129,8 +136,7 @@ const updateStd = (req, res) => {
             const updatedGender = gender || student.gender;
             const updatedDob = dob || student.dob;
             const updatedPhone = phone || student.phone;
-            const updatedClass = studentClass || student.class;
-            const updatedSection = section || student.section;
+            const updatedClass = class_id|| student.class_id;
             const updatedAddressLine1 = address_line1 || student.address_line1;
             const updatedAddressLine2 = address_line2 || student.address_line2;
             const updatedCity= city || student.city;
@@ -139,9 +145,9 @@ const updateStd = (req, res) => {
             const fullName = updatedFirstName +" "+ updatedLastName;
             pool.query(
                 `UPDATE students 
-                 SET regno=$1,first_name=$2,last_name=$3,gender=$4,dob=$5,phone=$6,class=$7,section=$8,address_line1=$9 ,address_line2=$10,city=$11,state=$12 WHERE id=$13`,
+                 SET regno=$1,first_name=$2,last_name=$3,gender=$4,dob=$5,phone=$6,class_id=$7,address_line1=$8 ,address_line2=$9,city=$10,state=$11 WHERE id=$12`,
                 [
-                   updatedRegno, updatedFirstName, updatedLastName, updatedGender, updatedDob, updatedPhone, updatedClass, updatedSection, updatedAddressLine1,updatedAddressLine2,updatedCity,updatedState,studentId
+                   updatedRegno, updatedFirstName, updatedLastName, updatedGender, updatedDob, updatedPhone, updatedClass, updatedAddressLine1,updatedAddressLine2,updatedCity,updatedState,studentId
                 ],
                 (err) => {
                     if (err) {

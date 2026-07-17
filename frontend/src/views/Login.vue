@@ -78,6 +78,9 @@ const checkLogin = () => {
         else if(res.data.role === "student"){
             router.push("/student")
         }
+        else if(res.data.role === "teacher"){
+            router.push("/teacher")
+        }
     }).catch(err =>{
         alert("Invalid credentials");
     })
