@@ -25,6 +25,8 @@ import EditTest from "../views/Tests/editTest.vue";
 import EnterMarks from "../views/Tests/addMarks.vue";
 import viewMarks from "../views/Tests/viewMarks.vue";
 import editMarks from "../views/Tests/editMarks.vue";
+import FeesDashboard from "../views/Fees/feesDashboard.vue";
+import FeesCollect from "../views/Fees/collectFee.vue"
 
 const routes =[
 {path:"/",component:Login},
@@ -51,7 +53,9 @@ const routes =[
 {path:'/test/edit/:id',component:EditTest,meta:{role:"teacher"}},
 {path:'/test/enterMarks/:id',component:EnterMarks,meta:{role:"teacher"}},
 {path:'/test/viewMarks/:id',component:viewMarks,meta:{role:"teacher"}},
-{path:'/test/editMarks/:id',component:editMarks,meta:{role:"teacher"}}
+{path:'/test/editMarks/:id',component:editMarks,meta:{role:"teacher"}},
+{path:'/feesDashboard',component:FeesDashboard,meta:{role:'admin'}},
+{path:'/fees/collect',component:FeesCollect,meta:{role:'admin'}}
 ]
 
 const router = createRouter({

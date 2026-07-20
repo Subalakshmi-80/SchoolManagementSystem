@@ -1,11 +1,16 @@
 <template>
 
-    <div class="layout">
+    <div class="row m-0 min-vh-100">
 
    
-<sidebar/>
-<div class="content">
+    <div class="col-lg-3 col-xl-2  d-none d-lg-block p-0 m-0 content side-header" >
+            <Sidebar />
+        </div>
+<div class="content col-12  col-lg-9 col-xl-10 p-0 m-0">
   <div class="header">
+   <button class="btn btn-outline-secondary d-lg-none">
+            <i class="bi bi-list"></i>
+        </button>
 
      <h1>Welcome, {{ role }}</h1>
      
@@ -36,23 +41,28 @@ const role = ref(getrole);
 
 
 <style scoped>
-.layout{
+/* .layout{
     display: flex;
     justify-content: start;
     align-items: stretch;
+    margin:0;
     
-    
-}
+} */
 .content{
-    flex: 1;
-    margin-left: 230px;;
+    margin-left:230px;
+}
+
+ @media(max-width:768px){
+    .content{
+        margin-left:0;
+    }
 }
 .header {
     display:flex;
     justify-content:space-between;
     align-items:center;
     background-color: rgb(247, 244, 244);
-     flex:1;
+     /* flex:1; */
     padding:30px;
     box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
     position: sticky;
@@ -68,5 +78,6 @@ const role = ref(getrole);
       text-transform:capitalize;
     
 }
+
 
 </style>

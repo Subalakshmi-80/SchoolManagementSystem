@@ -309,9 +309,7 @@ ORDER BY s.regno ASC`, [testId], (err, result) => {
 const updateMarks = (req, res) => {
     const testId = req.params.id;
 
-    const {
-        updateMark
-    } = req.body;
+    const {updateMark} = req.body;
 
     pool.query(`SELECT * FROM tests WHERE id=$1`, [testId],
         (err, result) => {
@@ -330,8 +328,6 @@ const updateMarks = (req, res) => {
 
                 pool.query(`UPDATE marks SET std_marks=$1 WHERE student_id=$2 AND test_id=$3 `,
                     [std_mark, std_id, testId], (err, result) => {
-
-
                         if (err) {
                             console.log(err)
                             return res.status(500).send("Database Error")

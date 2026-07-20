@@ -1,7 +1,7 @@
 <template>
 
     
-    <div class="sidebar">
+    <div class="sidebar ">
         <h2>School MS</h2>
 
     <router-link to="/admin">Dashboard</router-link>
@@ -9,6 +9,7 @@
            <router-link to="/standardlist">Standards</router-link>
            <router-link to="/classlist">Class</router-link>
            <router-link to="/subjectlist">Subjects</router-link>
+           <router-link to="/feesDashboard">Fees</router-link>
             <button @click.prevent="logout">Logout</button>
         
     </div>
@@ -36,19 +37,20 @@ function logout(){
 <style>
 
 .sidebar{
-    width:230px;
-   min-height:100vh;
+   
+
   background-color: rgb(156, 157, 158);
     display: flex;
     flex-direction: column;
     padding: 20px;
     color:white;
  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  position: fixed;
-  top:0;
-    left:0;
-    z-index:1000;
-  
+      position: fixed;
+    top: 0;
+    left: 0;
+    width: 230px;
+    height: 100vh;
+   
     
 
 }
