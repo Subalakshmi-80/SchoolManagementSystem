@@ -7,7 +7,7 @@ import resetPassword from "../views/resetPassword.vue";
 import Admin from "../views/admin-dashboard.vue";
 import Teacher from "../views/teacher-dashboard.vue"
 import Student from "../views/student-dashboard.vue";
-import studentList from "../views/Studentlist.vue";
+import studentList from "../views/StudentList.vue";
 import addStudent from "../views/addStudent.vue";
 import editStudent from "../views/editStudent.vue";
 import standardList from "../views/StandardList.vue";

@@ -55,7 +55,8 @@
 <script setup>
 import {useRouter,useRoute}  from 'vue-router';
 import axios from 'axios';
-import {ref} from 'vue'
+import {ref} from 'vue';
+import API from "../services/api.js"
 
 const router = useRouter();
 const route = useRoute();
@@ -68,7 +69,7 @@ const email = route.query.email;
 const verifyOTP = async() =>{
 
     try{
-           const res = await axios.post("http://localhost:5000/api/verify-otp",{
+           const res = await API.post("/api/verify-otp",{
             email:email,
             otp:data.value.otp
            })
@@ -90,7 +91,7 @@ const verifyOTP = async() =>{
 
 const resendOTP = async() =>{
     try{
-       const res= await axios.post("http://localhost:5000/api/resendOTP",{
+       const res= await API.post("/api/resendOTP",{
             email:email
         })
           alert(res.data);

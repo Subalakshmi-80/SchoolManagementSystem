@@ -44,6 +44,7 @@ import AdminNavbar from '../../components/AdminNavbar.vue';
 import {ref,onMounted} from 'vue';
 import axios from "axios";
 import { useRouter } from 'vue-router';
+import API from "../../services/api.js"
 
 const router = useRouter();
 
@@ -53,7 +54,7 @@ const getClass = async() =>{
     try{
         const token = localStorage.getItem("token");
 
-        const res = await axios.get("http://localhost:5000/api/classes",{
+        const res = await API.get("/api/classes",{
             headers:{
                 Authorization:`Bearer ${token}`
             }
@@ -75,7 +76,7 @@ const deleteClass = async(id) =>{
     try{
         const token = localStorage.getItem("token");
 
-        const res = await axios.delete(`http://localhost:5000/api/classes/${id}`,{
+        const res = await API.delete(`/api/classes/${id}`,{
             headers:{
                 Authorization:`Bearer ${token}`
             }

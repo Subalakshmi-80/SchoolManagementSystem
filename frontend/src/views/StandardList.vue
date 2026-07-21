@@ -43,6 +43,7 @@ import AdminNavbar from '../components/AdminNavbar.vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import {ref,onMounted} from 'vue';
+import API from "../services/api.js"
 
 
 const standards = ref([]);
@@ -53,7 +54,7 @@ const getStandards = async() =>{
 try{
     const token = localStorage.getItem("token");
 
-    const res = await axios.get("http://localhost:5000/api/standards",{
+    const res = await API.get("api/standards",{
         headers:{
             Authorization:`Bearer ${token}`
         }
@@ -73,7 +74,7 @@ if(!confirmDelete){
 }
     try{
         const token = localStorage.getItem("token");
-       const res= await axios.delete(`http://localhost:5000/api/standards/${id}`,{
+       const res= await API.delete(`/api/standards/${id}`,{
             headers:{
                 Authorization:`Bearer ${token}`
             }

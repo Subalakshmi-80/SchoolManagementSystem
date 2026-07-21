@@ -70,7 +70,7 @@
 import {useRouter,useRoute}  from 'vue-router';
 import {ref} from 'vue';
 import axios from 'axios';
-
+import API from "../services/api.js"
 
 const router = useRouter();
 const route = useRoute();
@@ -88,7 +88,7 @@ const resetPassword = async() =>{
         return;
     }
     try{
-        const res= await axios.post("http://localhost:5000/api/reset-password",{
+        const res= await API.post("/api/reset-password",{
             email:email,
             password:data.value.password
         })

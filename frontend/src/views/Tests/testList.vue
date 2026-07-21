@@ -65,7 +65,7 @@
     import {ref,onMounted} from 'vue';
     import axios from 'axios';
     import {useRouter} from 'vue-router'
-
+import API from "../../services/api.js"
 
 const router = useRouter()
    const tests = ref([])
@@ -73,7 +73,7 @@ const router = useRouter()
         try{
             const token = localStorage.getItem("token");
 
-            const res = await axios.get("http://localhost:5000/api/tests",{
+            const res = await API.get("/api/tests",{
                 headers:{
                     Authorization:`Bearer ${token}`
                 }
@@ -99,7 +99,7 @@ const router = useRouter()
         if(!confirmDelete) return;
         try{
             const token = localStorage.getItem("token");
-            const res = await axios.delete(`http://localhost:5000/api/tests/${id}`,{
+            const res = await API.delete(`/api/tests/${id}`,{
                 headers:{
                     Authorization:`Bearer ${token}`
                 }

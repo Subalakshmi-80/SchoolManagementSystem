@@ -110,6 +110,7 @@
  import {ref,onMounted} from 'vue';
 import axios from 'axios';
 import {useRouter} from 'vue-router';
+import API from "../services/api.js"
 
 const router = useRouter();
 
@@ -119,7 +120,7 @@ const getClasses = async() =>{
 try{
     const token = localStorage.getItem("token");
 
-    const res = await axios.get("http://localhost:5000/api/classes",{
+    const res = await API.get("/api/classes",{
         headers:{
             Authorization:`Bearer ${token}`
         }
@@ -155,7 +156,7 @@ const saveStudent = async() =>{
     try{
         const token = localStorage.getItem("token");
         
-        const res = await axios.post("http://localhost:5000/api/students",student.value,
+        const res = await API.post("/api/students",student.value,
             {
                 headers:{
                     Authorization:`Bearer ${token}`

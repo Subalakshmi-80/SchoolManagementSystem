@@ -54,6 +54,7 @@
 import {useRouter}  from 'vue-router';
 import axios from 'axios';
 import {ref} from 'vue';
+import API from "../services/api.js"
 
 const router = useRouter()
 
@@ -64,7 +65,7 @@ const data = ref({
 const sendOTP = async() =>{
     try{
         
-        const res = await axios.post("http://localhost:5000/api/forgot-password",data.value
+        const res = await API.post("/api/forgot-password",data.value
            
         )
       alert(res.data);

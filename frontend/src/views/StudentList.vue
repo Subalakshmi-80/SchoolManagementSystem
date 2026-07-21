@@ -71,7 +71,7 @@ import AdminNavbar from "../components/AdminNavbar.vue";
 import axios from "axios";
 import {ref,onMounted} from 'vue';
 import {useRouter} from 'vue-router'
-
+import API from "../services/api.js"
 
 const router = useRouter();
 
@@ -82,7 +82,7 @@ const  getStudents = async() =>{
 try{
     const token = localStorage.getItem("token");
     
-    const res = await axios.get("http://localhost:5000/api/students",{
+    const res = await API.get("/api/students",{
         headers:{
             Authorization:`Bearer ${token}`
         }
@@ -111,7 +111,7 @@ const formatDate = (date) =>{
 const deleteStudent = async(stdId) =>{
     try{
         const token = localStorage.getItem("token");
-       const res= await axios.delete(`http://localhost:5000/api/students/${stdId}`,{
+       const res= await API.delete(`/api/students/${stdId}`,{
              headers:{
             Authorization:`Bearer ${token}`
         }

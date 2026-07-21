@@ -55,6 +55,7 @@
 </template>
 
 <script setup>
+import API from "../services/api.js"
 import {useRouter}  from 'vue-router';
 import {ref} from 'vue';
 import axios from 'axios';
@@ -65,7 +66,7 @@ const router = useRouter();
     const showPassword = ref(false)
 const checkLogin = () => {
 
-    axios.post("http://localhost:5000/api/login",{
+    API.post("/api/login",{
         email:email.value,
         password:password.value
     }).then(res =>{

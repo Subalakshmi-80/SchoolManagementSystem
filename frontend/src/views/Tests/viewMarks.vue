@@ -49,7 +49,7 @@
     import axios from 'axios';
     import {ref,onMounted} from 'vue';
     import { useRouter,useRoute } from 'vue-router';
-
+import API from "../../services/api.js"
     const router = useRouter();
     const route = useRoute();
 
@@ -59,7 +59,7 @@
     const getTest = async() =>{
         try{
             const token = localStorage.getItem("token");
-            const res=await axios.get(`http://localhost:5000/api/tests/${testId}`,{
+            const res=await API.get(`/api/tests/${testId}`,{
                 headers:{
                     Authorization:`Bearer ${token}`
                 }
@@ -77,7 +77,7 @@
     const getMarks = async() =>{
         try{
             const token = localStorage.getItem("token");
-            const res= await axios.get(`http://localhost:5000/api/tests/${testId}/marks`,{
+            const res= await API.get(`/api/tests/${testId}/marks`,{
                 headers:{
                     Authorization:`Bearer ${token}`
                 }

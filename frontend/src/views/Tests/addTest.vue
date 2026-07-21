@@ -50,6 +50,7 @@ import TeacherNavbar from '../../components/TeacherNavbar.vue';
 import axios from 'axios';
 import {ref,onMounted} from 'vue';
 import { useRouter } from 'vue-router';
+import API from "../../services/api.js"
 
 const router = useRouter()
 const subjects = ref([])
@@ -65,7 +66,7 @@ const getSubjects = async() =>{
     try{
         const token = localStorage.getItem("token");
 
-        const res = await axios.get("http://localhost:5000/api/subjects",{
+        const res = await API.get("/api/subjects",{
             headers:{
                 Authorization:`Bearer ${token}`
             }
@@ -82,7 +83,7 @@ const classes = ref([])
 const getClass=async() =>{
     try{
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/classes",{
+        const res = await API.get("/api/classes",{
             headers:{
                 Authorization:`Bearer ${token}`
             }
@@ -98,7 +99,7 @@ onMounted(getClass);
 const saveTest = async() =>{
     try{
         const token = localStorage.getItem("token");
-        const res = await axios.post("http://localhost:5000/api/tests",test.value,{
+        const res = await API.post("/api/tests",test.value,{
             headers:{
                 Authorization:`Bearer ${token}`
             }

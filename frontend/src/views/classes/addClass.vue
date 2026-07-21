@@ -38,6 +38,7 @@ import AdminNavbar from '../../components/AdminNavbar.vue';
 import {useRouter} from 'vue-router';
 import axios from "axios";
 import {ref,onMounted} from 'vue';
+import API from "../../services/api.js"
 
 const standards = ref([]);
 
@@ -47,7 +48,7 @@ const getStandard = async() =>{
     try{
         const token = localStorage.getItem("token");
 
-        const res = await axios.get("http://localhost:5000/api/standards",{
+        const res = await API.get("/api/standards",{
             headers:{
                 Authorization:`Bearer ${token}`
             }
@@ -73,7 +74,7 @@ const saveClass = async() =>{
     try{
         const token = localStorage.getItem("token");
 
-        await axios.post("http://localhost:5000/api/classes",classes.value,{
+        await API.post("/api/classes",classes.value,{
             headers:{
                 Authorization:`Bearer ${token}`
             }

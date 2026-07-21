@@ -29,6 +29,7 @@
     import {ref} from 'vue';
     import { useRouter } from 'vue-router';
     import axios from 'axios';
+   import API from "../../services/api.js"
 
     const router = useRouter()
 
@@ -39,7 +40,7 @@
     const saveSubject = async() =>{
         try{
             const token = localStorage.getItem("token");
-            const res= await axios.post("http://localhost:5000/api/subjects",subjects.value,{
+            const res= await API.post("/api/subjects",subjects.value,{
                 headers:{
                     Authorization:`Bearer ${token}`
                 }

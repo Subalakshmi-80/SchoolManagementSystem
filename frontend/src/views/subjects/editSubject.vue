@@ -31,7 +31,7 @@ import AdminNavbar from '../../components/AdminNavbar.vue';
 import {ref,onMounted} from 'vue';
 import axios from 'axios';
 import { useRoute,useRouter } from 'vue-router';
-
+import API from "../../services/api.js"
 
 const router = useRouter();
 const route = useRoute();
@@ -46,7 +46,7 @@ const getSubject = async() => {
     
     try{
         const token = localStorage.getItem("token");
-        const res = await axios.get(`http://localhost:5000/api/subjects/${id}`,{
+        const res = await API.get(`/api/subjects/${id}`,{
             headers:{
                 Authorization:`Bearer ${token}`
             }
@@ -65,7 +65,7 @@ const getSubject = async() => {
     try{
         const token = localStorage.getItem("token");
 
-        const res = await axios.put(`http://localhost:5000/api/subjects/${id}`,subjects.value,{
+        const res = await API.put(`http://localhost:5000/api/subjects/${id}`,subjects.value,{
             headers:{
                 Authorization:`Bearer ${token}`
             }
