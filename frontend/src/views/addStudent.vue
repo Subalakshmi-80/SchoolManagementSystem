@@ -7,23 +7,23 @@
         <h3>Fill in the student details below.</h3>
         <form @submit.prevent="saveStudent()">
             <div class="form-group">
-            <label>Reg Number</label>
+            <label>Reg Number <span class="text-danger">*</span></label>
             <input type="text" v-model="student.regno" required>
             </div>
 
             <div class="form-group">
-                <label>Full Name</label>
+                <label>Full Name <span class="text-danger">*</span></label>
                 <input type="text" required v-model="student.name">
 
             </div>
 
             <div class="form-group">
-                <label>Email</label>
+                <label>Email <span class="text-danger">*</span></label>
                 <input type="email" required v-model="student.email">
             </div>
 
             <div class="form-group">
-                <label>Password</label>
+                <label>Password <span class="text-danger">*</span></label>
                 <input type="password" required v-model="student.password">
             </div>
 
@@ -43,8 +43,8 @@
             </div>
 
                <div class="form-group">
-                <label >Class</label>
-                <select v-model="student.class_id">
+                <label >Class <span class="text-danger">*</span></label>
+                <select v-model="student.class_id" required>
                 <option disabled value="">Select Class</option>
                 <option v-for="cls in classes" :key="cls.id" :value="cls.id">{{cls.standard_name}}-{{ cls.class_name }}</option>
                 </select>

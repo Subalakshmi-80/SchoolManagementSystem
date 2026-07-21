@@ -89,7 +89,7 @@ try{
     
     })
     students.value= res.data
-     console.log(students.value)
+   
    
     
 }catch(err){

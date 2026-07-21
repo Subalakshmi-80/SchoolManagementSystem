@@ -5,7 +5,9 @@ const createStudent = (req, res) => {
     const { name, email, password, regno, first_name,
          last_name, gender, dob, phone, class_id, 
          address_line1,address_line2,city,state } = req.body;
-    if (!name || !email || !password || !regno) {
+
+         const stddob = dob === ""?null:dob;
+    if (!name || !email || !password || !regno || !class_id) {
         return res.status(400).send("Please provide mandatory fields");
     }
     pool.query(`SELECT * FROM users WHERE email=$1`, [email], (err, result) => {
@@ -24,15 +26,15 @@ const createStudent = (req, res) => {
                     [name, email, hash, "student"],
                     (err, result) => {
                         if (err) {
-                            return res.status(500).send("error");
+                            return res.status(500).send("Database Error");
                         } else {
 
                             pool.query(`INSERT INTO students(user_id,regno,first_name,last_name,gender,dob,phone,class_id,address_line1,address_line2,city,state)
                                     VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
-                                [result.rows[0].id, regno, first_name, last_name, gender, dob, phone,class_id, address_line1,address_line2,city,state],
+                                [result.rows[0].id, regno, first_name, last_name, gender, stddob, phone,class_id, address_line1,address_line2,city,state],
                                 (err, result1) => {
                                     if (err) {
-                                        return res.status(500).send("error");
+                                        return res.status(500).send("Database Error");
                                     } else {
                                         res.status(201).send("Student data inserted successfully")
 
@@ -182,8 +184,11 @@ const deleteStd = (req,res)=>{
                 return res.status(404).send("Student not found");
             }
        const student = result.rows[0];
-
-       pool.query(`DELETE FROM students WHERE id=$1`,[StdId],(err,result)=>{
+pool.query(`DELETE FROM marks WHERE student_id = $1`,[StdId],(err)=>{
+    if(err){
+        return res.status(500).send("Database Error")
+    }
+     pool.query(`DELETE FROM students WHERE id=$1`,[StdId],(err,result)=>{
         if(err){
              return res.status(500).send("Database Error");
         }
@@ -199,6 +204,8 @@ const deleteStd = (req,res)=>{
             })
         }
        })
+})
+      
     })
 }
 
