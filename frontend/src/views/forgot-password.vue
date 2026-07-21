@@ -65,9 +65,7 @@ const data = ref({
 const sendOTP = async() =>{
     try{
         
-        const res = await API.post("/api/forgot-password",data.value
-           
-        )
+        const res = await API.post("/api/forgot-password",data.value )
       alert(res.data);
       router.push({
         path:'/otp-verification',

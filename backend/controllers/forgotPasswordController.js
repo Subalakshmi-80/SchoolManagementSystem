@@ -47,7 +47,7 @@ const mailOptions ={
 
 transporter.sendMail(mailOptions,(err,info)=>{
     if(err){
-        
+        console.log(err)
         return res.status(500).send("Error Sending Email");
     }
     else{
