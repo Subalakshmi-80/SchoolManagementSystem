@@ -65,7 +65,7 @@ const getSubject = async() => {
     try{
         const token = localStorage.getItem("token");
 
-        const res = await API.put(`http://localhost:5000/api/subjects/${id}`,subjects.value,{
+        const res = await API.put(`/api/subjects/${id}`,subjects.value,{
             headers:{
                 Authorization:`Bearer ${token}`
             }
