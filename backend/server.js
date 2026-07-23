@@ -35,6 +35,7 @@ app.use("/api",require("./routes/subjectRoutes"));  //Subject CRUD
 app.use("/api",require("./routes/forgotPasswordRoutes"));  //forgot password routes
 
 app.use("/api",require("./routes/testRoutes")) //test and Marks routes
+app.use("/api",require("./routes/timetableRoutes"))  //TimeTable Routes
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`);

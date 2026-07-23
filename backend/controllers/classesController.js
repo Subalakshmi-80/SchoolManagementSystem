@@ -29,7 +29,7 @@ const getClass = (req,res) =>{
         c.name AS class_name,
         c.standard_id,
         s.name AS standard_name
-         FROM classes c JOIN standards s ON s.id = c.standard_id `,(err,result)=>{
+         FROM classes c JOIN standards s ON s.id = c.standard_id ORDER BY c.id`,(err,result)=>{
             if(err){
                 return res.status(500).send("Databse Error");
                  

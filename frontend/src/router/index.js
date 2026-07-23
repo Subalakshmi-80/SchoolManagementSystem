@@ -26,7 +26,10 @@ import EnterMarks from "../views/Tests/addMarks.vue";
 import viewMarks from "../views/Tests/viewMarks.vue";
 import editMarks from "../views/Tests/editMarks.vue";
 import FeesDashboard from "../views/Fees/feesDashboard.vue";
-import FeesCollect from "../views/Fees/collectFee.vue"
+import FeesCollect from "../views/Fees/collectFee.vue";
+import timetableList from "../views/TimeTable/timetableList.vue";
+import AddTimeTable from "../views/TimeTable/addTimeTable.vue";
+import EditTimetable from "../views/TimeTable/editTimetable.vue";
 
 const routes =[
 {path:"/",component:Login},
@@ -55,7 +58,10 @@ const routes =[
 {path:'/test/viewMarks/:id',component:viewMarks,meta:{role:"teacher"}},
 {path:'/test/editMarks/:id',component:editMarks,meta:{role:"teacher"}},
 {path:'/feesDashboard',component:FeesDashboard,meta:{role:'admin'}},
-{path:'/fees/collect',component:FeesCollect,meta:{role:'admin'}}
+{path:'/fees/collect',component:FeesCollect,meta:{role:'admin'}},
+{path:'/timetablelist',component:timetableList,meta:{role:'admin'}},
+{path:'/timetable/create',component:AddTimeTable,meta:{role:'admin'}},
+{path:'/timetable/edit/:id',component:EditTimetable,meta:{role:'admin'}}
 ]
 
 const router = createRouter({

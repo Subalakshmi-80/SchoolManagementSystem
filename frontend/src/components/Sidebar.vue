@@ -9,6 +9,7 @@
            <router-link to="/standardlist">Standards</router-link>
            <router-link to="/classlist">Class</router-link>
            <router-link to="/subjectlist">Subjects</router-link>
+           <router-link to="/timetablelist">Timetable</router-link>
            <router-link to="/feesDashboard">Fees</router-link>
             <button @click.prevent="logout">Logout</button>
         

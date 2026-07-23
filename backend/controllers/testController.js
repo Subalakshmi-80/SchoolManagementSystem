@@ -248,7 +248,7 @@ const storeMarks = (req, res) => {
                 pool.query(`INSERT INTO marks(test_id,student_id,std_marks) VALUES ($1,$2,$3)`,
                     [testId, stdId, mark], (err, result) => {
                         if (err) {
-                            console.log(err)
+                           
                             return res.status(500).send("Database Error")
                         }
                         completed++;
@@ -256,7 +256,6 @@ const storeMarks = (req, res) => {
                         if (completed === marks.length) {
                             return res.status(201).send("marks Added Successfully.")
                         }
-
 
                     }
                 )
@@ -299,7 +298,7 @@ ORDER BY s.regno ASC`, [testId], (err, result) => {
                 if (result.rows.length === 0) {
                     return res.status(404).send("No Marks Found.");
                 }
-                return res.status(200).send(result.rows)
+                return res.status(200).send(result.rows);
             })
         }
     )

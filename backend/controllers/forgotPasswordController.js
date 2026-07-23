@@ -2,23 +2,14 @@ const pool = require("../db/db");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt")
 
-// const transporter = nodemailer.createTransport({
-//     service:"gmail",
-//     auth:{
-//         user:process.env.EMAIL,
-//         pass:process.env.EMAIL_PASSWORD
-//     }
-// })
-
 const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASSWORD
+    service:"gmail",
+    auth:{
+        user:process.env.EMAIL,
+        pass:process.env.EMAIL_PASSWORD
     }
-});
+})
+
 
 const forgotPassword = (req,res) =>{
     const {email} = req.body;
@@ -149,7 +140,7 @@ const resendOTP = (req,res) =>{
         const otp = Math.floor(100000 +Math.random()*900000).toString()
 
         const now = new Date();
-         const expires_at = new Date(now.getTime()+5*60*1000)
+        const expires_at = new Date(now.getTime()+5*60*1000)
 
          pool.query(`UPDATE password_reset SET otp=$1,expires_at=$2 WHERE email=$3`,[otp,expires_at,email],
             (err,result) =>{
