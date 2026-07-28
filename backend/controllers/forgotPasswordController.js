@@ -25,46 +25,41 @@ const forgotPassword = (req,res) =>{
 
        }
 
-       const otp = Math.floor(100000 + Math.random() * 900000).toString();  
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();  
 
-     const now = new Date();
+    const now = new Date();
 
-const expires_at =new Date(now.getTime()+5*60*1000)
+    const expires_at =new Date(now.getTime()+5*60*1000)
     
 
-pool.query(`INSERT INTO password_reset(email,otp,expires_at) VALUES($1,$2,$3)`,[email,otp,expires_at],
-    (err,result) =>{
-        if(err){
-console.log(err)
-            return res.status(500).send("Database Error");
-           
+    pool.query(`INSERT INTO password_reset(email,otp,expires_at) VALUES($1,$2,$3)`,[email,otp,expires_at],
+        (err,result) =>{
+            if(err){
+                console.log(err)
+                return res.status(500).send("Database Error");  
+            }
+        const mailOptions ={
+            from:process.env.EMAIL,
+            to:email,
+            subject:"Password Reset OTP",
+            text:`Your OTP for password reset is ${otp}.It will expire in 5 minutes.`
         }
-const mailOptions ={
-    from:process.env.EMAIL,
-    to:email,
-    subject:"Password Reset OTP",
-    text:`Your OTP for password reset is ${otp}.It will expire in 5 minutes.`
-}
 
-transporter.sendMail(mailOptions,(err,info)=>{
-    if(err){
-        console.log(err)
-        return res.status(500).send("Error Sending Email");
-    }
-    else{
-        return res.status(200).send("OTP sent to your email");
-    }
-})
-
-        
-    }
-)
-
-
-
-
+        transporter.sendMail(mailOptions,(err,info)=>{
+            if(err){
+                console.log(err)
+                return res.status(500).send("Error Sending Email");
+            }
+            else{
+                return res.status(200).send("OTP sent to your email");
+            }
     })
-}
+            
+        }
+    )
+
+        })
+    }
 
 
 const verifyOTP = (req,res) =>{

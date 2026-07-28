@@ -10,7 +10,8 @@ const createSubject =(req,res) =>{
             if(result.rows.length > 0){
                 return res.status(409).send("Subject already Exists")
             }
-            pool.query(`INSERT INTO subjects(subject_name) VALUES($1)`,[subject_name],(err,result)=>{
+            pool.query(`INSERT INTO subjects(subject_name) VALUES($1)`,[subject_name],
+                (err,result)=>{
                 if(err){
                     return res.status(500).send("Database Error")
                 }
@@ -65,12 +66,13 @@ const updateSubject = (req,res) =>{
 
            const updatedSubjectName = subject_name || subject.subject_name;
 
-           pool.query(`SELECT * FROM subjects WHERE subject_name=$1 AND id!=$2`,[updatedSubjectName,id],
+           pool.query(`SELECT * FROM subjects WHERE subject_name=$1 AND id!=$2`,
+            [updatedSubjectName,id],
             (err,result)=>{
                 if(err){
                     return res.status(500).send("Database Error");
                 }
-                if(result.rows.length >0){
+                if(result.rows.length > 0){
                     return res.status(409).send("Subject already Exists.")
                 }
 

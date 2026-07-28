@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 
 const createTeacher = (req,res)=>{
-    const {name,email,password,empid,first_name,last_name,gender,dob,phone, classIncharge,classsection,subject,qualification,address_line1,address_line2,city,state}=req.body;
+    const {name,email,password,empid,first_name,last_name,gender,dob,phone, classincharge,classsection,subject,qualification,address_line1,address_line2,city,state}=req.body;
 
     if(!email || !password || !name || !empid){
         return res.status(400).send("please provide mandatory fields");
@@ -19,14 +19,15 @@ const createTeacher = (req,res)=>{
             if(err){
                 return res.status(400).send("Error Try Again Later")
             }
-            pool.query(`INSERT INTO users(name,email,password,role) VALUES ($1,$2,$3,$4) RETURNING id`,[name,email,hash,"teacher"],
+            pool.query(`INSERT INTO users(name,email,password,role) VALUES ($1,$2,$3,$4) RETURNING id`,
+                [name,email,hash,"teacher"],
                 (err,result)=>{
                     if(err){
                         return res.status(500).send(err.message);
                     }
-                    pool.query(`INSERT INTO teachers(user_id,empid,first_name,last_name,gender,dob,phone,classIncharge,classsection,subject,qualification,address_line1,address_line2,state,city)
+                    pool.query(`INSERT INTO teachers(user_id,empid,first_name,last_name,gender,dob,phone,classincharge,classsection,subject,qualification,address_line1,address_line2,state,city)
                         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
-                        [result.rows[0].id,empid,first_name,last_name,gender,dob,phone,classIncharge,classsection,subject,qualification,address_line1,address_line2,city,state],
+                        [result.rows[0].id,empid,first_name,last_name,gender,dob,phone,classincharge,classsection,subject,qualification,address_line1,address_line2,city,state],
                         (err,result)=>{
                             if(err){
                                 return res.status(500).send(err.message);
@@ -52,7 +53,10 @@ const getTeacher = (req,res)=>{
         t.classsection,
         t.subject,
         t.qualification,
-        t.address FROM teachers t JOIN users u ON t.user_id = u.id`,
+        t.address_line1,
+        t.address_line2,
+        t.state,
+        t.city FROM teachers t JOIN users u ON t.user_id = u.id`,
         (err,result) => {
             if(err){
                 return res.status(500).send(err.message);
@@ -69,7 +73,7 @@ const getTeacher = (req,res)=>{
 
 }
 
-const getSingleTeacher = (req,res) =>{
+const getSingleTeacher = (req,res) =>{  
     const teacherId = req.params.id;
 
     pool.query(`SELECT t.id,
@@ -85,7 +89,10 @@ const getSingleTeacher = (req,res) =>{
         t.classsection,
         t.subject,
         t.qualification,
-        t.address FROM teachers t JOIN users u ON t.user_id = u.id WHERE t.id=$1`,[teacherId],
+        t.address_line1,
+        t.address_line2,
+        t.state,
+        t.city FROM teachers t JOIN users u ON t.user_id = u.id WHERE t.id=$1`,[teacherId],
         (err,result)=>{
             if(err){
                 return res.status(500).send(err.message);
@@ -102,7 +109,7 @@ const getSingleTeacher = (req,res) =>{
 const updateTeacher = (req,res) =>{
     const teacherId = req.params.id;
 
-    const {empid,first_name,last_name,gender,dob,phone,classIncharge,classsection,subject,qualification,address} = req.body;
+    const {empid,first_name,last_name,gender,dob,phone,classincharge,classsection,subject,qualification,address_line1,address_line2,state,city} = req.body;
 
     pool.query(`SELECT * FROM teachers WHERE id=$1`,[teacherId],(err,result)=>{
         if(err){
@@ -119,23 +126,35 @@ const updateTeacher = (req,res) =>{
         const updatedGender = gender || teacher.gender;
         const updatedDob = dob || teacher.dob;
         const updatedPhone = phone || teacher.phone;
-        const updatedClassIncharge = classIncharge || teacher.classIncharge;
+        const updatedClassIncharge = classincharge || teacher.classincharge;
         const updatedClasssection = classsection || teacher.classsection;
         const updatedSubject = subject || teacher.subject;
         const updatedQualification = qualification || teacher.qualification;
-        const updatedAddress = address || teacher.address;
+        const updatedAddressLine1 = address_line1 || teacher.address_line1;
+        const updatedAddressLine2 = address_line2 || teacher.address_line2;
+        const updatedCity = city || teacher.city;
+        const updatedState = state || teacher.state;
 
-        const fullName = updatedFirstName + " "+updatedLastName
+        const fullName = updatedFirstName + " "+ updatedLastName
         
         pool.query(`UPDATE teachers 
-            SET empid=$1,first_name=$2,last_name=$3,gender=$4,dob=$5,phone=$6,classIncharge=$7,classsection=$8,subject=$9,qualification=$10,address=$11 WHERE id=$12`,
-        [updatedEmpid,updatedFirstName,updatedLastName,updatedGender,updatedDob,updatedPhone,updatedClassIncharge,updatedClasssection,updatedSubject,updatedQualification,updatedAddress,teacherId]
-    ,(err,result)=>{
+            SET empid=$1,first_name=$2,
+            last_name=$3,gender=$4,dob=$5,
+            phone=$6,classincharge=$7,classsection=$8,
+            subject=$9,qualification=$10,
+            address_line1=$11, address_line2=$12,
+            city=$13,state=$14 WHERE id=$15`,
+        [updatedEmpid,updatedFirstName,updatedLastName,updatedGender,
+        updatedDob,updatedPhone,updatedClassIncharge,updatedClasssection,
+        updatedSubject,updatedQualification,updatedAddressLine1,
+        updatedAddressLine2,updatedCity,updatedState,teacherId],
+        (err,result)=>{
         if(err){
             return res.status(500).send(err.message);
         }
         else{
-            pool.query(`UPDATE users SET name=$1 WHERE id=$2`,[fullName,teacher.user_id],(err,result)=>{
+            pool.query(`UPDATE users SET name=$1 WHERE id=$2`,[fullName,teacher.user_id],
+                (err,result)=>{
                 if(err){
                     return res.status(500).send(err.message);
                 }
@@ -156,15 +175,13 @@ const deleteTeacher = (req,res) => {
     pool.query(`SELECT * FROM teachers WHERE id=$1`,[teacherId],
         (err,result)=>{
             
-          
-          
             if(err){
                 return res.status(500).send(err.message);
             }
             if(result.rows.length === 0){
                 return res.status(400).send("Teacher Not Found");
             }
-  const teacher = result.rows[0]
+            const teacher = result.rows[0]
 
             pool.query('DELETE FROM teachers WHERE id=$1',[teacherId],(err,result) =>{
                 if(err){
