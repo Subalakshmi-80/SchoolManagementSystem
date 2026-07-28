@@ -32,7 +32,7 @@ pool.query(`INSERT INTO standards(name) VALUES($1)`,[name],
 
 
 const getStandards = (req,res )=>{
-    pool.query(`SELECT * FROM  standards`,(err,result)=>{
+    pool.query(`SELECT * FROM  standards ORDER BY id ASC`,(err,result)=>{
         if(err){
             return res.status(500).send("Database Error");
         }
