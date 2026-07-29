@@ -5,7 +5,7 @@
             <AdminNavbar>
             <div class="container">
                 <div class="text-center py-5 d-flex ms-5 justify-content-center align-items-center gap-5">
-                <button class="btn btn-outline-secondary" @click="router.push('/timetablelist')">Back</button>
+                <button class="btn btn-outline-secondary" @click="router.push('/timetable/list')">Back</button>
                 <h1 class="text-danger fw-bold">Edit Timetable</h1>
                 </div>
 
@@ -37,7 +37,7 @@
                 
                 <div class="d-flex justify-content-center align-items-center my-5 gap-3">
                 <button class="btn btn-outline-danger fw-bold px-4" @click="updateTimetable()">Update</button>
-                <button class="btn btn-outline-secondary fw-bold px-4" @click="router.push('/timetablelist')">Cancel</button>
+                <button class="btn btn-outline-secondary fw-bold px-4" @click="router.push('/timetable/list')">Cancel</button>
                 
                 </div>
                 </div>
@@ -121,7 +121,7 @@
                 }
 if(updated === timetable.value.length){
     alert("Updated Successfully");
-    router.push('/timetablelist')
+    router.push('/timetable/list')
 }
             }catch(err){
                 alert(err.response.data)

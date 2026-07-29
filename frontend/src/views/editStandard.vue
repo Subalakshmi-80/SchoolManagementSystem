@@ -14,7 +14,7 @@
 
                 <div class="button-group">
                     <button>Update</button>
-                    <button type="button" @click="router.push('/standardlist')">Cancel</button>
+                    <button type="button" @click="router.push('/standard/list')">Cancel</button>
                 </div>
             </form>
     </div>
@@ -67,7 +67,7 @@ const updateStandard = async() =>{
             }
         })
         alert("Standard updated Successfully");
-        router.push('/standardlist')
+        router.push('/standard/list')
 
     }catch(err){
  console.log("Error updating data",err);

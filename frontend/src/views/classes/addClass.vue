@@ -24,7 +24,7 @@
 
                   <div class="button-group">
                     <button>Save Class</button>
-                    <button type="button" @click="router.push('/classlist')">Cancel</button>
+                    <button type="button" @click="router.push('/class/list')">Cancel</button>
                 </div>
             </form>
         </div>
@@ -80,7 +80,7 @@ const saveClass = async() =>{
             }
         })
         alert("Class Created Successfully");
-        router.push('/classlist')
+        router.push('/class/list')
     }catch(err){
           console.log("Error fetching data",err)
 

@@ -49,7 +49,7 @@
             </table>
     <div class="d-flex gap-3 my-3">
     <button class="btn btn-outline-success px-4 fw-bold" @click="saveTimetable()">Save</button>
-            <button class="btn btn-outline-secondary px-4 fw-bold" @click="router.push('/timetablelist')">Cancel</button>
+            <button class="btn btn-outline-secondary px-4 fw-bold" @click="router.push('/timetable/list')">Cancel</button>
 
     </div>
         

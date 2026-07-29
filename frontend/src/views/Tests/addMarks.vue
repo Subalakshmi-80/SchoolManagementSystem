@@ -4,7 +4,7 @@
 <h1>Add Marks</h1>
 <h2 class="fs-2 text-success fw-bold my-2 text-uppercase">{{ tests.name }} ({{ tests.class_name }})</h2>
 
-
+<button class="btn btn-outline-secondary fw-bold px-3" @click="router.push('/test/list')">Back</button>
 <p  class="text-danger p-4 fw-bold fs-4 " v-if="students.length === 0">No Students Found</p>
 <div v-else class="mt-3 w-75">
 <form @submit.prevent="saveMarks()">
@@ -39,7 +39,7 @@
 
 <div class="d-flex justify-content-center align-items-center mt-5 gap-4">
 <button type="submit" class="btn btn-success fw-bold px-4 py-2">Save Marks</button>
-<button @click="router.push('/testlist')" class="btn btn-secondary fw-bold px-4 py-2">Cancel</button>
+<button @click="router.push('/test/list')" class="btn btn-secondary fw-bold px-4 py-2">Cancel</button>
 
 </div>
 
@@ -103,11 +103,11 @@
             }
         })
         alert(res.data);
-        router.push('/testlist')
+        router.push('/test/list')
         }catch(err){
           
             alert(err.response.data);
-             router.push('/testlist')
+             router.push('/test/list')
            
         }
     }

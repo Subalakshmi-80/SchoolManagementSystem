@@ -34,8 +34,8 @@
 </div>
 
 <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
-<button class="btn btn-success px-4 py-2  fw-bold">Save Test</button>
-<button class="btn btn-secondary  px-4 py-2 fw-bold">Cancel</button>
+<button class="btn btn-success px-4 py-2  fw-bold" type="submit">Save Test</button>
+<button class="btn btn-secondary  px-4 py-2 fw-bold" @click="router.push('/test/list')">Cancel</button>
 </div>
 </form>
 
@@ -105,7 +105,7 @@ const saveTest = async() =>{
             }
         })
         alert(res.data);
-        router.push("/testlist")
+        router.push("/test/list")
     }catch(err){
         alert(err.response.data)
     }

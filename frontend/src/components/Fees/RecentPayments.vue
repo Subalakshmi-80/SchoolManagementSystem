@@ -82,6 +82,22 @@
 <span class="badge bg-success p-2">Paid</span></td>
 
 </tr>
+
+<tr>
+<td>Rc1003</td>
+<td>110101</td>
+<td>Nisha</td>
+<td>LKG-A</td>
+<td>Term 1</td>
+<td>5000</td>
+<td>20/07/2026</td>
+
+<td >
+<span class="badge bg-success p-2">Paid</span></td>
+
+</tr>
+
+
 </tbody>
 </table>
 

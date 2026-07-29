@@ -28,12 +28,12 @@
                     }
                     else{
                         const token = jwt.sign(
-                            {id:user.id,email:user.email,role:user.role},
+                            {id:user.id,email:user.email,role:user.role,name:user.name},
                             process.env.JWT_SECRET,
                             {expiresIn:"1h"}
                         )
-
-                        res.json({"message":"Login successful","token":token,"role":user.role})
+                        
+                        res.json({"message":"Login successful","token":token,"role":user.role,"name":user.name,"email":user.email})
             }
             } )
     })

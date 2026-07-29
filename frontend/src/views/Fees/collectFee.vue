@@ -1,9 +1,9 @@
 <template>
 <AdminNavbar>
-<div class="m-5">
+<div class="p-5">
 <div class="row align-items-center">
 <div class="col-md-3">
-<button class="btn btn-outline-secondary" @click="router.push('/feesDashboard')"><i class=" bi bi-arrow-left me-2"></i>Back</button>
+<button class="btn btn-outline-secondary" @click="router.push('/fees/Dashboard')"><i class=" bi bi-arrow-left me-2"></i>Back</button>
 </div>
 
 <div class="col-md-9 text-center">
@@ -102,7 +102,7 @@
 
 <div class="d-grid d-md-flex justify-content-md-end align-items-center gap-3">
 
-<button class="btn btn-secondary opacity-75 fw-bold px-md-3 py-md-2" @click="router.push('/feesDashboard')">Cancel</button>
+<button class="btn btn-secondary opacity-75 fw-bold px-md-3 py-md-2" @click="router.push('/fees/Dashboard')">Cancel</button>
 <button class="btn btn-primary fw-bold px-md-4 py-md-2">Collect Fee</button>
 </div>
 </form>

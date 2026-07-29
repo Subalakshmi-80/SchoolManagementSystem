@@ -25,7 +25,7 @@
 
                   <div class="button-group">
                     <button>Save Class</button>
-                    <button type="button" @click="router.push('/classlist')">Cancel</button>
+                    <button type="button" @click="router.push('/class/list')">Cancel</button>
                 </div>
         </form>
         </div>
@@ -97,7 +97,7 @@ const editClass = async() =>{
             }
         })
         alert("Class Updated Successfully");
-        router.push('/classlist')
+        router.push('/class/list')
     }catch(err){
         console.log(err);
         alert("update failed.")

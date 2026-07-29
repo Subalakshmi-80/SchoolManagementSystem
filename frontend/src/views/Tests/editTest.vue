@@ -34,7 +34,7 @@
 
 <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
 <button class="btn btn-success px-4 py-2  fw-bold">Update Test</button>
-<button class="btn btn-secondary  px-4 py-2 fw-bold" @click="router.push('/testlist')">Cancel</button>
+<button class="btn btn-secondary  px-4 py-2 fw-bold" @click="router.push('/test/list')">Cancel</button>
 </div>
 </form>
 
@@ -135,7 +135,7 @@ const updateTest = async()=>{
             }
         })
         alert(res.data);
-        router.push('/testlist')
+        router.push('/test/list')
     }catch(err){
         alert(err.response.data)
     }

@@ -72,7 +72,7 @@
     onMounted(getSubjects);
 
 
-    const deleteSubject = async(id) =>{
+    const deleteSubject = async(id) => {
         const confirmDelete = confirm("Are You sure you want to delete this subject?");
 
         if(!confirmDelete)  return;

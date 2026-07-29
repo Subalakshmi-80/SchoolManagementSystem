@@ -1,7 +1,7 @@
 <template>
 
     <TeacherNavbar>
-    <div>
+    <div class="px-3">
 
     <div class="d-flex justify-content-between  align-items-center mx-5 my-3">
     <h1 class="fs-2"  style=" color:rgb(97,32,19);">Test Lists</h1>

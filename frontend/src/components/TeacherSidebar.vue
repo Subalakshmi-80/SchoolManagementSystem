@@ -1,26 +1,35 @@
 <template>
-  <div
-    class="col-md-2 h-100 d-flex flex-column m-0 position-fixed text-white"
-    style="background-color: rgb(156, 157, 158); z-index: 1000"
-  >
-    <h2 class="p-3 py-4 fw-bold">School MS</h2>
+  <div class="sidebar bg-light d-flex flex-column">
+    <h2 class="text-success fs-4 fw-bold py-4"><i class="px-3 bi bi-mortarboard-fill"></i>School MS</h2>
 
-    <router-link to="/teacher" class="text-decoration-none text-white fs-4 p-3 fw-bold"
-      >Dashboard</router-link
-    >
-    <router-link to="/testlist" class="text-decoration-none text-white fs-4 p-3 fw-bold"
-      >Tests</router-link
-    >
-    <button class="btn btn-danger mt-auto mb-4 m-3" @click.prevent="logout">
+    <div class="d-flex flex-column flex-grow-1 overflow-auto pt-2">
+    
+    <router-link to="/teacher" class="link-style" 
+    active-class="bg-success bg-opacity-75 text-white fw-bold">
+    <i class="bi bi-speedometer2 px-3"></i>Dashboard</router-link >
+      <hr class="m-0 border-1 border-secondary border-opacity-75">
+
+
+    <router-link to="/test/list" class="link-style" 
+   :class="{'bg-success text-white fw-bold':route.path.startsWith('/test')}">
+    <i class="bi bi-pencil-square px-3"></i>
+    Tests</router-link>
+    <hr class="m-0 border-1 border-secondary border-opacity-75">
+
+    
+    </div>
+
+    <!-- <button class="btn btn-danger mt-auto mb-4 m-3" @click.prevent="logout">
       Logout
-    </button>
+    </button> -->
   </div>
 </template>
 
 <script setup>
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
-const router = useRouter();
+
+const route = useRoute();
 
 function logout() {
   localStorage.removeItem("token");
@@ -29,3 +38,5 @@ function logout() {
   router.push("/");
 }
 </script>
+
+

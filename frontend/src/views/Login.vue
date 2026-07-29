@@ -71,8 +71,12 @@ const checkLogin = () => {
         password:password.value
     }).then(res =>{
         localStorage.setItem("token",res.data.token);
-        localStorage.setItem("role", res.data.role)
+        localStorage.setItem("role", res.data.role);
+        localStorage.setItem("name",res.data.name);
+        localStorage.setItem("email",res.data.email);
+
        
+
         if(res.data.role === "admin"){
             router.push("/admin")
         }

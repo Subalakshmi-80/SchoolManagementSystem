@@ -1,91 +1,90 @@
-<template>
+        <template>
 
-    
-    <div class="sidebar ">
-        <h2>School MS</h2>
+       
+            
+            <div class="sidebar bg-light d-flex flex-column">
+                <h2 class="text-success  fs-4 fw-bold py-4"><i class="bi bi-mortarboard-fill px-3"></i>SCHOOL MS</h2>
 
-    <router-link to="/admin">Dashboard</router-link>
-           <router-link to="/studentlist">Students</router-link>
-           <router-link to="/standardlist">Standards</router-link>
-           <router-link to="/classlist">Class</router-link>
-           <router-link to="/subjectlist">Subjects</router-link>
-           <router-link to="/timetablelist">Timetable</router-link>
-           <router-link to="/feesDashboard">Fees</router-link>
-            <button @click.prevent="logout">Logout</button>
+                <div class="d-flex flex-column flex-grow-1 overflow-auto pt-2 ">
+                
+                <router-link to="/admin" class="link-style" active-class="bg-success  fw-bold text-white" >
+                <i class="bi bi-speedometer2  px-3  " ></i>Dashboard</router-link>
+                <hr class="m-0 border-1 border-secondary border-opacity-75 ">
+
+                <router-link to="/" class="link-style" active-class="bg-success text-white fw-bold"> 
+                <i class="bi bi-person-workspace px-3"></i>Teachers</router-link>
+                <hr class="m-0 border-1 border-secondary border-opacity-75 ">
+
+                
+                <router-link to="/student/list" class="link-style" :class="{'bg-success text-white fw-bold':route.path.startsWith('/student')}" > 
+                <i class="bi bi-mortarboard-fill px-3"></i>Students</router-link>
+                <hr class="m-0 border-1 border-secondary border-opacity-75 ">
+
+                <router-link to="/standard/list"  class="link-style" :class="{'bg-success text-white fw-bold':route.path.startsWith('/standard')}" >
+                <i class="bi bi-book px-3"></i>Standards</router-link>
+                <hr class="m-0 border-1 border-secondary border-opacity-75 ">
+
+
+                <router-link to="/class/list"  class="link-style" :class="{'bg-success text-white fw-bold':route.path.startsWith('/class')}">
+                <i class="bi bi-building-fill px-3"></i>Class</router-link>
+                <hr class="m-0 border-1 border-secondary border-opacity-75 ">
+
+
+                <router-link to="/subject/list"  class="link-style" :class="{'bg-success text-white fw-bold':route.path.startsWith('/subject')}">
+                <i class="bi bi-journal-bookmark px-3"></i>Subjects</router-link>
+                <hr class="m-0 border-1 border-secondary border-opacity-75 ">
+
+
+                <router-link to="/timetable/list"  class="link-style" :class="{'bg-success text-white fw-bold':route.path.startsWith('/timetable')}">
+                <i class="bi bi-calendar2-check-fill px-3"></i>Timetable</router-link>
+                <hr class="m-0 border-1 border-secondary border-opacity-75 ">
+
+
+                <router-link to="/fees/Dashboard"  class="link-style" :class="{'bg-success text-white fw-bold':route.path.startsWith('/fees')}">
+                <i class="bi bi-cash-stack px-3"></i>Fees</router-link>
+                <hr class="m-0 border-1 border-secondary border-opacity-75 ">
+
+                
+                
+                </div>
+     
+            </div>
+
+            
         
-    </div>
+        
+            
 
-   
+            </template>
+
+
+        <script setup>
+
+        import { useRoute } from 'vue-router';
+
+        const route = useRoute();
+
     
+        </script>
 
-    </template>
+        <style>
+
+        .link-style{
+            text-decoration:none;
+            color:black;
+            padding:12px;
+            font-weight: 500;
+        }
+        .link-style:hover{
+            background-color: rgba(224, 224, 224, 0.747);
+        }
+        .sidebar{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 230px;
+        height: 100vh;
+    }
 
 
-<script setup>
-
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
-function logout(){
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-
-    router.push("/")
-}
-</script>
-
-<style>
-
-.sidebar{
-   
-
-  background-color: rgb(156, 157, 158);
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    color:white;
- box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-      position: fixed;
-    top: 0;
-    left: 0;
-    width: 230px;
-    height: 100vh;
-   
-    
-
-}
-.sidebar h2{
-    padding-top: 10px;
-     text-align:center;
-    margin-bottom:30px;
-    font-size: 30px;
-}
-.sidebar a{
-     display:block;
-    text-decoration:none;
-    color:white;
-    font-size:20px;
-    font-weight:bold;
-    padding:15px 0;
-}
-.sidebar button{
-    margin-top:auto;
-    border:none;
-    padding: 10px;
-    font-size: 15px;
-     background-color: rgb(160, 48, 48);
-    color:white;
-   
-    border-radius:7px;
-    cursor:pointer;
-}
-.router-link-active{
-    color:rgb(102,30,30);
-}
-.sidebar a:hover{
-    text-decoration:underline;
-    cursor:pointer;
-}
-
-</style>
+        </style>

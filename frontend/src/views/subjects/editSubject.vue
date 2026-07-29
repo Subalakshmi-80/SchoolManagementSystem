@@ -11,7 +11,7 @@
 
  <div class="d-flex gap-4 mt-3 justify-content-center align-items-center">
     <button class="btn btn-success px-4  py-2 fw-bold" >Update Subject</button>
-    <button class="btn btn-secondary px-4 py-2 fw-bold" @click="router.push('/subjectlist')">Cancel</button>
+    <button class="btn btn-secondary px-4 py-2 fw-bold" @click="router.push('/subject/list')">Cancel</button>
     </div>
 
 </form>
@@ -72,7 +72,7 @@ const getSubject = async() => {
         })
         alert(res.data);
 
-        router.push('/subjectlist')
+        router.push('/subject/list')
 
     }catch(err){
         alert(err.response.data)

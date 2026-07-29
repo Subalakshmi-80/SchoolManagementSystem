@@ -41,7 +41,7 @@
 
 <div class="d-flex justify-content-center align-items-center gap-3 mt-5">
 <button type="submit" class="btn btn-success fw-bold px-4 py-2">Update Marks</button>
-<button @click="router.push('/testlist')" class="btn btn-secondary fw-bold px-4 py-2">Cancel</button>
+<button @click="router.push('/test/list')" class="btn btn-secondary fw-bold px-4 py-2">Cancel</button>
 
 </div>
 

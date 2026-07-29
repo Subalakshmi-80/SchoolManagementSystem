@@ -13,6 +13,7 @@ function authMiddleware(req,res,next){
     if(err){
         return res.status(403).send("invalid token");
     }else{
+        console.log(user)
     req.user = user;
     next();
     }

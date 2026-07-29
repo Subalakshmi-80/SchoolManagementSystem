@@ -95,7 +95,7 @@
 
             <div class="button-group">
 <button>Save Student</button>
-            <button type="button" @click="router.push('/studentlist')">Cancel</button>
+            <button type="button" @click="router.push('/student/list')">Cancel</button>
             </div>
 
             
@@ -165,7 +165,7 @@ const saveStudent = async() =>{
         )
         
         alert("Student Added Successfully");
-        router.push("/studentlist")
+        router.push("/student/list")
 
     }
     catch(err){

@@ -4,7 +4,7 @@
 <div class="container d-flex flex-column justify-content-center align-items-center my-3">
 <h1>View Marks</h1>
 <h2 class="fs-2 text-success fw-bold my-2 text-uppercase">{{ tests.name }} ({{ tests.class_name }})</h2>
-<button @click="router.push('/testlist')" class="btn btn-secondary fw-bold px-4 py-2">Cancel</button>
+<button @click="router.push('/test/list')" class="btn btn-secondary fw-bold px-4 py-2">Cancel</button>
 
 
 <p  class="text-danger p-4 fw-bold fs-4 " v-if="marks.length === 0">No Marks Found</p>

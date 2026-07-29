@@ -12,7 +12,7 @@
 
                 <div class="button-group">
                     <button>Save Standard</button>
-                    <button type="button" @click="router.push('/standardlist')">Cancel</button>
+                    <button type="button" @click="router.push('/standard/list')">Cancel</button>
                 </div>
             </form>
         </div>
@@ -43,7 +43,7 @@ const saveStandard = async() =>{
            
         })
          alert("Standard Created Successfully");
-         router.push('/standardlist')
+         router.push('/standard/list')
     }catch(err){
   console.log("Error fetching data",err)
 
