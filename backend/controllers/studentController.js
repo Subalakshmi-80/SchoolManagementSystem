@@ -72,7 +72,7 @@
         u.email,
         u.role FROM students s JOIN users u ON s.user_id = u.id
         JOIN classes c ON  s.class_id = c.id
-        JOIN standards st ON c.standard_id = st.id ORDER BY s.regno ASC`, (err, result) => {
+        JOIN standards st ON c.standard_id = st.id ORDER BY s.class_id ASC`, (err, result) => {
             if (err) {
                 return res.status(500).send("Database Error");
             }

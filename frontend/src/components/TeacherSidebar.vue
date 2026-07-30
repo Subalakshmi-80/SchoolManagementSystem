@@ -19,9 +19,6 @@
     
     </div>
 
-    <!-- <button class="btn btn-danger mt-auto mb-4 m-3" @click.prevent="logout">
-      Logout
-    </button> -->
   </div>
 </template>
 

@@ -3,14 +3,29 @@
     <AdminNavbar>
 
     <div class="student-box">
-        <h2>Edit Student</h2>
-        <h3>Update student details below.</h3>
-        <form @submit.prevent="updateStudent()">
+        <h2>Add Student</h2>
+        <h3>Fill in the student details below.</h3>
+        <form @submit.prevent="saveStudent()">
             <div class="form-group">
- <label>Reg Number</label>
+            <label>Reg Number <span class="text-danger">*</span></label>
             <input type="text" v-model="student.regno" required>
             </div>
 
+            <div class="form-group">
+                <label>Full Name <span class="text-danger">*</span></label>
+                <input type="text" required v-model="student.name">
+
+            </div>
+
+            <div class="form-group">
+                <label>Email <span class="text-danger">*</span></label>
+                <input type="email" required v-model="student.email">
+            </div>
+
+            <div class="form-group">
+                <label>Password <span class="text-danger">*</span></label>
+                <input type="password" required v-model="student.password">
+            </div>
 
             <div class="form-group">
                 <label>First Name</label>
@@ -26,6 +41,15 @@
                 <label>DOB</label>
                 <input type="date" v-model="student.dob"/>
             </div>
+
+               <div class="form-group">
+                <label >Class <span class="text-danger">*</span></label>
+                <select v-model="student.class_id" required>
+                <option disabled value="">Select Class</option>
+                <option v-for="cls in classes" :key="cls.id" :value="cls.id">{{cls.standard_name}}-{{ cls.class_name }}</option>
+                </select>
+            </div>
+
 
             <div class="form-group">
                     <label>Gender</label>
@@ -43,14 +67,7 @@
 
             </div>
 
-            <div class="form-group">
-                <label >Class</label>
-                <select v-model="student.class_id">
-                <option disabled value="">Select Class</option>
-                <option v-for="cls in classes" :key="cls.id" :value="cls.id">{{ cls.standard_name }} - {{ cls.class_name }}</option>
-                </select>
-            </div>
-
+         
             <div class="form-group">
                 <label>Phone Number</label>
                 <input type="text" v-model="student.phone"/>
@@ -58,7 +75,7 @@
 
             <div class="form-group">
                 <label>Address Line1</label>
-                <input type="text" v-model="student.address_line1"/>
+                <input type="text" v-model="student.address_line1">
             </div>
 
              <div class="form-group">
@@ -76,44 +93,26 @@
                 <input v-model="student.state"/>
             </div>
 
-<div class="button-group">
-            <button>Update</button>
+            <div class="button-group">
+<button>Save Student</button>
             <button type="button" @click="router.push('/student/list')">Cancel</button>
             </div>
-        </form> 
+
+            
+        </form>
     </div>
     </AdminNavbar>
     </template>
 
 
 <script setup>
- import AdminNavbar from '../components/AdminNavbar.vue';
+ import AdminNavbar from '../../components/AdminNavbar.vue';
  import {ref,onMounted} from 'vue';
 import axios from 'axios';
-import {useRouter,useRoute} from 'vue-router';
-import API from "../services/api.js"
-
+import {useRouter} from 'vue-router';
+import API from "../../services/api.js"
 
 const router = useRouter();
-const route = useRoute();
-
-const stdId = route.params.id;
-
-
-const student = ref({
-    regno:"",
-    first_name:"",
-    last_name:"",
-    gender:"",
-    dob:"",
-    class_id:"",
-    phone:"",
-    address_line1:"",
-    address_line2:"",
-    city:"",
-    state:""
-});
-
 
 const classes = ref([]);
 
@@ -134,45 +133,48 @@ try{
 }
 
 onMounted(getClasses)
+ const student = ref({
+    regno:"",
+    name:"",
+    email:"",
+    password:"",
+    first_name:"",
+    last_name:"",
+    gender:"",
+    dob:"",
+    class_id:"",
+    phone:"",
+    address_line1:"",
+    address_line2:"",
+    city:"",
+    state:""
+
+ })
 
 
-
-const getStudent =async () =>{
+const saveStudent = async() =>{
     try{
         const token = localStorage.getItem("token");
-        const res = await API.get(`/api/students/${stdId}`,{
-            headers:{
-                Authorization:`Bearer ${token}`
-            }
-        })
-        student.value = res.data
-        student.value.dob = student.value.dob.split("T")[0]
-       
-
-    }catch(err){
-        console.log(err)
-    }
-}
-
-onMounted(getStudent);
-
-
-const updateStudent =async ()=>{
-    try{
-        const token = localStorage.getItem("token");
-         await API.put(`/api/students/${stdId}`,student.value,{
-            headers:{
-                Authorization:`Bearer ${token}`
-            }
-        })
-        alert("Student data Updated successfully!");
-        router.push('/student/list')
         
-    }catch(err){
-        console.log("Error updating data",err);
-        alert("Update Failed")
+        const res = await API.post("/api/students",student.value,
+            {
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            }
+        )
+        
+        alert("Student Added Successfully");
+        router.push("/student/list")
+
+    }
+    catch(err){
+        console.log("Error fetching data",err)
+
+        alert(err.response.data)
     }
 }
+ 
 </script>
 
 
@@ -199,32 +201,31 @@ const updateStudent =async ()=>{
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
      display:grid;
-    grid-template-columns:1fr 1fr ;
+    grid-template-columns:1fr 1fr;
     gap:20px;
 }
 .button-group{
     grid-column: 1/3;
-    width:100%;
+   
+     width:100%;
     display:flex;
     justify-content:center;
     gap:20px;
     margin-top:30px;
 }
-.button-group button{
-    width:180px;
-    padding:10px;
-    border:none;
-    border-radius:8px;
-    background:rgb(109, 27, 27);
+.student-box form button{
+  
+    padding:10px 35px; 
+    background-color: rgb(102, 30, 30);
     color:white;
+    border:none;
+    border-radius:7px;
     cursor:pointer;
     font-size:15px;
 }
-
-.button-group button:hover{
-    background:rgb(139, 43, 43);
+.student-box form button:hover{
+    background-color: rgb(177, 81, 81);
 }
-
 
 .form-group{
     display: flex;

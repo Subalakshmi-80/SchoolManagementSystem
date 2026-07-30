@@ -21,11 +21,11 @@
 
 
 <script setup>
-import AdminNavbar from '../components/AdminNavbar.vue';
+import AdminNavbar from '../../components/AdminNavbar.vue';
 import {useRouter} from 'vue-router';
 import {ref} from 'vue';
 import axios from 'axios';
-import API from "../services/api.js"
+import API from "../../services/api.js"
 
 const router = useRouter();
 

@@ -39,11 +39,11 @@
     </template>
 
     <script setup>
-import AdminNavbar from '../components/AdminNavbar.vue';
+import AdminNavbar from '../../components/AdminNavbar.vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import {ref,onMounted} from 'vue';
-import API from "../services/api.js"
+import API from "../../services/api.js"
 
 
 const standards = ref([]);

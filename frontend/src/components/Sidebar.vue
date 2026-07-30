@@ -48,12 +48,7 @@
                 
                 </div>
      
-            </div>
-
-            
-        
-        
-            
+            </div>   
 
             </template>
 
