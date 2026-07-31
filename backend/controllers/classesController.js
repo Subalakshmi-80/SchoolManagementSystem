@@ -67,7 +67,6 @@ const updateClass = (req,res) =>{
     const {class_name,standard_id} = req.body;
     const clsId = req.params.id;
     
-   
         pool.query(`SELECT * FROM classes WHERE id=$1`,[clsId],(err,result)=>{
             if(err){
                 return res.status(500).send("Database Error");
@@ -80,15 +79,17 @@ const updateClass = (req,res) =>{
             
             const updatedName = class_name || classes.name;
             const updatedStandardId = standard_id || classes.standard_id
-             pool.query(`SELECT * FROM classes WHERE name = $1 AND standard_id=$2 AND id != $3 `,[updatedName,updatedStandardId,clsId],(err,result)=>{
-        if(err){
-            return res.status(500).send("Database Error")
-        }
-         if(result.rows.length >0){
-            return res.status(409).send("Class Already Exists");
-        }
+            pool.query(`SELECT * FROM classes WHERE name = $1 AND standard_id=$2 AND id != $3 `,
+                [updatedName,updatedStandardId,clsId],(err,result)=>{
+            if(err){
+                return res.status(500).send("Database Error")
+            }
+            if(result.rows.length >0){
+                return res.status(409).send("Class Already Exists");
+            }
       
-   pool.query(`UPDATE classes SET name=$1,standard_id=$2 WHERE id=$3`,[updatedName,updatedStandardId,clsId],
+            pool.query(`UPDATE classes SET name=$1,standard_id=$2 WHERE id=$3`,
+                [updatedName,updatedStandardId,clsId],
                 (err,result) =>{
                     if(err){
                         return res.status(500).send("Database Error");

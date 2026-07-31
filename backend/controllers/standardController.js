@@ -3,30 +3,28 @@ const pool = require("../db/db");
 const createStandard = (req,res)=>{
 const {name} = req.body;
 
-if(!name){
-    return res.status(400).send("Standard name is required")
-}
+    if(!name){
+        return res.status(400).send("Standard name is required")
+    }
 
-pool.query(`SELECT * FROM standards WHERE name=$1`,[name],
-    (err,result)=>{
-        if(err){
-            return res.status(500).send("Database Error");
+    pool.query(`SELECT * FROM standards WHERE name=$1`,[name],
+        (err,result)=>{
+            if(err){
+                return res.status(500).send("Database Error");
+            }
+            if(result.rows.length > 0){
+                return res.status(409).send("Standard Already Exists")
+            }
+    pool.query(`INSERT INTO standards(name) VALUES($1)`,[name],
+        (err,result)=>{
+            if(err){
+                return res.status(500).send("Database Error")
+            }
+            return res.status(201).send("Standard created successfully.")
         }
-        if(result.rows.length > 0){
-            return res.status(409).send("Standard Already Exists")
-        }
-pool.query(`INSERT INTO standards(name) VALUES($1)`,[name],
-    (err,result)=>{
-        if(err){
-            return res.status(500).send("Database Error")
-        }
-        return res.status(201).send("Standard created successfully.")
+    )
     }
 )
-    }
-)
-
-
 
 }
 

@@ -116,7 +116,7 @@
     import axios from "axios";
     import {ref,onMounted, computed,watch} from 'vue';
     import {useRouter} from 'vue-router'
-    import API from "../../services/api.js"
+    import API from "../../components/api.js"
 
     const router = useRouter();
 
@@ -213,14 +213,14 @@ currentPage.value=1
     }
 
     const previousPage = () => {
-        if(currentPage.value>1){
+        if(currentPage.value > 1){
             currentPage.value--;
         }
     }
 
     const goToPagePageNumber = ref("")
     const goToPage = () => {
-        if(goToPagePageNumber.value >= 1 && goToPagePageNumber.value<=totalPages.value){
+        if(goToPagePageNumber.value >= 1 && goToPagePageNumber.value <= totalPages.value){
             currentPage.value=goToPagePageNumber.value
         }
     }

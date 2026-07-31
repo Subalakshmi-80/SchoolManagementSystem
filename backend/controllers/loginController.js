@@ -33,7 +33,9 @@
                             {expiresIn:"1h"}
                         )
                         
-                        res.json({"message":"Login successful","token":token,"role":user.role,"name":user.name,"email":user.email})
+                        res.json({"message":"Login successful",
+                            "token":token,"role":user.role,
+                            "name":user.name,"email":user.email})
             }
             } )
     })

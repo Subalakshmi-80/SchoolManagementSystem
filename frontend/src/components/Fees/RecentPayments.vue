@@ -115,12 +115,3 @@
 </script>
 
 
-<style scoped>
-/* input:focus{
-    outline:none;
-} */
-
-/* input{
-    border:none;
-} */
-</style>

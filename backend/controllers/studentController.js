@@ -7,9 +7,11 @@
             address_line1,address_line2,city,state } = req.body;
 
         const stddob = dob === ""?null:dob;
+
         if (!name || !email || !password || !regno || !class_id) {
             return res.status(400).send("Please provide mandatory fields");
         }
+
         pool.query(`SELECT * FROM users WHERE email=$1`, [email], (err, result) => {
             if (err) {
                 return res.status(500).send("Database Error")
@@ -185,7 +187,8 @@
                     return res.status(404).send("Student not found");
                 }
         const student = result.rows[0];
-    pool.query(`DELETE FROM marks WHERE student_id = $1`,[StdId],(err)=>{
+        
+        pool.query(`DELETE FROM marks WHERE student_id = $1`,[StdId],(err)=>{
         if(err){
             return res.status(500).send("Database Error")
         }
