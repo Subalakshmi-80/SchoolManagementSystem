@@ -7,6 +7,7 @@ const pool = require("./db/db");
 const app = express();
 const PORT = process.env.PORT || 5000;
 const cors = require("cors");
+const runMigration = require("./migrations/runMigration");
 app.use(cors());
 
 // database connection
@@ -38,7 +39,19 @@ app.use("/api",require("./routes/testRoutes")) //test and Marks routes
 app.use("/api",require("./routes/timetableRoutes"))  //TimeTable Routes
 
 
-app.listen(PORT,()=>{
-    console.log(`Server is running on port ${PORT}`);
-});
+async function startServer() {
+  try{
+    await runMigration();
 
+    app.listen(PORT,()=>{
+      console.log(`Server is running on port ${PORT}`)
+    })
+  }catch(err){
+
+      console.error("Application startup failed.");
+      console.error(err)
+  }
+  
+}
+
+startServer()

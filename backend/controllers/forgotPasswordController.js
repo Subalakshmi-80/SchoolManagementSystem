@@ -7,8 +7,10 @@ const API_BASE_URL = process.env.BASEURL
 const API_EMAIL = process.env.EMAIL;
 const API_TOKEN = process.env.TOKEN;
 
-const API_URL = `${API_BASE_URL}/api/emails`
+const API_URL = `${API_BASE_URL}/api/emails`;
+
 const forgotPassword = (req,res) =>{
+
     const {email} = req.body;
 
     pool.query(`SELECT * FROM users WHERE email=$1`,[email],(err,result) =>{
@@ -16,11 +18,13 @@ const forgotPassword = (req,res) =>{
        if(err){
         return res.status(500).send("Database Error");
        } 
+
        if(result.rows.length === 0){
     
         return res.status(404).send("User Not Found");
 
        }
+
        if(result.rows.length > 0){
         pool.query(`DELETE FROM password_reset WHERE email=$1`,[email],
             (err,result)=>{
@@ -40,7 +44,7 @@ const forgotPassword = (req,res) =>{
 
     pool.query(`INSERT INTO password_reset(email,otp,expires_at,resend_available_at) VALUES($1,$2,$3,$4)`,
         [email,otp,expires_at,resend_available_at],
-       async (err,result) =>{
+        async (err,result) =>{
             if(err){
                 console.log(err)
                 return res.status(500).send("Database Error");  
@@ -62,11 +66,11 @@ const forgotPassword = (req,res) =>{
                 }
             )
              return res.status(200).send(response.data)
-            }
-          catch(error){
+        }
+        catch(error){
                 console.log(error)
                 return res.status(500).send("Failed to send OTP email")
-            }
+        }
         }
     )
 
@@ -162,10 +166,11 @@ const resendOTP = (req,res) =>{
 
                 
         const otp = Math.floor(100000 +Math.random()*900000).toString()
-         const expires_at = new Date(now.getTime()+1*60*1000)
-         const resend_available_at = expires_at
-                 pool.query(`UPDATE password_reset SET otp=$1,expires_at=$2,resend_available_at=$3 WHERE email=$4`,
-                    [otp,expires_at,resend_available_at,email],
+        const expires_at = new Date(now.getTime()+1*60*1000)
+        const resend_available_at = expires_at;
+
+                pool.query(`UPDATE password_reset SET otp=$1,expires_at=$2,resend_available_at=$3 WHERE email=$4`,
+                [otp,expires_at,resend_available_at,email],
                 async(err,result) =>{
                 if(err){
                     return res.status(500).send("Database Error")
@@ -188,15 +193,14 @@ const resendOTP = (req,res) =>{
                         }
                     )
                     return res.status(200).send("OTP resent successfully")
-                }catch(err){
+                }
+                catch(err){
                     return res.status(500).send("Failed to send OTP")
                 }
 
             }
          )
-                }
-
-        
+            }
             
         )
 

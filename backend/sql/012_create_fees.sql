@@ -1,0 +1,4 @@
+CREATE TABLE if NOT EXISTS fees(
+    id SERIAL PRIMARY KEY,
+    amount INTEGER
+);
