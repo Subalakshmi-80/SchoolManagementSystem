@@ -1,44 +1,45 @@
-    const pool = require("../db/db");
+    const prisma = require('../prisma/prisma')
 
-    const bcrypt = require("bcrypt");
-    const jwt = require("jsonwebtoken");
+        const bcrypt = require("bcrypt");
+        const jwt = require("jsonwebtoken");
 
-    const loginController = (req,res)=>{
-        
-        const {email,password} = req.body;
-        pool.query(`SELECT * FROM users WHERE email=$1`,[email],
-            (err,result)=>{
-                if(err){
-                    return res.status(500).send("Error,Try again later");
-                }
-                if(result.rows.length ==0){
-                    return res.status(401).send("User Not Found");
-                }
-                const user = result.rows[0];
+        const loginController = async(req,res)=>{
+            const {email,password} = req.body;
 
-                bcrypt.compare(password,user.password,(err,isMatch)=>{
-                
-                    if(err){
-                        return res.status(500).send("Error,Try Again Later");
-                    }
-                    if(!isMatch){
-                        
-                        return res.status(401).send("invalid Credentials");
-                        
-                    }
-                    else{
-                        const token = jwt.sign(
-                            {id:user.id,email:user.email,role:user.role,name:user.name},
-                            process.env.JWT_SECRET,
-                            {expiresIn:"1h"}
-                        )
-                        
-                        res.json({"message":"Login successful",
-                            "token":token,"role":user.role,
-                            "name":user.name,"email":user.email})
+            if(!email || !password){
+                return res.status(422).json({error:"Please fill all the details."})
             }
-            } )
-    })
-    }
+            try{
 
-    module.exports = loginController
+                const existingUser = await prisma.user.findUnique({where:{email:email}})
+
+                if (!existingUser) {
+                    return res.status(401).json({error:"User Not Found"});
+                }
+                const checkPassword =await bcrypt.compare(password,existingUser.password)
+                    
+                if(!checkPassword){
+                            
+                    return res.status(401).json({error:"invalid Credentials"});
+                            
+                }
+                        
+                const token = jwt.sign(
+                    {id:existingUser.id,email:existingUser.email,role:existingUser.role,name:existingUser.name},
+                    process.env.JWT_SECRET,
+                    {expiresIn:"1h"}
+                )
+                            
+                res.json({"message":"Login successful",
+                    "token":token,"role":existingUser.role,
+                    "name":existingUser.name,"email":existingUser.email})
+    
+                }catch(error){
+                    console.log(error);
+                    return res.status(500).json({error:"Error,please try again later"})
+                }
+
+        }
+    
+
+        module.exports = loginController

@@ -10,7 +10,7 @@
     <div class="d-flex flex-sm-column justify-content-center align-items-center gap-4 mt-5 ">
     <select v-model="timetable.class_id" class="form-select w-25" >
         <option value="" disabled>Select Class</option>
-        <option  v-for="cls in classes" :key="cls.id" :value="cls.id">{{ cls.standard_name }} - {{ cls.class_name }}</option>
+        <option  v-for="cls in classes" :key="cls.id" :value="cls.id">{{ cls.standard.name }} - {{ cls.name }}</option>
         </select>
 
         <select v-model="timetable.day" class="form-select w-25">
@@ -19,8 +19,8 @@
         </select>
 
     </div>
-    
-    <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+   
+    <div  class="w-100 d-flex flex-column justify-content-center align-items-center">
     <table class="table table-bordered mt-5  text-center mx-5 w-75 ">
             
         
@@ -35,12 +35,12 @@
 
             <tbody>
             <tr v-for="period in periods" :key="period.id">
-            <td  >{{ period.period_no }}</td>
-            <td>{{ period.start_time.slice(0,5) }} - {{ period.end_time.slice(0,5) }}</td>
+            <td  >{{ period.periodNo }}</td>
+            <td>{{ period.startTime.slice(11,16) }} - {{ period.endTime.slice(11,16) }}</td>
             <td >
             <select v-model="period.subject_id" >
             <option value="" disabled>Select Subject</option>
-            <option v-for="sub in subjects" :key="sub.id" :value="sub.id" >{{ sub.subject_name }}</option>
+            <option v-for="sub in subjects" :key="sub.id" :value="sub.id" >{{ sub.subjectName }}</option>
             </select>
             </td>
             </tr>
@@ -107,6 +107,7 @@
                         }
                     })
                     subjects.value = res.data
+                   
                 }catch(err){
                     console.log(err)
                 }
@@ -125,10 +126,12 @@
                         }
                     })
                     periods.value = res.data
+
                     periods.value= periods.value.map(period =>({
                         ...period,
                         subject_id:""
                     }))
+
 
                 }catch(err){
                     
@@ -151,7 +154,7 @@
         }
         for (const period of periods.value) {
             if (!period.subject_id) {
-                alert(`Please select subject for Period ${period.period_no}`);
+                alert(`Please select subject for Period ${period.periodNo}`);
                 return;
             }
         }
@@ -173,7 +176,7 @@
                 }
             })
             inserted+=1
-        response=res.data
+        response=res.data.message
         }
         if(inserted === periods.value.length){
             alert(response);
@@ -188,7 +191,7 @@
     }));
         }
     }catch(err){
-        alert(err.response.data)
+        alert(err.response.data.error)
     }
     
     }

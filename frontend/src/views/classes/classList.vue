@@ -21,8 +21,8 @@
 
                 <tbody>
                     <tr v-for="cls in classes" :key="cls.id">
-                         <td>{{ cls.standard_name }}</td>
-                        <td>{{ cls.class_name }}</td>
+                         <td>{{ cls.standard.name }}</td>
+                        <td>{{ cls.name }}</td>
                        
                         <td>
                             <div class="action-button">
@@ -59,7 +59,9 @@ const getClass = async() =>{
                 Authorization:`Bearer ${token}`
             }
         })
+
         classes.value = res.data;
+  
       
     }catch(err){
         console.log("Error Fetching classes",err);
@@ -81,10 +83,10 @@ const deleteClass = async(id) =>{
                 Authorization:`Bearer ${token}`
             }
         })
-        alert("Class Deleted Successfully");
+        alert(res.data.message);
         await getClass();
     }catch(err){
-        console.log("Error deleting data",err)
+        alert(err.response.data.error)
     }
 }
 </script>

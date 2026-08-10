@@ -16,7 +16,7 @@
 <label class="fs-5 mb-2 fw-bold">Class</label>
 <select class="form-select" v-model="test.class_id">
 <option disabled value="">Select class</option>
-<option v-for="cls in classes" :key="cls.id" :value="cls.id">{{cls.standard_name}} - {{ cls.class_name }}</option>
+<option v-for="cls in classes" :key="cls.id" :value="cls.id">{{cls.standard.name}} - {{ cls.name }}</option>
 </select>
 </div>
 
@@ -24,7 +24,7 @@
 <label class="fs-5 mb-2 fw-bold">Subject</label>
 <select  class="form-select" v-model="test.subject_id">
  <option disabled value="">Select Subject</option>
-<option  v-for="subject in subjects" :key="subject.id" :value="subject.id" >{{ subject.subject_name }}</option>
+<option  v-for="subject in subjects" :key="subject.id" :value="subject.id" >{{ subject.subjectName }}</option>
 </select>
 </div>
 
@@ -104,10 +104,10 @@ const saveTest = async() =>{
                 Authorization:`Bearer ${token}`
             }
         })
-        alert(res.data);
+        alert(res.data.message);
         router.push("/test/list")
     }catch(err){
-        alert(err.response.data)
+        alert(err.response.data.error)
     }
 }
 </script>

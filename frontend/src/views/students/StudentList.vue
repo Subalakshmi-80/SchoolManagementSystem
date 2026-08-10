@@ -59,40 +59,40 @@
                     <thead class="align-middle">
                         <tr>
                             <th>Reg No</th>
-                <th>Full Name</th>
-                <th>Email</th>
-                <th>Gender</th>
-                <th>DOB</th>
-                <th>Class</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>Actions</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Gender</th>
+                            <th>DOB</th>
+                            <th>Class</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Actions</th>
                         
                         </tr>
                     
                     </thead>
 
                     <tbody  >
-                    <tr v-for="student in paginatedStudents" :key="student.id" >
-                    <td >{{ student.regno }}</td>
-                    <td>{{ student.name }}</td>
-                    <td class="text-primary fw-semibold">{{ student.email }}</td>
-                    <td>{{ student.gender }}</td>
-                    <td>{{ formatDate(student.dob) }}</td>
-                    <td>{{ student.class_name }}</td>
-                    <td>{{ student.phone }}</td>
-                    <td >{{ student.address_line1 }},<br>
-                    {{ student.address_line2 }},<br>
-                    {{ student.city }},
-                    {{ student.state }}</td>
+                        <tr v-for="student in paginatedStudents" :key="student.id" >
+                            <td >{{ student.regNo }}</td>
+                            <td>{{ student.user.name }}</td>
+                            <td class="text-primary fw-semibold">{{ student.user.email }}</td>
+                            <td>{{ student.gender }}</td>
+                            <td>{{ formatDate(student.dob) }}</td>
+                            <td>{{ student.class.standard.name }}-{{ student.class.name }}</td>
+                            <td>{{ student.phone }}</td>
+                            <td >{{ student.addressLine1 }},<br>
+                            {{ student.addressLine2 }},<br>
+                            {{ student.city }},
+                            {{ student.state }}</td>
 
-                    <td>
-                    <div class="d-flex justify-content-center align-items-center gap-3">
-                    <i class="bi bi-pencil-square text-primary pointer" @click="router.push(`/student/edit/${student.id}`)"></i>
-                    <i class="bi bi-trash3-fill text-danger pointer" @click="deleteStudent(student.id)"></i>
-                    </div>
-                    </td>
-                    </tr>
+                            <td>
+                            <div class="d-flex justify-content-center align-items-center gap-3">
+                            <i class="bi bi-pencil-square text-primary pointer" @click="router.push(`/student/edit/${student.id}`)"></i>
+                            <i class="bi bi-trash3-fill text-danger pointer" @click="deleteStudent(student.id)"></i>
+                            </div>
+                            </td>
+                        </tr>
                     
                     </tbody>
                 
@@ -155,12 +155,21 @@
         }
 
         const keyword = search.value.toLowerCase();
-        return students.value.filter(student=>
-            
-            student.regno.toLowerCase().includes(keyword) ||
-            student.name.toLowerCase().includes(keyword) ||
-            student.class_name.toLowerCase().includes(keyword)
+
+        return students.value.filter(student=>{
+
+            const class_name = `${student.class.standard.name}-${student.class.name}`;
+
+            return(
+
+            student.regNo.toLowerCase().includes(keyword) ||
+            student.user.name.toLowerCase().includes(keyword)||
+            class_name.toLowerCase().includes(keyword)
+            )
+        }
+ 
         )
+            
     })
 
 watch(search,()=>{
@@ -170,6 +179,11 @@ currentPage.value=1
     //deletestudents
 
     const deleteStudent = async(stdId) => {
+         const confirmDelete = confirm("Are you sure you want to delete this student?" )
+
+    if(!confirmDelete){
+        return
+    }
         try{
             const token = localStorage.getItem("token");
         const res= await API.delete(`/api/students/${stdId}`,{
@@ -179,11 +193,11 @@ currentPage.value=1
         
             })
 
-            alert(`Student data deleted successfully`)
+            alert(res.data.message)
             await getStudents();        
         }
         catch(err){
-            console.log("Error Deleting Data",err)
+            alert(err.response.data.error)
         }
 
     }
@@ -202,6 +216,7 @@ currentPage.value=1
     const paginatedStudents = computed(() => {
         const start = (currentPage.value-1)*(itemPerPage.value)
         const end = start+itemPerPage.value;
+ 
         return filteredStudents.value.slice(start,end)
     })
 
@@ -224,5 +239,6 @@ currentPage.value=1
             currentPage.value=goToPagePageNumber.value
         }
     }
+
     </script>
 

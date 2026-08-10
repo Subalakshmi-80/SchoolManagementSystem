@@ -75,8 +75,8 @@ const sendOTP = async() =>{
         }
       })
     }catch(err){
-        alert(err.response.data)
-        console.log(err)
+        alert(err.response.data.error)
+
     }
 }
 

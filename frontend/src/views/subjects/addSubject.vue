@@ -45,10 +45,12 @@
                     Authorization:`Bearer ${token}`
                 }
             })
-            alert(res.data);
+            
+            alert(res.data.message);
             router.push('/subject/list')
         }catch(err){
-            alert(err.response.data)
+            
+            alert(err.response.data.error)
         }
     }
     </script>

@@ -30,9 +30,9 @@
 <tr v-for="test in tests" :key="test.id"  class="text-center">
 
 <td class="p-3">{{ test.name }}</td>
-<td class="p-3">{{ test.class_name }}</td>
-<td class="p-3">{{ test.subject_name}}</td>
-<td class="p-3">{{ formatDate(test.test_date) }}</td>
+<td class="p-3">{{ test.class.standard.name }}-{{ test.class.name }}</td>
+<td class="p-3">{{ test.subject.subjectName}}</td>
+<td class="p-3">{{ formatDate(test.testDate) }}</td>
 
 <td class="p-3">
 
@@ -78,10 +78,10 @@ const router = useRouter()
                     Authorization:`Bearer ${token}`
                 }
             })
-            
+           
             tests.value = res.data
         }catch(err){
-            alert(err.response.data)
+            alert(err.response.data.error)
         }
     }
 
@@ -104,11 +104,11 @@ const router = useRouter()
                     Authorization:`Bearer ${token}`
                 }
             })
-            alert(res.data);
+            alert(res.data.message);
             await getTests();
         }catch(err){
             console.log(err);
-            alert(err.response.data)
+            alert(err.response.data.error)
         }
     }
     </script>

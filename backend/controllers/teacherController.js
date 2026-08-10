@@ -1,209 +1,219 @@
-const pool = require("../db/db");
+
 const bcrypt = require("bcrypt");
 
+const prisma = require('../prisma/prisma');
 
-const createTeacher = (req,res)=>{
-    const {name,email,password,empid,first_name,last_name,gender,dob,phone, classincharge,classsection,subject,qualification,address_line1,address_line2,city,state}=req.body;
+const createTeacher = async(req,res) =>{
+    const {
+        name,email,password,empId,
+        firstName,lastName,gender,
+        dob,phone,classIncharge,
+        classSection,subject,qualification
+        ,addressLine1,addressLine2,
+        city,state} = req.body;
 
-    if(!email || !password || !name || !empid){
-        return res.status(400).send("please provide mandatory fields");
-    }
-    pool.query(`SELECT * FROM users WHERE email = $1`,[email],(err,result)=>{
-        if(err){
-            return res.status(500).send("Database Error");
+        if(!email || !password || !name || !empId){
+            return res.status(422).json({error:"Please enter the mandatory fields"})
         }
-        if(result.rows.length>0){
-            return res.status(409).send("Email Alraedy Exists");
-        }
-        bcrypt.hash(password,10,(err,hash)=>{
-            if(err){
-                return res.status(400).send("Error Try Again Later")
+
+        const teacherdob = dob === "" ? null : new Date(dob);
+        try{
+
+            const checkExistingUser = await prisma.user.findUnique({where:{email}})
+
+            if(checkExistingUser){
+                return res.status(409).json({error:"Email already exists"})
             }
-            pool.query(`INSERT INTO users(name,email,password,role) VALUES ($1,$2,$3,$4) RETURNING id`,
-                [name,email,hash,"teacher"],
-                (err,result)=>{
-                    if(err){
-                        return res.status(500).send(err.message);
+
+            const hash = await bcrypt.hash(password,10);
+
+            const newUser = await prisma.user.create({
+                data:{
+                    name,
+                    email,
+                    password:hash,
+                    role:"teacher"
+                }
+            })
+
+            const newTeacher = await prisma.teacher.create({
+                data:{
+                    empId,
+                    userId:newUser.id,
+                    firstName,
+                    lastName,
+                    gender,
+                    dob:teacherdob,
+                    phone,
+                    classIncharge,
+                    classSection,
+                    subject,
+                    qualification,
+                    addressLine1,
+                    addressLine2,
+                    city,
+                    state
+
+                }
+            })
+
+            return res.status(201).json({message:"Teacher created successfully"})
+
+        }catch(error){
+            console.log(error);
+            return res.status(500).json({error:"Something went wrong. Please try again later"})
+        }
+}
+
+const getTeacher = async(req,res) =>{
+    try{
+        const teachers = await prisma.teacher.findMany({
+            include:{
+                user:{
+                    select:{
+                        id:true,
+                        name:true,
+                        email:true,
+                        role:true
                     }
-                    pool.query(`INSERT INTO teachers(user_id,empid,first_name,last_name,gender,dob,phone,classincharge,classsection,subject,qualification,address_line1,address_line2,state,city)
-                        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
-                        [result.rows[0].id,empid,first_name,last_name,gender,dob,phone,classincharge,classsection,subject,qualification,address_line1,address_line2,city,state],
-                        (err,result)=>{
-                            if(err){
-                                return res.status(500).send(err.message);
-                            }
-                            return res.status(201).send("Teacher data Inserted Successfully");
-                        }
-
-                    )
-            })
-        })
-    })
-}
-
-const getTeacher = (req,res)=>{
-    pool.query(`SELECT t.id,u.name,u.email,u.role,
-        t.empid,
-        t.first_name,
-        t.last_name,
-        t.gender,
-        t.dob,
-        t.phone,
-        t.classIncharge,
-        t.classsection,
-        t.subject,
-        t.qualification,
-        t.address_line1,
-        t.address_line2,
-        t.state,
-        t.city FROM teachers t JOIN users u ON t.user_id = u.id`,
-        (err,result) => {
-            if(err){
-                return res.status(500).send(err.message);
-            }
-            if(result.rows.length === 0){
-                return res.status(404).send("Teacher Not Found");
-            }
-            else{
-                return res.status(200).send(result.rows)
-            }
-        }
-
-    );       
-
-}
-
-const getSingleTeacher = (req,res) =>{  
-    const teacherId = req.params.id;
-
-    pool.query(`SELECT t.id,
-        u.name,
-        u.email,
-        u.role,
-        t.first_name,
-        t.last_name,
-        t.gender,
-        t.dob,
-        t.phone,
-        t.classIncharge,
-        t.classsection,
-        t.subject,
-        t.qualification,
-        t.address_line1,
-        t.address_line2,
-        t.state,
-        t.city FROM teachers t JOIN users u ON t.user_id = u.id WHERE t.id=$1`,[teacherId],
-        (err,result)=>{
-            if(err){
-                return res.status(500).send(err.message);
-            }
-            if(result.rows.length===0){
-                return res.status(404).send("Teacher Not Found")
-            }
-            else{
-                return res.status(200).send(result.rows[0])
+                }
             }
         })
-}
 
-const updateTeacher = (req,res) =>{
-    const teacherId = req.params.id;
+        return res.status(200).json(teachers);
 
-    const {empid,first_name,last_name,gender,dob,phone,classincharge,classsection,subject,qualification,address_line1,address_line2,state,city} = req.body;
-
-    pool.query(`SELECT * FROM teachers WHERE id=$1`,[teacherId],(err,result)=>{
-        if(err){
-            return  res.status(500).send(err.message);
-        }
-        if(result.rows.length === 0){
-            return res.status(404).send("Teacher not found")
-        }
-        const teacher = result.rows[0]
-
-        const updatedEmpid= empid || teacher.empid;
-        const updatedFirstName =  first_name || teacher.first_name;
-        const updatedLastName = last_name || teacher.last_name;
-        const updatedGender = gender || teacher.gender;
-        const updatedDob = dob || teacher.dob;
-        const updatedPhone = phone || teacher.phone;
-        const updatedClassIncharge = classincharge || teacher.classincharge;
-        const updatedClasssection = classsection || teacher.classsection;
-        const updatedSubject = subject || teacher.subject;
-        const updatedQualification = qualification || teacher.qualification;
-        const updatedAddressLine1 = address_line1 || teacher.address_line1;
-        const updatedAddressLine2 = address_line2 || teacher.address_line2;
-        const updatedCity = city || teacher.city;
-        const updatedState = state || teacher.state;
-
-        const fullName = updatedFirstName + " "+ updatedLastName
-        
-        pool.query(`UPDATE teachers 
-            SET empid=$1,first_name=$2,
-            last_name=$3,gender=$4,dob=$5,
-            phone=$6,classincharge=$7,classsection=$8,
-            subject=$9,qualification=$10,
-            address_line1=$11, address_line2=$12,
-            city=$13,state=$14 WHERE id=$15`,
-        [updatedEmpid,updatedFirstName,updatedLastName,updatedGender,
-        updatedDob,updatedPhone,updatedClassIncharge,updatedClasssection,
-        updatedSubject,updatedQualification,updatedAddressLine1,
-        updatedAddressLine2,updatedCity,updatedState,teacherId],
-        (err,result)=>{
-        if(err){
-            return res.status(500).send(err.message);
-        }
-        else{
-            pool.query(`UPDATE users SET name=$1 WHERE id=$2`,[fullName,teacher.user_id],
-                (err,result)=>{
-                if(err){
-                    return res.status(500).send(err.message);
-                }
-                else{
-                    return res.status(200).send("Teacher Updated Successfully");
-                }
-            })
-        }
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong. Please try again later"})
     }
-    )
-    })
-
 }
 
-const deleteTeacher = (req,res) => {
-    const teacherId = req.params.id;
-
-    pool.query(`SELECT * FROM teachers WHERE id=$1`,[teacherId],
-        (err,result)=>{
-            
-            if(err){
-                return res.status(500).send(err.message);
-            }
-            if(result.rows.length === 0){
-                return res.status(400).send("Teacher Not Found");
-            }
-            const teacher = result.rows[0]
-
-            pool.query('DELETE FROM teachers WHERE id=$1',[teacherId],(err,result) =>{
-                if(err){
-                    return res.status(500).send(err.message);
+const getSingleTeacher = async(req,res) =>{
+    const id = Number(req.params.id);
+    try{
+        const teacher = await prisma.teacher.findUnique({
+            where:{id},
+            include:{
+                user:{
+                    select:{
+                        id:true,
+                        name:true,
+                        email:true,
+                        role:true
+                    }
                 }
-                else{
-                    pool.query(`DELETE FROM users WHERE id=$1`,[teacher.user_id],
-                        (err,result)=>{
-                            if(err){
-                                return res.status(500).send(err.message);
-                            }
-                            else{
-                                return res.status(200).send("Teacher data deleted successfully");
-                            }
-                        }
-                    )
+            }
+        })
+        if(!teacher){
+            return res.status(404).json({error:"Teacher not found"})
+        }
+
+        return res.status(200).json(teacher)
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong. Please try again later"})
+    }
+}
+
+const updateTeacher = async(req,res) =>{
+    const id = Number(req.params.id);
+
+    const {
+        empId,firstName,lastName,
+        gender,dob,phone,classIncharge,
+        classSection,subject,qualification,
+        addressLine1,addressLine2,state,city
+    } = req.body
+
+    try{
+        const existingTeacher = await prisma.teacher.findUnique({where:{id}})
+
+        if(!existingTeacher){
+            return res.status(404).json({error:"Teacher not found"})
+        }
+
+        const updatedEmpId = empId || existingTeacher.empId;
+        const updatedFirstName = firstName || existingTeacher.firstName;
+        const updatedLastName = lastName || existingTeacher.lastName;
+        const updatedGender = gender || existingTeacher.gender;
+        const updatedDob = dob ? new Date(dob) : existingTeacher.dob;
+        const updatedPhone = phone || existingTeacher.phone;
+        const updatedClassIncharge = classIncharge || existingTeacher.classIncharge;
+        const updatedClassSection = classSection || existingTeacher.classSection;
+        const updatedSubject = subject || existingTeacher.subject;
+        const updatedQualification = qualification || existingTeacher.qualification;
+        const updatedAddressLine1 = addressLine1 || existingTeacher.addressLine1;
+        const updatedAddressLine2 = addressLine2 || existingTeacher.addressLine2;
+        const updatedCity = city || existingTeacher.city;
+        const updatedState = state || existingTeacher.state;
+        
+        const updatedFullName = `${updatedFirstName} ${updatedLastName}`
+        await prisma.teacher.update(
+            {
+                where:{id},
+                data:{
+                    empId:updatedEmpId,
+                    firstName:updatedFirstName,
+                    lastName:updatedLastName,
+                    gender:updatedGender,
+                    dob:updatedDob,
+                    phone:updatedPhone,
+                    classIncharge:updatedClassIncharge,
+                    classSection:updatedClassSection,
+                    subject:updatedSubject,
+                    qualification:updatedQualification,
+                    addressLine1:updatedAddressLine1,
+                    addressLine2:updatedAddressLine2,
+                    city:updatedCity,
+                    state:updatedState
+
                 }
             })
 
-        }
-    )
+            await prisma.user.update({
+                where:{id:existingTeacher.userId},
+                data:{
+                    name:updatedFullName
+                }
+            })
+            return res.status(200).json({message:"Teacher data updated successfully"})
+
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong. Please try again later"})
+    }
 }
+
+const deleteTeacher = async(req,res) =>{
+    const id = Number(req.params.id);
+
+    try{
+
+        const existingTeacher = await prisma.teacher.findUnique({
+            where:{id}
+        })
+
+        if(!existingTeacher){
+            return res.status(404).json({error:"Teacher not found."})
+        }
+
+        await prisma.teacher.delete({
+            where:{id}
+        })
+
+        await prisma.user.delete({
+            where:{
+                id:existingTeacher.userId
+            }
+        })
+        return res.status(200).json({message:"Teacher data deleted successfully"})
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong. Please try again later"})
+    }
+}
+
+
  
 
 module.exports ={createTeacher,getTeacher,getSingleTeacher,updateTeacher,deleteTeacher};

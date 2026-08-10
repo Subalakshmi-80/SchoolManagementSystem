@@ -1,109 +1,133 @@
-const pool = require("../db/db");
 
-const createStandard = (req,res)=>{
-const {name} = req.body;
 
-    if(!name){
-        return res.status(400).send("Standard name is required")
+const prisma = require("../prisma/prisma");
+
+const createStandard = async(req,res)=>{
+    const {name}= req.body;
+
+    try{
+if(!name){
+        return res.status(422).json({error:"Please enter the Standard name"})
     }
 
-    pool.query(`SELECT * FROM standards WHERE name=$1`,[name],
-        (err,result)=>{
-            if(err){
-                return res.status(500).send("Database Error");
-            }
-            if(result.rows.length > 0){
-                return res.status(409).send("Standard Already Exists")
-            }
-    pool.query(`INSERT INTO standards(name) VALUES($1)`,[name],
-        (err,result)=>{
-            if(err){
-                return res.status(500).send("Database Error")
-            }
-            return res.status(201).send("Standard created successfully.")
-        }
-    )
+    const existingStandard = await prisma.standard.findUnique({where:{name}})
+
+    if(existingStandard){
+        return res.status(409).json({error:"Standard name already exists."})
     }
-)
 
-}
-
-
-const getStandards = (req,res )=>{
-    pool.query(`SELECT * FROM  standards ORDER BY id ASC`,(err,result)=>{
-        if(err){
-            return res.status(500).send("Database Error");
+    const newStandard = await prisma.standard.create({
+        data:{
+            name
         }
-        return res.status(200).send(result.rows);
-    }
-    )
-}
-
-const getOneStandard = (req,res) =>{
-    const id = req.params.id;
-
-    pool.query(`SELECT * FROM standards WHERE id=$1`,[id],(err,result)=>{
-        if(err){
-            return res.status(500).send("Databse Error")
-        }
-        if(result.rows.length === 0){
-            return res.status(404).send("Standard not found")
-        }
-        
-        return res.status(200).send(result.rows);
-       
     })
+    return res.status(201).json({
+        message:"Standard created successfully",
+        data:newStandard
+    })
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong. Please try again later."})
+    }
+
+    
 }
 
-const updateStandard = (req,res)=>{
+const getStandards = async(req,res)=>{
+    try{
+    const standards = await prisma.standard.findMany({
+        orderBy:{
+            id:"asc"
+        }
+    })
+    return res.status(200).json(standards)
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong. Please try again later."})
+    }
+
+}
+
+
+const getOneStandard = async(req,res)=>{
+    const id = Number(req.params.id);
+
+    try{
+        const standards = await prisma.standard.findUnique({where:{id}})
+
+        if(!standards){
+            return res.status(404).json({error:"Standard not found"})
+        }
+        return res.status(200).json(standards)
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong. Please try again later."})
+    }
+}
+
+const updateStandard = async(req,res)=>{
     const {name} = req.body;
-    const id = req.params.id;
+    const id = Number(req.params.id);
 
-    pool.query(`SELECT * FROM standards WHERE id=$1`,[id],
-        (err,result) =>{
-            if(err){
-                return res.status(500).send("Database Error");
-            }
-            if(result.rows.length === 0){
-                return res.status(404).send("Standard not found")
-            }
-         
-            const standard = result.rows[0];
-            const updatedName = name || standard.name;
-            
-            pool.query(`UPDATE standards SET name=$1 WHERE id=$2`,[updatedName,id],
-                (err,result)=>{
-                    if(err){
-                         return res.status(500).send("Database Error");
-                    }
-                    return res.status(200).send("Standard Updated Successfully")
-                }
-            )
+    try{
+        if(!name){
+            return res.status(422).json({error:"Please enter the standard name"})
         }
-    )
+        const standard = await prisma.standard.findUnique({where:{id}})
 
+        if(!standard){
+            return res.status(404).json({error:"Standard not found."})
+        }
+
+        const checkExistingStandard = await prisma.standard.findFirst({
+            where:{
+                name,
+                id:{
+                    not:id
+                }
+            }
+        })
+
+        if(checkExistingStandard){
+            return res.status(409).json({error:"Standard already exists"})
+        }
+
+        await prisma.standard.update({
+            where:{
+                id
+            },
+            data:{
+                name
+            }
+        })
+        return res.status(200).json({message:"Standard updated successfully"})
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({message:"Something went wrong, Please try again later"})
+    }
 }
 
-const deleteStandard = (req,res) =>{
-    const id = req.params.id;
 
-    pool.query(`SELECT * FROM standards WHERE id =$1`,[id],
-        (err,result)=>{
-            if(err){
-                return res.status(500).send("Database Error")
-            }
-            if(result.rows.length === 0){
-                return res.status(404).send("Standard not found");
-            }
-            const standard = result.rows[0];
+const deleteStandard = async(req,res)=>{
+    const id = Number(req.params.id);
 
-            pool.query(`DELETE FROM standards WHERE id=$1`,[id],(err)=>{
-                if(err){
-                    return res.status(500).send("Database Error");
-                }
-                return res.status(200).send(standard)
-            })
-        }
-    )
+    try{
+      const standard = await prisma.standard.findUnique({where:{id}})
+
+      if(!standard){
+        return res.status(404).json({error:"Standard not found."})
+      }
+
+      await prisma.standard.delete({
+        where:{id}
+      })
+
+      return res.status(200).json({message:"Standard deleted Successfully",data:standard})
+
+
+    }catch(error){
+        return res.status(500).json({error:"Something went wrong. Please try again later"})
+    }
 }
+
 module.exports={createStandard,getStandards,getOneStandard,updateStandard,deleteStandard};

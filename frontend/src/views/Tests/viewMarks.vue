@@ -2,8 +2,9 @@
 <TeacherNavbar>
 
 <div class="container d-flex flex-column justify-content-center align-items-center my-3">
-<h1>View Marks</h1>
-<h2 class="fs-2 text-success fw-bold my-2 text-uppercase">{{ tests.name }} ({{ tests.class_name }})</h2>
+<h1>View Marks</h1>"
+<h2 class="fs-2 text-success fw-bold my-2 text-uppercase" 
+ v-if="tests && tests.class && tests.class.standard">{{ tests.name }} ({{ tests.class.standard.name }}-{{ tests.class.name }})</h2>
 <button @click="router.push('/test/list')" class="btn btn-secondary fw-bold px-4 py-2">Cancel</button>
 
 
@@ -25,11 +26,11 @@
 
 <tbody>
 <tr v-for="mark in marks" :key="mark.id" class="text-center">
-<td class="p-3">{{ mark.regno }}</td>
-<td class="p-3">{{ mark.first_name }}</td>
-<td class="p-3">{{ mark.last_name }}</td>
-<td class="p-3">{{ mark.class_name }}</td>
-<td class="p-3" >{{ mark. std_marks}}</td>
+<td class="p-3">{{ mark.student.regNo }}</td>
+<td class="p-3">{{ mark.student.firstName }}</td>
+<td class="p-3">{{ mark.student.lastName }}</td>
+<td class="p-3">{{ mark.test.class.standard.name }}-{{ mark.test.class.name }}</td>
+<td class="p-3" >{{ mark.StdMarks}}</td>
 
 </tr>
 </tbody>
@@ -83,9 +84,10 @@ import API from "../../services/api.js"
                 }
             })
             marks.value = res.data
+           
             
         }catch(err){
-            console.log(err.response.data)
+            console.log(err.response.data.error)
         }
     }
     onMounted(getMarks)

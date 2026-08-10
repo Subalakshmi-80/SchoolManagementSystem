@@ -1,88 +1,128 @@
-const pool = require('../db/db');
 
-const getPeriods = (req,res) =>{
-    pool.query(`SELECT * FROM periods ORDER BY period_no ASC`,(err,result)=>{
-        if(err){
-            return res.status(500).send("Database Error");
+
+const prisma = require('../prisma/prisma');
+
+const getPeriods = async(req,res)=>{
+    try{
+    const periods = await prisma.period.findMany({
+        orderBy:{
+            periodNo:"asc"
         }
-        if(result.rows.length ===0){
-            return res.status(404).send("Periods Not Found.");
-        }
-        return res.status(200).send(result.rows)
     })
+    if(periods.length === 0){
+        return res.status(404).json({error:"Periods not found."})
+    }
+
+    return res.status(200).json(periods)
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong. please try again later"})
+    }
+
+
 }
 
-
-const createTimetable = (req,res) =>{
+const createTimetable = async(req,res)=>{
     const {class_id,day,period_id,subject_id} = req.body;
 
-    pool.query(`SELECT * FROM timetable WHERE class_id=$1 AND day=$2 AND period_id=$3`,
-        [class_id,day,period_id],(err,result)=>{
-            if(err){
-                return res.status(500).send("Database Error");
+    try{
+        const checkExistingPeriod = await prisma.timetable.findFirst({
+            where:{
+                classId:class_id,
+                day,
+                periodId:period_id
             }
-            if(result.rows.length > 0){
-                return res.status(409).send("Period allocated already for this class.")
-            }
-            pool.query(`INSERT INTO timetable(class_id,day,period_id,subject_id) VALUES($1,$2,$3,$4)`,
-                [class_id,day,period_id,subject_id],
-                (err,result) =>{
-                    if(err){
-                        return res.status(500).send("Database Error")
-                    }
-                    return res.status(201).send("Successfully created.")
-                }
-            )
+        })
+
+        if(checkExistingPeriod){
+            return res.status(409).json({error:"Period allocated already for this class"})
         }
-    )
+
+        await prisma.timetable.create({
+            data:{
+                periodId:period_id,
+                day,
+                classId:class_id,
+                subjectId:subject_id
+            }
+        })
+        return res.status(201).json({message:"Successfully created"})
+
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong. Please try again later."})
+    }
 }
 
-
-const getTimetableByClass = (req,res) =>{
-    const clsId = req.params.id;
+const getTimetableByClass = async(req,res) =>{
+    const classId = Number(req.params.id);
     const {day} = req.query;
 
-    pool.query(`SELECT t.id,
-        t.day,
-        t.class_id,
-        t.period_id,
-        t.subject_id,
-        st.name || '-' || c.name AS class_name,
-        s.subject_name,
-        p.period_no,
-        p.start_time,
-        p.end_time
-        FROM timetable t JOIN classes c ON c.id=t.class_id
-        JOIN standards st ON c.standard_id= st.id
-        JOIN subjects s ON t.subject_id = s.id
-        JOIN periods p ON t.period_id = p.id
-        WHERE class_id=$1 AND t.day = $2
-        ORDER BY t.day, t.period_id ASC`,[clsId,day],
-        (err,result)=>{
-            if(err){
-                return res.status(500).send(err);
-            }
-            return res.status(200).send(result.rows)
-        }
-    )
+    try{
+        const timetable = await prisma.timetable.findMany({
+            where:{
+                classId,
+                day
+            },
+            include:{
+                class:{
+                    include:{
+                        standard:true
+                    }
+                },
+                period:true,
+                subject:true
+            },
+            orderBy:[
+                {day:"asc"},
+                {periodId:"asc"}
+            ]
+        })
+
+        return res.status(200).json(timetable)
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong. Please try again later"})
+    }
 }
 
-const updateTimetable = (req,res) =>{
-    const {class_id,period_id,day,subject_id} = req.body;
 
+const updateTimetable = async(req,res) =>{
+    const {classId,periodId,day,subjectId} = req.body;
 
-            pool.query(`UPDATE timetable SET subject_id=$1 WHERE class_id=$2 AND period_id=$3 AND day=$4`,
-                [subject_id,class_id,period_id,day],(err,result)=>{
-                if(err){
-                    
-                    return res.status(500).send("Database Error")
-                }
-                if(result.rowsCount === 0){
-                     return res.status(404).send("Timetable Not Found");
-                }
-                return res.status(200).send("Updated Successfully")
-            })
+    const subject_id = Number(subjectId)
+
+    try{
+        const existingTimetable = await prisma.timetable.findFirst({
+            where:{
+                classId,
+                periodId,
+                day
+            }
+        })
+
+        if(!existingTimetable){
+            return res.status(404).json({error:"Timetable not found"})
         }
+
+        console.log(existingTimetable)
+        await prisma.timetable.update({
+            where:{
+              id:existingTimetable.id
+            },
+            data:{
+                subjectId:subject_id
+            }
+        })
+
+        return res.status(200).json({message:"Updated successfully"})
+
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong. Please try again later"})
+    }
+}
+
     
 
 module.exports = {getPeriods,createTimetable,getTimetableByClass,updateTimetable}

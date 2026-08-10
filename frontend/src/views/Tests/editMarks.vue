@@ -3,7 +3,8 @@
 
 <div class="container d-flex flex-column justify-content-center align-items-center my-3">
 <h1>Edit Marks</h1>
-<h2 class="fs-2 text-success fw-bold my-2 text-uppercase">{{ tests.name }} ({{ tests.class_name }})</h2>
+<h2 class="fs-2 text-success fw-bold my-2 text-uppercase"
+ v-if="tests && tests.class && tests.class.standard">{{ tests.name }} ({{ tests.class.standard.name }}-{{ tests.class.name }})</h2>
 
 
 
@@ -25,12 +26,12 @@
 
 <tbody>
 <tr v-for="mark in marks" :key="mark.id" class="text-center">
-<td class="p-3">{{ mark.regno }}</td>
-<td class="p-3">{{ mark.first_name }}</td>
-<td class="p-3">{{ mark.last_name }}</td>
-<td class="p-3">{{ mark.class_name }}</td>
+<td class="p-3">{{ mark.student.regNo }}</td>
+<td class="p-3">{{ mark.student.firstName }}</td>
+<td class="p-3">{{ mark.student.lastName }}</td>
+<td class="p-3">{{ mark.test.class.standard.name }}-{{ mark.test.class.name }}</td>
 <td class="p-3" >
-<input type="number" class="form-control" v-model="mark.std_marks"/> 
+<input type="number" class="form-control" v-model="mark.StdMarks"/> 
 </td>
 
 </tr>
@@ -107,18 +108,18 @@
         const token = localStorage.getItem("token");
         
             const updateMark = marks.value.map(mark=>({
-                student_id:mark.student_id,
-                std_marks:mark.std_marks
+                studentId:mark.student.id,
+                StdMarks:mark.StdMarks
             }))
         const res = await API.put(`/api/tests/${testId}/marks`,{updateMark},{
             headers:{
                 Authorization:`Bearer ${token}`
             }
         })
-        alert(res.data);
+        alert(res.data.message);
         router.push(`/test/viewMarks/${testId}`)
     }catch(err){
-        console.log(err)
+        alert(err.response.data.error)
     }
    }
     </script>

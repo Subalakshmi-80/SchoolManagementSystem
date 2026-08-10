@@ -9,12 +9,12 @@
 
             <div class="form-group">
                 <label>Class</label>
-                  <input type="text"  v-model="classes.class_name" required>
+                  <input type="text"  v-model="classes.name" required>
             </div>
 
                             <div class="form-group">
                     <label>Standard</label>
-                    <select v-model="classes.standard_id" required>
+                    <select v-model="classes.standardId" required>
                         <option disabled value="">Select Standard</option>
                         <option v-for="standard in standards" :key="standard.id" :value="standard.id">
                             {{ standard.name }}
@@ -63,9 +63,12 @@ const getStandards = async() =>{
 onMounted(getStandards)
 
 const classes = ref({
-    class_name:"",
-    standard_id:"",
-    standard_name:""
+    name:"",
+    standardId:"",
+    standard:{
+        name:""
+    }
+    
 })
  const clsId = route.params.id
  
@@ -80,6 +83,7 @@ const getClass = async() =>{
         })
         classes.value = res.data
        
+       
     }catch(err){
         console.log("Error fetching data",err)
     }
@@ -91,16 +95,17 @@ const editClass = async() =>{
     try{
         const token = localStorage.getItem("token");
 
-        await API.put(`/api/classes/${clsId}`,classes.value,{
+        const res = await API.put(`/api/classes/${clsId}`,classes.value,{
             headers:{
                 Authorization:`Bearer ${token}`
             }
         })
-        alert("Class Updated Successfully");
+        
+        alert(res.data.message);
         router.push('/class/list')
     }catch(err){
-        console.log(err);
-        alert("update failed.")
+        console.log(err.response)
+        alert(err.response.data.error)
     }
 }
 </script>

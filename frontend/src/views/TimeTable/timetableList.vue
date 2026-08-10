@@ -10,7 +10,7 @@
   <div class="d-flex  justify-content-center align-items-center gap-4 mt-5 ">
     <select v-model="getTimetableByClass.class_id" class="form-select w-25 ">
         <option value="" disabled>Select Class</option>
-        <option  v-for="cls in classes" :key="cls.id" :value="cls.id">{{ cls.standard_name }} - {{ cls.class_name }}</option>
+        <option  v-for="cls in classes" :key="cls.id" :value="cls.id">{{ cls.standard.name }} - {{ cls.name }}</option>
         </select>
 
         <select class="form-select w-25 " v-model="getTimetableByClass.day">
@@ -39,9 +39,9 @@
         <tbody>
             
             <tr v-for="tt in timetable" :key="tt.id">
-            <td>{{ tt.period_no }}</td>
-            <td>{{ tt.subject_name }}</td>
-             <td>{{ tt.start_time.slice(0,5) }}-{{ tt.end_time.slice(0,5) }}</td>
+            <td>{{ tt.period.periodNo }}</td>
+            <td>{{ tt.subject.subjectName }}</td>
+             <td>{{ tt.period.startTime.slice(11,16) }}-{{ tt.period.endTime.slice(11,16) }}</td>
             </tr>
         </tbody>
         </table>
@@ -106,9 +106,10 @@ import EditTimetable from './editTimetable.vue';
             })
             timetable.value=res.data;
             searched.value=true
+  
      
         }catch(err){
-            alert(err.response.data)
+            alert(err.response.data.error)
         }
     }
 

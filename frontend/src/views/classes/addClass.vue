@@ -74,17 +74,17 @@ const saveClass = async() =>{
     try{
         const token = localStorage.getItem("token");
 
-        await API.post("/api/classes",classes.value,{
+        const res = await API.post("/api/classes",classes.value,{
             headers:{
                 Authorization:`Bearer ${token}`
             }
         })
-        alert("Class Created Successfully");
+        alert(res.data.message);
         router.push('/class/list')
     }catch(err){
-          console.log("Error fetching data",err)
+          
 
-        alert(err.response.data)
+        alert(err.response.data.error)
     }
 }
 </script>

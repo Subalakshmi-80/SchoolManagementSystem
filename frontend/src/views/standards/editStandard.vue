@@ -47,7 +47,7 @@ const getStandard = async() =>{
             Authorization:`Bearer ${token}`
         }
     })
-    standard.value = res.data[0];
+    standard.value = res.data;
    
     }catch(err){
         console.log(err)
@@ -61,17 +61,17 @@ const updateStandard = async() =>{
     try{
         const token = localStorage.getItem("token");
 
-        await API.put(`/api/standards/${id}`,standard.value,{
+       const res = await API.put(`/api/standards/${id}`,standard.value,{
             headers:{
                 Authorization:`Bearer ${token}`
             }
         })
-        alert("Standard updated Successfully");
+        alert(res.data.message);
         router.push('/standard/list')
 
     }catch(err){
  console.log("Error updating data",err);
-        alert("Update Failed")
+        alert(err.response.data.error)
     }
 }
 </script>

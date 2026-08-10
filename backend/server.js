@@ -10,18 +10,18 @@ const cors = require("cors");
 const runMigration = require("./migrations/runMigration");
 app.use(cors());
 
-// database connection
+// // database connection
 
-async function connectDB(){
-      try{
-        await pool.query("SELECT NOW()");
-        console.log("Database connected successfully");
-      }catch(err){
-        console.log("Database connection Failed",err.stack);
-    }
-}
+// async function connectDB(){
+//       try{
+//         await pool.query("SELECT NOW()");
+//         console.log("Database connected successfully");
+//       }catch(err){
+//         console.log("Database connection Failed",err.stack);
+//     }
+// }
 
-connectDB();
+// connectDB();
 
 app.use(express.json());
 
@@ -39,19 +39,19 @@ app.use("/api",require("./routes/testRoutes")) //test and Marks routes
 app.use("/api",require("./routes/timetableRoutes"))  //TimeTable Routes
 
 
-async function startServer() {
-  try{
-    await runMigration();
+// async function startServer() {
+//   try{
+//     await runMigration();
 
     app.listen(PORT,()=>{
       console.log(`Server is running on port ${PORT}`)
     })
-  }catch(err){
+//   }catch(err){
 
-      console.error("Application startup failed.");
-      console.error(err)
-  }
+//       console.error("Application startup failed.");
+//       console.error(err)
+//   }
   
-}
+// }
 
-startServer()
+// startServer()

@@ -1,0 +1,172 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+  email String @db.VarChar(100) @unique
+  password String @db.VarChar(100)
+  role String @db.VarChar(20)
+
+  student Student?
+  teacher Teacher?
+  @@map("users")
+}
+
+model Standard{
+  id Int @id @default(autoincrement())
+  name String @unique @db.VarChar(50)
+
+  classes Class[]
+  @@map("standards")
+
+}
+
+model Class{
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(50)
+  standardId Int @map("standard_id")
+
+  tests Test[]
+  students Student[]
+  timetable Timetable[]
+
+  standard Standard @relation(fields: [standardId],references: [id])
+  @@map("classes")
+}
+
+model Subject{
+  id Int @id @default(autoincrement())
+  subjectName String @db.VarChar(50) @unique @map("subject_name")
+  
+  tests Test[]
+
+  timetable Timetable[]
+  
+  @@map("subjects")
+}
+
+model Teacher{
+  id Int @id @default(autoincrement())
+  userId Int @unique @map("user_id")
+  empId String @unique @db.VarChar(20) @map("empid")
+  firstName String? @db.VarChar(20) @map("first_name")
+  lastName String? @db.VarChar(20) @map("last_name")
+  gender String? @db.VarChar(10)
+  dob DateTime? @db.Date
+  phone String? @db.VarChar(20)
+  classIncharge String? @db.VarChar(20) @map("classincharge")
+  classSection String? @db.VarChar(20) @map("classsection")
+  subject String? @db.VarChar(20)
+  qualification String? @db.VarChar(20)
+  addressLine1 String? @db.VarChar(50) @map("address_line1")
+  addressLine2 String? @db.VarChar(50) @map("address_line2")
+  city String? @db.VarChar(50) 
+  state String? @db.VarChar(50) 
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId],references: [id])
+
+  @@map("teachers")
+}
+
+
+model Student{
+  id Int @id @default(autoincrement())
+  userId Int @unique @map("user_id")
+  regNo String @unique @db.VarChar(50) @map("regno")
+  firstName String @db.VarChar(100) @map("first_name")
+  lastName String? @db.VarChar(100) @map("last_name")
+  gender String? @db.VarChar(20)
+  dob DateTime? @db.Date
+  phone String? @db.VarChar(15)
+  classId Int @map("class_id")
+  addressLine1 String? @db.VarChar(255) @map("address_line1")
+  addressLine2 String? @db.VarChar(255) @map("address_line2")
+  city String? @db.VarChar(100) 
+  state String? @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  marks Mark[]
+
+  user User @relation(fields: [userId] ,references: [id])
+  class Class @relation(fields: [classId],references: [id])
+
+  @@map("students")
+}
+
+model Test{
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+  classId Int @map("class_id")
+  subjectId Int @map("subject_id")
+  testDate DateTime @db.Date @map("test_date")
+
+  marks Mark[]
+
+  class Class @relation(fields: [classId] ,references: [id])
+  subject Subject @relation(fields: [subjectId],references: [id])
+
+  @@map("tests")
+}
+
+model Mark{
+  id Int @id @default(autoincrement())
+  testId Int @map("test_id")
+  studentId Int @map("student_id")
+  StdMarks Int @map("std_marks")
+  createdAt DateTime @db.Date @default(now()) @map("created_at")
+
+  test Test @relation(fields: [testId], references: [id])
+  student Student @relation(fields: [studentId], references: [id])
+
+  @@map("marks")
+}
+
+model Period{
+  id Int @id @default(autoincrement())
+  periodNo Int @map("period_no")
+  startTime DateTime @db.Time @map("start_time")
+  endTime DateTime @db.Time @map("end_time")
+
+  timetable Timetable[]
+  @@map("periods")
+}
+
+model Timetable{
+  id Int @id @default(autoincrement())
+  classId Int @map("class_id")
+  day String @db.VarChar(20)
+  periodId Int @map("period_id")
+  subjectId Int @map("subject_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  class Class @relation(fields: [classId],references: [id])
+  period Period @relation(fields: [periodId],references: [id])
+  subject Subject @relation(fields: [subjectId],references: [id])
+  @@map("timetable")
+}
+
+model PasswordReset{
+id Int @id @default(autoincrement())
+email String @db.VarChar(200)
+otp String @db.VarChar(6)
+createdAt DateTime @default(now()) @map("created_at")
+expiresAt DateTime  @map("expires_at")
+resendAvailableAt DateTime? @map("resend_available_at")
+
+@@map("password_reset")
+}

@@ -92,10 +92,10 @@ const resetPassword = async() =>{
             email:email,
             password:data.value.password
         })
-        alert(res.data);
+        alert(res.data.message);
         router.push("/")
     }catch(err){
-        alert(err.response.data)
+        alert(err.response.data.error)
     }
 
 }

@@ -2,7 +2,9 @@
 <TeacherNavbar>
 <div class="container d-flex flex-column justify-content-center align-items-center my-3">
 <h1>Add Marks</h1>
-<h2 class="fs-2 text-success fw-bold my-2 text-uppercase">{{ tests.name }} ({{ tests.class_name }})</h2>
+<h2 class="fs-2 text-success fw-bold my-2 text-uppercase"
+ v-if="tests && tests.class && tests.class.standard">
+{{ tests.name }} ({{tests.class.standard.name}}-{{ tests.class.name }})</h2>
 
 <button class="btn btn-outline-secondary fw-bold px-3" @click="router.push('/test/list')">Back</button>
 <p  class="text-danger p-4 fw-bold fs-4 " v-if="students.length === 0">No Students Found</p>
@@ -23,10 +25,10 @@
 
 <tbody>
 <tr v-for="student in students" :key="student.id" class="text-center">
-<td class="p-3">{{ student.regno }}</td>
-<td class="p-3">{{ student.first_name }}</td>
-<td class="p-3">{{ student.last_name }}</td>
-<td class="p-3">{{ student.class_name }}</td>
+<td class="p-3">{{ student.regNo }}</td>
+<td class="p-3">{{ student.firstName }}</td>
+<td class="p-3">{{ student.lastName }}</td>
+<td class="p-3">{{student.class.standard.name}}-{{ student.class.name }}</td>
 <td class="p-3  d-flex justify-content-center align-items-center">
 <input type="number" v-model="student.mark" required class="form-control w-50">
 </td>
@@ -67,6 +69,27 @@
     const router =useRouter();
     const testId   = route.params.id;
 
+    const tests = ref({})
+    const getTest=async()=>{
+        try{
+            const token = localStorage.getItem("token");
+
+            const res= await API.get(`/api/tests/${testId}`,{
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            })
+            
+            tests.value = res.data;
+         
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+
+    onMounted(getTest)
+
     const students=ref([])
 
     const getStudents = async() =>{
@@ -79,6 +102,7 @@
                 }
             })
             students.value= res.data;
+ 
          
         }catch(err){
             console.log(err)
@@ -102,32 +126,16 @@
                 Authorization:`Bearer ${token}`
             }
         })
-        alert(res.data);
+        console.log(res.data.message)
+        alert(res.data.message);
         router.push('/test/list')
         }catch(err){
           
-            alert(err.response.data);
+            alert(err.response.data.error);
              router.push('/test/list')
            
         }
     }
 
-    const tests = ref({})
-    const getTest=async()=>{
-        try{
-            const token = localStorage.getItem("token");
 
-            const res= await API.get(`/api/tests/${testId}`,{
-                headers:{
-                    Authorization:`Bearer ${token}`
-                }
-            })
-            tests.value = res.data
-        }catch(err){
-            console.log(err)
-        }
-    }
-
-
-    onMounted(getTest)
     </script>

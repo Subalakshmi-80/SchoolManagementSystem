@@ -23,7 +23,7 @@
     </thead>
     <tbody>
     <tr v-for="subject in subjects" :key="subject.id" class="text-center  fs-5">
-    <td class="p-3 text-dark">{{ subject.subject_name }}</td>
+    <td class="p-3 text-dark">{{ subject.subjectName }}</td>
     <td class="p-3">
     <div class="d-flex justify-content-center align-items-center gap-2">
     <button class="btn btn-secondary px-4  py-2 fw-bold" @click="router.push(`/subject/edit/${subject.id}`)">Edit</button>
@@ -62,10 +62,12 @@
                 Authorization:`Bearer ${token}`
             }
         })
+        
         subjects.value = res.data;
        
+       
     }catch(err){
-        console.log(err.response.data)
+        console.log(err.response.data.error)
     }
     }
 
@@ -83,12 +85,13 @@
                     Authorization:`Bearer ${token}`
                 }
             })
-            alert(`${res.data.subject.subject_name} ${res.data.msg}`);
-            
+      
+    alert(`${res.data.data.subjectName} ${res.data.message}`)       
             await getSubjects()
 
         }catch(err){
-            alert(err.response.data)
+           
+            alert(err.response.data.error)
         }
     }
     </script>

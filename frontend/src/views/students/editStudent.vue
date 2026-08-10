@@ -8,18 +8,18 @@
         <form @submit.prevent="updateStudent()">
             <div class="form-group">
  <label>Reg Number</label>
-            <input type="text" v-model="student.regno" required>
+            <input type="text" v-model="student.regNo" required>
             </div>
 
 
             <div class="form-group">
                 <label>First Name</label>
-                <input type="text" v-model="student.first_name"/>
+                <input type="text" v-model="student.firstName"/>
             </div>
            
             <div class="form-group">
                 <label>Last Name</label>
-                <input type="text" v-model="student.last_name"/>
+                <input type="text" v-model="student.lastName"/>
             </div>
 
             <div class="form-group">
@@ -45,9 +45,9 @@
 
             <div class="form-group">
                 <label >Class</label>
-                <select v-model="student.class_id">
+                <select v-model="student.classId">
                 <option disabled value="">Select Class</option>
-                <option v-for="cls in classes" :key="cls.id" :value="cls.id">{{ cls.standard_name }} - {{ cls.class_name }}</option>
+                <option v-for="cls in classes" :key="cls.id" :value="cls.id">{{ cls.standard.name }} - {{ cls.name }}</option>
                 </select>
             </div>
 
@@ -58,12 +58,12 @@
 
             <div class="form-group">
                 <label>Address Line1</label>
-                <input type="text" v-model="student.address_line1"/>
+                <input type="text" v-model="student.addressLine1"/>
             </div>
 
              <div class="form-group">
                 <label>Address Line2</label>
-                <input type="text" v-model="student.address_line2"/>
+                <input type="text" v-model="student.addressLine2"/>
             </div>
 
             <div class="form-group">
@@ -101,15 +101,15 @@ const stdId = route.params.id;
 
 
 const student = ref({
-    regno:"",
-    first_name:"",
-    last_name:"",
+    regNo:"",
+    firstName:"",
+    lastName:"",
     gender:"",
     dob:"",
-    class_id:"",
+    classId:"",
     phone:"",
-    address_line1:"",
-    address_line2:"",
+    addressLine1:"",
+    addressLine2:"",
     city:"",
     state:""
 });
@@ -160,17 +160,17 @@ onMounted(getStudent);
 const updateStudent =async ()=>{
     try{
         const token = localStorage.getItem("token");
-         await API.put(`/api/students/${stdId}`,student.value,{
+         const res = await API.put(`/api/students/${stdId}`,student.value,{
             headers:{
                 Authorization:`Bearer ${token}`
             }
         })
-        alert("Student data Updated successfully!");
+        alert(res.data.message);
         router.push('/student/list')
         
     }catch(err){
-        console.log("Error updating data",err);
-        alert("Update Failed")
+     
+        alert(err.response.data.error)
     }
 }
 </script>

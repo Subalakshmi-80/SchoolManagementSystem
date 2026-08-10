@@ -61,7 +61,7 @@ try{
     })
   standards.value=res.data;
 }catch(err){
-console.log("Error Fetching Standards",err);
+console.log(err.response.data.error);
 }
 }
 onMounted(getStandards)
@@ -80,11 +80,11 @@ if(!confirmDelete){
             }
         })
       
-        alert(`${res.data.name} deleted successfully`);
+        alert(`${res.data.data.name} ${res.data.message}`);
         await getStandards()
     }
     catch(err){
-        console.log("Error deleting data",err)
+        alert(err.response.data.error)
     }
 }
 

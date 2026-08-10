@@ -22,12 +22,12 @@
 
                 <tbody>
                 <tr v-for="tt in timetable" :key="tt.id">
-                <td>{{ tt.period_no }}</td>
-                <td>{{ tt.start_time.slice(0,5)}}-{{ tt.end_time.slice(0,5) }}</td>
+                <td>{{ tt.period.periodNo }}</td>
+                <td>{{ tt.period.startTime.slice(11,16)}}-{{ tt.period.endTime.slice(11,16) }}</td>
                 <td>
-                <select v-model="tt.subject_id">
+                <select v-model="tt.subjectId">
                
-                <option v-for="subject in subjects" :key="subject.id" :value="subject.id">{{ subject.subject_name }}</option>
+                <option v-for="subject in subjects" :key="subject.id" :value="subject.id">{{ subject.subjectName }}</option>
                 </select>
                 </td>
 
@@ -73,7 +73,8 @@
                         Authorization:`Bearer ${token}`
                     }
                 })
-                timetable.value=res.data
+                timetable.value=res.data;
+                console.log(timetable.value)
                 
             
             }catch(err){
@@ -106,25 +107,28 @@
         const updateTimetable = async()=>{
             try{
                 const token = localStorage.getItem("token");
-                let updated= 0
+                let updated= 0;
+                let response = "";
+
                 for(const tt of timetable.value){
                     const res = await API.put('/api/timetable',{
-                            class_id: tt.class_id,
-                            period_id: tt.period_id,
+                            classId: tt.classId,
+                            periodId: tt.periodId,
                             day: tt.day,
-                            subject_id: tt.subject_id
+                            subjectId: tt.subjectId
                     },
                     {headers:{
                         Authorization:`Bearer ${token}`
                     }})
                     updated+=1
+                    response = res.data.message
                 }
 if(updated === timetable.value.length){
-    alert("Updated Successfully");
+    alert(response);
     router.push('/timetable/list')
 }
             }catch(err){
-                alert(err.response.data)
+                alert(err.response.data.error)
             }
         }
     </script>

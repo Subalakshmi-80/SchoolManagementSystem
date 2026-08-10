@@ -1,116 +1,146 @@
-const pool = require("../db/db")
 
-const createSubject =(req,res) =>{
+const prisma = require('../prisma/prisma')
+const createSubject = async(req,res)=>{
     const {subject_name} = req.body;
-    pool.query(`SELECT * FROM subjects WHERE subject_name=$1`,[subject_name],
-        (err,result) =>{
-            if(err){
-                return res.status(500).send("Database Error")
+
+    try{
+        if(!subject_name){
+            return res.status(422).json({error:"Please enter the Subject name "})
+        }
+        const existingSubject = await prisma.subject.findUnique({where:{subjectName:subject_name}})
+
+        if(existingSubject){
+            return res.status(409).json({error:"Subject name already exists"})
+        }
+
+        
+        const newSubject = await prisma.subject.create({
+            data:{
+                subjectName:subject_name
             }
-            if(result.rows.length > 0){
-                return res.status(409).send("Subject already Exists")
-            }
-            pool.query(`INSERT INTO subjects(subject_name) VALUES($1)`,[subject_name],
-                (err,result)=>{
-                if(err){
-                    return res.status(500).send("Database Error")
-                }
-                return res.status(201).send("Subject created successfully.")
+        })
+        return res.status(201).json(
+            {
+                message:"Subject Created Successfully.",
+                data:newSubject
             })
-        }
-    )
-}
-
-const getSubjects = (req,res) =>{
-    pool.query(`SELECT * FROM subjects ORDER BY id ASC`,(err,result)=>{
-        if(err){
-            return res.status(500).send("Database Error")
-        }
-        // if(result.rows.length === 0){
-        //     return res.status(404).send("Subject not found.");
-        // }
-     
-        return res.status(200).send(result.rows)
+    }catch(error){
+           console.log(error)
+        return res.status(500).json({
+        error:"Something went wrong. Please try again later."
     })
+    }
+  
 }
-const getOneSubject = (req,res) =>{
-    const id = req.params.id;
 
-    pool.query(`SELECT * FROM subjects WHERE id=$1`,[id],(err,result)=>{
-        if(err){
-            return res.status(500).send("Database Error");
+const getSubjects = async(req,res)=>{
+    try{
+    const subjects = await prisma.subject.findMany({
+        orderBy:{
+            id:"asc"
         }
-        if(result.rows.length === 0){
-            return res.status(404).send("Subject not found.");
-        }
-        return res.status(200).send(result.rows[0])
     })
+    return res.status(200).json(subjects)
+    }catch(error){
+          console.log(error)
+        return res.status(500).json({
+        error:"Something went wrong. Please try again later."
+    })
+    }
+
 }
 
+const getOneSubject = async(req,res)=>{
+    const id = Number(req.params.id);
 
+    try{
+    const subjects = await prisma.subject.findUnique({
+        where:{
+            id:id
+        }
+    })
+    if(!subjects){
+        return res.status(404).json({error:"Subject not found."})
+    }
+    return res.status(200).json(subjects)
+    }catch(error){
+          console.log(error)
+        return res.status(500).json({
+        error:"Something went wrong. Please try again later."
+    })
+    }
 
-const updateSubject = (req,res) =>{
+}
+
+const updateSubject = async(req,res)=>{
     const {subject_name} = req.body;
 
-    const id = req.params.id;
+    const id = Number(req.params.id);
 
-    pool.query(`SELECT * FROM subjects WHERE id=$1`,[id],
-        (err,result)=>{
-           if(err){
-             return res.status(500).send("Database Error")
-           }
-           if(result.rows.length === 0){
-            return res.status(404).send("Subject not found.")
-           }
-           const subject = result.rows[0];
+    try{
+        if(!subject_name){
+            return res.status(422).json({error:"Please enter the subject name"})
+        }
+        const subject = await prisma.subject.findUnique({where:{id}})
 
-           const updatedSubjectName = subject_name || subject.subject_name;
-
-           pool.query(`SELECT * FROM subjects WHERE subject_name=$1 AND id!=$2`,
-            [updatedSubjectName,id],
-            (err,result)=>{
-                if(err){
-                    return res.status(500).send("Database Error");
+        if(!subject){
+            return res.status(404).json({error:"Subject not found."})
+        }
+        const checkExistingSubject = await prisma.subject.findFirst({
+            where:{
+                subjectName:subject_name,
+                id:{
+                    not:id
                 }
-                if(result.rows.length > 0){
-                    return res.status(409).send("Subject already Exists.")
-                }
-
-                pool.query(`UPDATE subjects SET subject_name=$1 WHERE id=$2`,[updatedSubjectName,id],
-                    (err,result)=>{
-                        if(err){
-                            return res.status(500).send("Database Error")
-                        }
-                        return res.status(200).send("Subject Updated Successfully.")
-                    }
-                )
             }
-           )
+        })
+
+        if(checkExistingSubject){
+            return res.status(409).json({error:"Subject already exists."})
         }
-    )
 
+        await prisma.subject.update({
+            where:{
+                id:id
+            },
+            data:{
+                subjectName:subject_name
+            }
+        })
 
-}
-
-
-const deleteSubject = (req,res) =>{
-    const id = req.params.id;
-pool.query(`SELECT * FROM subjects WHERE id=$1`,[id],(err,result)=>{
-    if(err){
-        return res.status(500).send("Database Error");
-    }
-    if(result.rows.length === 0){
-        return res.status(404).send("Subject Not Found.")
-    }
-     const subject = result.rows[0]
-     pool.query(`DELETE FROM subjects WHERE id=$1`,[id],(err)=>{
-        if(err){
-            return res.status(500).send("Database Error")
-        }
-       
-        return res.status(200).send({subject,msg:"Subject deleted Successfully."})
+        return res.status(200).json({message:"Subject updated successfully."})
+    }catch(error){
+        console.log(error)
+        return res.status(500).json({
+        error:"Something went wrong. Please try again later."
     })
-})
-   
+    }
 }
+
+
+
+const deleteSubject = async(req,res)=>{
+    const id = Number(req.params.id);
+
+    try{
+   const subjects = await prisma.subject.findUnique({where:{id}})
+
+    if(!subjects){
+        return res.status(404).json({error:"Subject not found."})
+    }
+    await prisma.subject.delete({
+        where:{
+            id
+        }
+    })
+    return res.status(200).json({message:"Subject deleted Successfully.",data:subjects})
+    }catch(error){
+        console.log(error)
+        return res.status(500).json({
+        error:"Something went wrong. Please try again later."
+    })
+    }
+ 
+}
+
 module.exports = {createSubject,getSubjects,getOneSubject,updateSubject,deleteSubject}

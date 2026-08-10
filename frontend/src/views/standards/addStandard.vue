@@ -36,18 +36,18 @@ const saveStandard = async() =>{
     try{
         const token = localStorage.getItem("token");
 
-        await API.post("/api/standards",standard.value,{
+        const res = await API.post("/api/standards",standard.value,{
             headers:{
                 Authorization:`Bearer ${token}`
             }
            
         })
-         alert("Standard Created Successfully");
+         alert(res.data.message);
          router.push('/standard/list')
     }catch(err){
-  console.log("Error fetching data",err)
+  
 
-        alert(err.response.data)
+        alert(err.response.data.error)
     }
 }
 </script>

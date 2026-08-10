@@ -46,7 +46,7 @@
                 <label >Class <span class="text-danger">*</span></label>
                 <select v-model="student.class_id" required>
                 <option disabled value="">Select Class</option>
-                <option v-for="cls in classes" :key="cls.id" :value="cls.id">{{cls.standard_name}}-{{ cls.class_name }}</option>
+                <option v-for="cls in classes" :key="cls.id" :value="cls.id">{{cls.standard.name}}-{{ cls.name }}</option>
                 </select>
             </div>
 
@@ -164,14 +164,14 @@ const saveStudent = async() =>{
             }
         )
         
-        alert("Student Added Successfully");
+        alert(res.data.message);
         router.push("/student/list")
 
     }
     catch(err){
         console.log("Error fetching data",err)
 
-        alert(err.response.data)
+        alert(err.response.data.error   )
     }
 }
  

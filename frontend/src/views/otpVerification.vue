@@ -73,7 +73,7 @@ const verifyOTP = async() =>{
             email:email,
             otp:data.value.otp
            })
-    alert(res.data);
+    alert(res.data.message);
     router.push({
         path:'/reset-password',
         query:{
@@ -82,8 +82,8 @@ const verifyOTP = async() =>{
     })
     }
     catch(err){
-       alert(err.response.data)
-        console.log(err)
+       alert(err.response.data.error)
+
     }
  
 }
@@ -94,10 +94,10 @@ const resendOTP = async() =>{
        const res= await API.post("/api/resendOTP",{
             email:email
         })
-          alert(res.data);
+          alert(res.data.message);
     }
     catch(err){
-        alert(err.response.data)
+        alert(err.response.data.error)
     }
 }
 </script>

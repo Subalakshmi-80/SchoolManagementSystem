@@ -13,23 +13,23 @@
 
 <div class="m-3">
 <label class="fs-5 mb-2 fw-bold">Class</label>
-<select class="form-select" v-model="test.class_id">
+<select class="form-select" v-model="test.classId">
 <option disabled value="">Select class</option>
-<option v-for="cls in classes" :key="cls.id" :value="cls.id">{{cls.standard_name}} - {{ cls.class_name }}</option>
+<option v-for="cls in classes" :key="cls.id" :value="cls.id">{{cls.standard.name}} - {{ cls.name }}</option>
 </select>
 </div>
 
 <div class="m-3">
 <label class="fs-5 mb-2 fw-bold">Subject</label>
-<select  class="form-select" v-model="test.subject_id">
+<select  class="form-select" v-model="test.subjectId">
  <option disabled value="">Select Subject</option>
-<option  v-for="subject in subjects" :key="subject.id" :value="subject.id" >{{ subject.subject_name }}</option>
+<option  v-for="subject in subjects" :key="subject.id" :value="subject.id" >{{ subject.subjectName }}</option>
 </select>
 </div>
 
 <div class="m-3">
 <label class="fs-5 mb-2 fw-bold">Date</label>
-<input class="form-control" type="date" v-model="test.test_date" >
+<input class="form-control" type="date" v-model="test.testDate" >
 </div>
 
 <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
@@ -100,9 +100,9 @@ onMounted(getClass);
 
 const test = ref({
     name:"",
-    class_id:"",
-    standard_id:"",
-    test_date:""
+    classId:"",
+    standardId:"",
+    testDate:""
 })
 
 const getTest = async() =>{
@@ -118,7 +118,7 @@ const getTest = async() =>{
     )
    
     test.value=res.data
-    test.value.test_date = test.value.test_date.split("T")[0]
+    test.value.testDate = test.value.testDate.split("T")[0]
  }catch(err){
     console.log(err)
  }
@@ -134,10 +134,10 @@ const updateTest = async()=>{
                 Authorization:`Bearer ${token}`
             }
         })
-        alert(res.data);
+        alert(res.data.message);
         router.push('/test/list')
     }catch(err){
-        alert(err.response.data)
+        alert(err.response.data.error)
     }
 }
 </script>
