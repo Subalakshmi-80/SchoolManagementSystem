@@ -27,7 +27,9 @@ const createTeacher = async(req,res) =>{
 
             const hash = await bcrypt.hash(password,10);
 
-            const newUser = await prisma.user.create({
+            await prisma.$transaction(async(tx)=>{
+
+            const newUser = await tx.user.create({
                 data:{
                     name,
                     email,
@@ -35,8 +37,7 @@ const createTeacher = async(req,res) =>{
                     role:"teacher"
                 }
             })
-
-            const newTeacher = await prisma.teacher.create({
+            const newTeacher = await tx.teacher.create({
                 data:{
                     empId,
                     userId:newUser.id,
@@ -56,6 +57,11 @@ const createTeacher = async(req,res) =>{
 
                 }
             })
+
+            })
+
+
+
 
             return res.status(201).json({message:"Teacher created successfully"})
 
@@ -147,8 +153,11 @@ const updateTeacher = async(req,res) =>{
         const updatedCity = city || existingTeacher.city;
         const updatedState = state || existingTeacher.state;
         
-        const updatedFullName = `${updatedFirstName} ${updatedLastName}`
-        await prisma.teacher.update(
+        const updatedFullName = `${updatedFirstName} ${updatedLastName}`;
+
+        await prisma.$transaction(async(tx)=>{
+ 
+        await tx.teacher.update(
             {
                 where:{id},
                 data:{
@@ -170,12 +179,16 @@ const updateTeacher = async(req,res) =>{
                 }
             })
 
-            await prisma.user.update({
+
+            await tx.user.update({
                 where:{id:existingTeacher.userId},
                 data:{
                     name:updatedFullName
                 }
             })
+        })
+
+
             return res.status(200).json({message:"Teacher data updated successfully"})
 
     }catch(error){
@@ -197,15 +210,19 @@ const deleteTeacher = async(req,res) =>{
             return res.status(404).json({error:"Teacher not found."})
         }
 
-        await prisma.teacher.delete({
-            where:{id}
+        await prisma.$transaction(async(tx)=>{
+                await tx.teacher.delete({
+                where:{id}
+            })
+
+            await tx.user.delete({
+                where:{
+                    id:existingTeacher.userId
+                }
+            })
         })
 
-        await prisma.user.delete({
-            where:{
-                id:existingTeacher.userId
-            }
-        })
+
         return res.status(200).json({message:"Teacher data deleted successfully"})
     }catch(error){
         console.log(error);

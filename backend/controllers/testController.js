@@ -165,11 +165,11 @@ const deleteTest = async(req,res)=>{
         if(!existingTest){
             return res.status(404).json({error:"Test not found"})
         }
-        await prisma.mark.deleteMany({
-            where:{
-                testId:id
-            }
-        })
+        // await prisma.mark.deleteMany({
+        //     where:{
+        //         testId:id
+        //     }
+        // })
 
         const test = await prisma.test.delete({
             where:{

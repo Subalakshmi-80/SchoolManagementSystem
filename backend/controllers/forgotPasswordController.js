@@ -95,6 +95,12 @@ const verifyOTP = async(req,res) =>{
 const resetPassword = async(req,res) =>{
     const {email,password} = req.body;
 
+    if (!email || !password) {
+    return res.status(400).json({
+        error: "Email and password are required"
+    })
+}
+
     try{
         const user = await prisma.user.findUnique({where:{email}})
 
@@ -104,15 +110,18 @@ const resetPassword = async(req,res) =>{
 
         const hash = await bcrypt.hash(password,10);
 
-        await prisma.user.update({
+        await prisma.$transaction(async (tx)=>{
+
+        await tx.user.update({
             where:{email},
             data:{
                 password:hash
             }
         })
 
-        await prisma.passwordReset.deleteMany({
+        await tx.passwordReset.deleteMany({
             where:{email}
+        })
         })
 
         return res.status(200).json({message:"Password updated successfully"})

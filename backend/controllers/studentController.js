@@ -28,7 +28,8 @@
 
         const hash = await bcrypt.hash(password,10)
 
-        const newUser = await prisma.user.create({
+        await prisma.$transaction(async (tx)=>{
+        const newUser = await tx.user.create({
             data:{
                 name,
                 email,
@@ -37,7 +38,9 @@
             }
         })
 
-        const newStudent = await prisma.student.create({
+        
+
+        const newStudent = await tx.student.create({
             data:{
                 userId:newUser.id,
                 regNo:regno,
@@ -52,6 +55,8 @@
                 city,
                 state
             }
+        })
+
         })
 
 
@@ -159,9 +164,12 @@
             const updatedCity = city || existingStudent.city;
             const updatedState = state || existingStudent.state;
 
-            const updatedFullName = `${updatedFirstName} ${updatedLastName}`
+            const updatedFullName = `${updatedFirstName} ${updatedLastName}`;
 
-            await prisma.student.update({
+
+            await prisma.$transaction(async (tx)=>{
+
+            await tx.student.update({
                 where:{id},
                 data:{
                     regNo:updatedRegNo,
@@ -178,13 +186,17 @@
                 }
             })
 
-            await prisma.user.update({
+
+            await tx.user.update({
                 where:{
                     id:existingStudent.userId
                 },data:{
                     name:updatedFullName
                 }
             })
+            })
+
+
             return res.status(200).json({message:"Student updated successfully"})
         }
         catch(error){
@@ -205,23 +217,23 @@
             return res.status(404).json({error:"Student not found"})
         }
 
-        await prisma.mark.deleteMany({
-            where:{
-                studentId:id
-            }
-        })
+        await prisma.$transaction(async (tx)=>{
 
-        await prisma.student.delete({
+    
+        await tx.student.delete({
             where:{
                 id
             }
         })
 
-        await prisma.user.delete({
+        await tx.user.delete({
             where:{
                 id:student.userId
             }
         })
+        })
+
+
         return res.status(200).json({message:"Student data deleted successfully"})
     }catch(error){
         console.log(error);
