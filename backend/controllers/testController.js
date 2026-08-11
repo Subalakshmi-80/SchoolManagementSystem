@@ -361,45 +361,7 @@ const updateMarks = async(req,res) =>{
 }
 
 
-const updateMaks = (req, res) => {
-    const testId = req.params.id;
 
-    const {updateMark} = req.body;
-
-    pool.query(`SELECT * FROM tests WHERE id=$1`, [testId],
-        (err, result) => {
-            if (err) {
-                return res.status(500).send("Database Error")
-            }
-            if (result.rows.length === 0) {
-                return res.status(404).send("Test Not Found.");
-            }
-
-            let completed = 0;
-
-            for (let i = 0; i < updateMark.length; i++) {
-                let std_id = updateMark[i].student_id;
-                let std_mark = updateMark[i].std_marks;
-
-                pool.query(`UPDATE marks SET std_marks=$1 WHERE student_id=$2 AND test_id=$3 `,
-                    [std_mark, std_id, testId], (err, result) => {
-                        if (err) {
-                            console.log(err)
-                            return res.status(500).send("Database Error")
-                        }
-
-                        completed++;
-
-                        if (completed === updateMark.length) {
-                            return res.status(200).send("Marks Updated Successfully")
-                        }
-
-                    }
-                )
-            }
-        }
-    )
-}
 module.exports = {
     createTest,
     getTests,

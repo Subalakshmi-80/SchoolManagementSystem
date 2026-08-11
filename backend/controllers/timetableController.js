@@ -105,7 +105,7 @@ const updateTimetable = async(req,res) =>{
             return res.status(404).json({error:"Timetable not found"})
         }
 
-        console.log(existingTimetable)
+      
         await prisma.timetable.update({
             where:{
               id:existingTimetable.id
