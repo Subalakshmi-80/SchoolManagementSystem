@@ -16,7 +16,7 @@
         }
 
         const classId = Number(class_id);
-        const stddob = dob === "" ? null : dob;
+        const stddob = dob === "" ? null : new Date( dob);
 
         try{
         const checkExistingUser = await prisma.user.findUnique({
