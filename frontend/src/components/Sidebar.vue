@@ -11,7 +11,7 @@
                 <i class="bi bi-speedometer2  px-3  " ></i>Dashboard</router-link>
                 <hr class="m-0 border-1 border-secondary border-opacity-75 ">
 
-                <router-link to="/" class="link-style" active-class="bg-success text-white fw-bold"> 
+                <router-link to="/teacher/list" class="link-style" active-class="bg-success text-white fw-bold"> 
                 <i class="bi bi-person-workspace px-3"></i>Teachers</router-link>
                 <hr class="m-0 border-1 border-secondary border-opacity-75 ">
 

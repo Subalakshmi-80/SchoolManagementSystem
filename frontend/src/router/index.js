@@ -10,6 +10,7 @@ import Student from "../views/student-dashboard.vue";
 import studentList from "../views/students/StudentList.vue";
 import addStudent from "../views/students/addStudent.vue";
 import editStudent from "../views/students/editStudent.vue";
+import TeacherList from "../views/teacher/teacherList.vue";
 import standardList from "../views/standards/StandardList.vue";
 import addStandard from "../views/standards/addStandard.vue";
 import editStandard from "../views/standards/editStandard.vue"
@@ -42,6 +43,7 @@ const routes =[
 {path:"/student/list",component:studentList,meta:{role:"admin"}},
 {path:"/student/create",component:addStudent,meta:{role:"admin"}},
 {path:'/student/edit/:id',component:editStudent,meta:{role:"admin"}},
+{path:'/teacher/list',component:TeacherList,meta:{role:"admin"}},
 {path:'/standard/list',component:standardList,meta:{role:"admin"}},
 {path:'/standard/create',component:addStandard,meta:{role:"admin"}},
 {path:'/standard/edit/:id',component:editStandard,meta:{role:"admin"}},

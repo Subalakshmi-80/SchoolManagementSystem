@@ -4,8 +4,11 @@
             <div>
                 <div class="sm-row p-0 m-0 p-md-5 d-md-flex align-items-center" >
 
-                    <div class="col-12  col-md-6 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0">
+                    <div class="col-12  col-md-6 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0 gap-2">
                         <button class="btn btn-success fw-bold" @click="router.push('/student/create')">+ Add Student</button>
+                        <button class="btn btn-success fw-bold" @click="selectFile" >Import CSV</button>
+                        <input type="file" accept=".csv" hidden ref="fileInput" @change="handleFile">
+
                         
                     </div>
                 
@@ -99,6 +102,83 @@
                 </table>
                 
                 </div>
+
+                <div v-if="showImportResult" class="modal d-block" tabindex="-1">
+    <div class="modal-dialog modal-lg ">
+        <div class="modal-content bg-light">
+
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Import Result
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    @click="showImportResult = false"
+                ></button>
+
+                
+            </div>
+
+            <div class="modal-body">
+
+                <p>
+                    Total Records:
+                    <strong>{{ importResult.success+importResult.failed }}</strong>
+                </p>
+                <p>
+                    Successfully imported:
+                    <strong>{{ importResult.success }}</strong>
+                </p>
+
+                <p>
+                    Failed:
+                    <strong>{{ importResult.failed }}</strong>
+                </p>
+
+                <div v-if="importResult.failed > 0" class="table-responsive mt-3">
+
+    <h6>Failed Records</h6>
+
+    <table class="table table-bordered table-sm">
+
+        <thead>
+            <tr>
+                <th>Reg No</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr v-for="row in importResult.failedRows" :key="row.regno">
+                <td>{{ row.regno }}</td>
+                <td>{{ row.name }}</td>
+                <td>{{ row.email }}</td>
+                <td>{{ row.reason }}</td>
+            </tr>
+        </tbody>
+
+    </table>
+
+</div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button
+                    class="btn btn-secondary"
+                    @click="showImportResult = false"
+                >
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
             
             </div>
@@ -238,6 +318,49 @@ currentPage.value=1
         if(goToPagePageNumber.value >= 1 && goToPagePageNumber.value <= totalPages.value){
             currentPage.value=goToPagePageNumber.value
         }
+    }
+
+    const fileInput = ref(null);
+    const importResult = ref(null)
+    const showImportResult = ref(false)
+    const selectFile = ()=>{
+        fileInput.value.click()
+    }
+    const handleFile = async(event)=>{
+        const file = event.target.files[0];
+        
+        if(!file) return;
+
+        try{
+        const formData = new FormData();
+        formData.append("file",file);
+
+        const token = localStorage.getItem("token");
+
+        const res = await API.post("/api/students/upload",formData,{
+            headers:{
+                Authorization:`Bearer ${token}`
+            }
+        })
+        importResult.value = res.data;
+   
+        if(res.data.failed > 0){
+            showImportResult.value = true;
+        }
+       else{
+        alert(res.data.message)
+       }
+
+      
+        }
+
+    
+
+       catch(err){
+        alert(err.response.data.message)
+       }
+         
+
     }
 
     </script>
