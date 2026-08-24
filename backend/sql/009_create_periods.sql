@@ -1,7 +1,0 @@
-
-CREATE TABLE IF NOT EXISTS periods(
-id SERIAL PRIMARY KEY,
-period_no INT NOT NULL,
-start_time TIME NOT NULL,
-end_time TIME NOT NULL
-);

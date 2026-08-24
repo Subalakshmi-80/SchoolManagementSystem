@@ -1,0 +1,11 @@
+﻿name,email,password,regno,first_name,last_name,gender,dob,phone,standard,section,address_line1,address_line2,city,state
+Arun,arun.test@example.com,Pass123,Reg1201,Arun,Kumar,Male,10-05-2008,7348291056,1th,A,12 Main Road,Near School,Nagapattinam,Tamil Nadu
+Priya,priya.test@example.com,Pass123,Reg1202,Priya,Devi,Female,15-02-2009,8627154930,4th,B,15 Lake Road,Near Temple,Nagapattinam,Tamil Nadu
+Kumar,kumar.test@example.com,Pass123,Reg1203,Kumar,Raj,Male,20-08-2008,9156382741,1th,A,20 Gandhi Road,Near Park,Nagapattinam,Tamil Nadu
+Divya,divya.test@example.com,Pass123,Reg1204,Divya,Sri,Female,12-01-2009,7834519268,1th,B,25 Park Road,Near Bus Stop,Nagapattinam,Tamil Nadu
+Rahul,rahul.test@example.com,Pass123,Reg1205,Rahul,Krish,Male,05-11-2008,9462815370,5th,A,30 Temple Road,Near Market,Nagapattinam,Tamil Nadu
+Meena,meena.test@example.com,Pass123,Reg1206,Meena,Devi,Female,18-06-2009,8215746392,5th,B,35 School Road,Near College,Nagapattinam,Tamil Nadu
+Vijay,vijay.test@example.com,Pass123,Reg1207,Vijay,Kumar,Male,22-03-2009,6793428157,1th,A,40 Market Road,Near Station,Nagapattinam,Tamil Nadu
+Anu,anu.test@example.com,Pass123,Reg1208,Anu,Sri,Female,10-09-2009,7582164930,1th,B,45 Beach Road,Near Beach,Nagapattinam,Tamil Nadu
+Suresh,suresh.test@example.com,Pass123,Reg1209,Suresh,Raj,Male,01-12-2008,8937251640,1th,A,50 Temple Road,Near Church,Nagapattinam,Tamil Nadu
+Nisha,nisha.test@example.com,Pass123,Reg1210,Nisha,Devi,Female,25-04-2009,9164837250,5th,B,55 Park Road,Near Ground,Nagapattinam,Tamil Nadu

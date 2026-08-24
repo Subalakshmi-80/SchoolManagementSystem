@@ -1,4 +1,4 @@
-const pool = require('../db/db')
+
 
 const prisma = require("../prisma/prisma");
 
@@ -165,12 +165,7 @@ const deleteTest = async(req,res)=>{
         if(!existingTest){
             return res.status(404).json({error:"Test not found"})
         }
-        // await prisma.mark.deleteMany({
-        //     where:{
-        //         testId:id
-        //     }
-        // })
-
+ 
         const test = await prisma.test.delete({
             where:{
                 id
@@ -218,9 +213,6 @@ const getStudentByTest = async(req,res) =>{
     }
 }
 
-
-
-
 //store marks
 const storeMarks = async(req,res)=>{
     const testId =Number(req.params.id);
@@ -265,7 +257,7 @@ const storeMarks = async(req,res)=>{
         console.log(error);
         return res.status(500).json({error:"Something went wrong. Please try again later"})
     }
-    }
+}
  
 const viewMarks = async(req,res) =>{
     const testId = Number(req.params.id);

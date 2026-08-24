@@ -1,5 +1,6 @@
 
-const prisma = require('../prisma/prisma')
+const prisma = require('../prisma/prisma');
+
 const createSubject = async(req,res)=>{
     const {subject_name} = req.body;
 

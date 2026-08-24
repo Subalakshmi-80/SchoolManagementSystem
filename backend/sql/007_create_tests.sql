@@ -1,8 +1,0 @@
-
-CREATE TABLE IF NOT EXISTS tests(
-id SERIAL PRIMARY KEY,
-name VARCHAR(100) NOT NULL,
-class_id INT NOT NULL REFERENCES classes(id),
-subject_id INT NOT NULL REFERENCES subjects(id),
-test_date DATE NOT NULL
-);

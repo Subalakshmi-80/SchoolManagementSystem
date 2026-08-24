@@ -2,6 +2,8 @@
 const bcrypt = require("bcrypt");
 
 const prisma = require('../prisma/prisma');
+const fs = require("fs");
+const csvParser = require("csv-parser");
 
 const createTeacher = async(req,res) =>{
     const {
@@ -231,6 +233,127 @@ const deleteTeacher = async(req,res) =>{
 }
 
 
- 
+const importTeachers = async(req,res)=>{
+    if(!req.file){
+        return res.status(400).json({message:"Please upload a CSV file"})
+    }
+    let successCount = 0;
+    let failedCount = 0;
+    let failedRows = [];
+    let rows = [];
+    fs.createReadStream(req.file.path).
+    on("error",(error)=>{
+        console.log(error.message)
+    }).pipe(
+        csvParser({
+            mapHeaders:({header})=>header.trim()
+        })
+        .on("data",(row)=>{
+            rows.push(row)
+        }).on("end",async()=>{
+            for(const row of rows){
+                if(!row["email"] || !row["password"] || !row["name"] || !row["empId"]){
+                    failedCount++;
 
-module.exports ={createTeacher,getTeacher,getSingleTeacher,updateTeacher,deleteTeacher};
+                    failedRows.push({
+                        empId:row["empId"],
+                        name:row["name"],
+                        email:row["email"],
+                        reason:"Manndatory fields missing"
+                    })
+
+                    continue;
+                }
+
+                try{ 
+                    const existingUser = await prisma.user.findUnique({
+                        where:{
+                            email:row["email"]
+                        }
+                    })
+
+                    if(existingUser){
+                        failedCount++;
+
+                        failedRows.push({
+                            empId:row["empId"],
+                            name:row["name"],
+                            email:row["email"],
+                            reason:"Email already exists"
+                        })
+
+                        continue;
+                    }
+
+                    const hash = await bcrypt.hash(row["password"],10);
+                    const [day, month, year] = row["dob"].split("-");
+                    const teacherdob = new Date(`${year}-${month}-${day}`);
+
+
+                    await prisma.$transaction(async (tx)=>{
+                        const newUser = await tx.user.create({
+                            data:{
+                                name:row["name"],
+                                email:row["email"],
+                                password:hash,
+                                role:"teacher"
+                            }
+                        })
+
+                        const newTeacher = await tx.teacher.create({
+                            data:{
+                                empId:row["empId"],
+                                userId:newUser.id,
+                                firstName:row["firstName"],
+                                lastName:row["lastName"],
+                                gender:row["gender"],
+                                dob:teacherdob,
+                                phone:row["phone"],
+                                classIncharge:row["classIncharge"],
+                                classSection:row["classSection"],
+                                subject:row["subject"],
+                                qualification:row["qualification"],
+                                addressLine1:row["addressLine1"],
+                                addressLine2:row["addressLine2"],
+                                city:row["city"],
+                                state:row["state"]
+
+                }
+                        })
+
+                    })
+
+                    successCount++;
+                
+                }catch(error){
+                    console.log("error");
+                    failedCount++;
+
+                    failedRows.push({
+                        empId:row["empId"],
+                        name:row["name"],
+                        email:row["email"],
+                        reason:"Teacher creation failed"
+                    })
+                }
+            
+        }
+
+        const message = 
+            successCount === 0?
+            "Teacher creation failed.":
+            failedCount>0?
+                "Teacher created completed with some failures":
+                "Teacher created successfully";
+
+        return res.status(201).json({
+            message:message,
+            success:successCount,
+            failed:failedCount,
+            failedRows:failedRows
+        })
+        })
+    )
+}
+
+module.exports ={createTeacher,getTeacher,getSingleTeacher,updateTeacher,deleteTeacher,importTeachers};

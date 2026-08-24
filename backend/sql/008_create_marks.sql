@@ -1,8 +1,0 @@
-
-CREATE TABLE IF NOT EXISTS marks(
-id SERIAL PRIMARY KEY,
-test_id INT NOT NULL REFERENCES tests(id),
-student_id INT NOT NULL REFERENCES students(id),
-std_marks INT NOT NULL,
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);

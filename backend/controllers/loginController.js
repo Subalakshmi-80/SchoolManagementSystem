@@ -14,7 +14,7 @@
                 const existingUser = await prisma.user.findUnique({where:{email:email}})
 
                 if (!existingUser) {
-                    return res.status(401).json({error:"User Not Found"});
+                    return res.status(404).json({error:"User Not Found"});
                 }
                 const checkPassword =await bcrypt.compare(password,existingUser.password)
                     

@@ -2,7 +2,8 @@
 
     const prisma = require('../prisma/prisma')
     const bcrypt = require("bcrypt");
-
+    const fs = require("fs");
+    const csvParser = require("csv-parser");
 
     const createStudent = async(req,res) =>{
 
@@ -28,6 +29,7 @@
 
         const hash = await bcrypt.hash(password,10)
 
+        
         await prisma.$transaction(async (tx)=>{
         const newUser = await tx.user.create({
             data:{
@@ -242,4 +244,149 @@
     }
 
 
-    module.exports = { createStudent, getStudents, getOneStd, updateStd,deleteStd };
+    const importStudents = async(req,res)=>{
+
+        if(!req.file){
+            return res.status(400).json({message:"Please upload a CSV file"})
+        }
+
+        let successCount = 0;
+        let failedCount = 0;
+        let failedRows =[];
+        let rows = [];
+        fs.createReadStream(req.file.path).
+        on("error",(error)=>{
+            console.log(error.message)
+        }).pipe(
+            csvParser({
+    mapHeaders: ({ header }) => header.trim()
+})
+            .on("data",(row)=>{
+               rows.push(row);
+               
+               
+            }).on("end",async()=>{
+
+                for(const row of rows){
+                     if(!row["name"]|| !row["email"] || !row["password"] || !row["regno"] || !row["standard"] || !row["section"]){
+                    
+                    failedCount++;
+
+                    failedRows.push({
+                        regno:row["regno"],
+                        name:row["name"],
+                        email:row["email"],
+                        reason :"Mandatory fields missing"
+                    })
+
+                  continue;
+                }
+                else{
+                   const standard = row["standard"].replace(/\D/g,"").trim();
+                   const section = row["section"].trim();
+
+                 
+                   const classData  = await prisma.class.findFirst({
+                    where:{
+                        name:section,
+                       
+                            standard:{
+                                name:standard
+                            }
+                        
+                    }
+                   })
+                  if(!classData){
+                     failedCount++;
+
+                    failedRows.push({
+                        regno: row["regno"],
+                        name: row["name"],
+                        email: row["email"],
+                        reason: `Class not found: ${row["standard"]}-${row["section"]}`
+                    });
+                    continue
+                }
+                  const classId = classData.id;
+
+                  try{
+                    const existingUser = await prisma.user.findUnique({
+                        where:{
+                            email:row["email"]
+                        }
+                    })
+                    if(existingUser){
+                        
+                        failedCount++;
+                        failedRows.push({
+                            regno:row["regno"],
+                            name:row["name"],
+                            email:row["email"],
+                            reason:"Email Already Exists."
+                        })
+                        continue;
+                    }
+                    const hash = await bcrypt.hash(row["password"],10);
+                    const [day, month, year] = row["dob"].split("-");
+                    const stddob = new Date(`${year}-${month}-${day}`);
+
+                    await prisma.$transaction(async(tx)=>{
+                         const newUser = await tx.user.create({
+                        data:{
+                            name:row["name"],
+                            email:row["email"],
+                            password:hash,
+                            role:"student"
+                        }
+                    })
+
+                    const newStudent = await tx.student.create({
+                         data:{
+                            userId:newUser.id,
+                            regNo:row["regno"],
+                            firstName:row["first_name"],
+                            lastName:row["last_name"],
+                            gender:row["gender"],
+                            dob:stddob,
+                            phone:row["phone"],
+                            classId,
+                            addressLine1:row["address_line1"],
+                            addressLine2:row["address_line2"],
+                            city:row["city"],
+                            state:row["state"]
+                        }
+                    })
+                    })
+
+                    successCount++;
+                   
+                  }catch(error){
+                    console.log(error);
+                    failedCount++;
+
+                    failedRows.push({
+                        regno:row["regno"],
+                        name:row["name"],
+                        email:row["email"],
+                        reason:"Student creation failed"
+                    })
+                  }
+                }
+                }
+               
+                const message = 
+                    successCount === 0?
+                    "student creation failed.":
+                    failedCount>0?
+                        "Student created completed with some failures"
+                        : "Students created successfully";
+                return res.status(201).json({
+                    message:message,
+                    success:successCount,
+                    failed:failedCount,
+                    failedRows:failedRows
+                })
+            })
+        )
+    }
+    module.exports = { createStudent, getStudents, getOneStd, updateStd,deleteStd ,importStudents};
