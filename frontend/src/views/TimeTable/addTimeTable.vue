@@ -70,7 +70,7 @@
             import AdminNavbar from '../../components/AdminNavbar.vue';
             import {ref,onMounted} from 'vue';
             import {useRouter} from 'vue-router';
-        import API from '../../services/api.js';
+            import API from '../../services/api.js';
 
             const router = useRouter();
 
@@ -161,8 +161,9 @@
 
     try{
         const token = localStorage.getItem("token");
-    let inserted=0
-    let response=""
+        let inserted=0
+        let response=""
+        
         for(const period of periods.value){
         
             const res = await API.post("/api/timetable",{
@@ -176,24 +177,27 @@
                 }
             })
             inserted+=1
-        response=res.data.message
+            response=res.data.message;
+
         }
         if(inserted === periods.value.length){
             alert(response);
                timetable.value = {
-        class_id: "",
-        day: ""
-    };
+                    class_id: "",
+                    day: ""
+                };
 
-    periods.value = periods.value.map(period => ({
-        ...period,
-        subject_id: ""
-    }));
+            periods.value = periods.value.map(period => ({
+                ...period,
+                subject_id: ""
+            }));
+    
         }
+
     }catch(err){
         alert(err.response.data.error)
     }
     
     }
         
-            </script>
+</script>

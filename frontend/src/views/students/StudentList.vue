@@ -128,7 +128,7 @@
                     <strong>{{ importResult.success+importResult.failed }}</strong>
                 </p>
                 <p>
-                    Successfully imported:
+                    Successfully created:
                     <strong>{{ importResult.success }}</strong>
                 </p>
 
@@ -320,6 +320,8 @@ currentPage.value=1
         }
     }
 
+
+//csv file
     const fileInput = ref(null);
     const importResult = ref(null)
     const showImportResult = ref(false)

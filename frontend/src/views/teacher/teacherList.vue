@@ -87,7 +87,7 @@
                     <strong>{{ importResult.success+importResult.failed }}</strong>
                 </p>
                 <p>
-                    Successfully imported:
+                    Successfully created:
                     <strong>{{ importResult.success }}</strong>
                 </p>
 
@@ -104,7 +104,7 @@
 
         <thead>
             <tr>
-                <th>Reg No</th>
+                <th>Emp Id</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Reason</th>
@@ -113,7 +113,7 @@
 
         <tbody>
             <tr v-for="row in importResult.failedRows" :key="row.regno">
-                <td>{{ row.regno }}</td>
+                <td>{{ row.empId }}</td>
                 <td>{{ row.name }}</td>
                 <td>{{ row.email }}</td>
                 <td>{{ row.reason }}</td>
