@@ -5,7 +5,8 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
- 
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  
 }
 
 model User {
@@ -100,6 +101,7 @@ model Test {
   classId   Int      @map("class_id")
   subjectId Int      @map("subject_id")
   testDate  DateTime @map("test_date") @db.Date
+  maxMarks Int @map("max_marks")
   marks     Mark[]
   class     Class    @relation(fields: [classId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)

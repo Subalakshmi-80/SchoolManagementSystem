@@ -23,46 +23,69 @@ const getPeriods = async(req,res)=>{
 }
 
 const createTimetable = async(req,res)=>{
-    const {class_id,day,period_id,subject_id} = req.body;
+    const {class_id,timetable} = req.body;
+
+    if(!class_id || !Array.isArray(timetable) || timetable.length ===0){
+        return res.status(400).json({error:"Class and timetable are required"})
+    }
+
+    for(const item of timetable){
+        if(!item.day || !item.period_id || !item.subject_id){
+            return res.status(400).json({
+                error:"Day,Period and Subject are required"
+            })
+        }
+    }
 
     try{
-        const checkExistingPeriod = await prisma.timetable.findFirst({
-            where:{
-                classId:class_id,
-                day,
-                periodId:period_id
+
+       await prisma.$transaction(async (tx)=>{
+            for(const item of timetable){
+                const existing = await tx.timetable.findFirst({
+                    where:{
+                        classId:class_id,
+                        day:item.day,
+                        periodId:item.period_id
+                    }
+                })
+
+                if(existing){
+                    throw new Error( `Period ${item.period_id} already allocated for ${item.day}`)
+                }
+
+                await tx.timetable.create({
+                    data:{
+                        classId:class_id,
+                        day:item.day,
+                        periodId:item.period_id,
+                        subjectId:item.subject_id
+                    }
+                   
+                })
             }
-        })
+       })
 
-        if(checkExistingPeriod){
-            return res.status(409).json({error:"Period allocated already for this class"})
-        }
-
-        await prisma.timetable.create({
-            data:{
-                periodId:period_id,
-                day,
-                classId:class_id,
-                subjectId:subject_id
-            }
-        })
-        return res.status(201).json({message:"Successfully created"})
-
+       return res.status(201).json({message:"Timetable created successfully"})
     }catch(error){
-        console.log(error);
-        return res.status(500).json({error:"Something went wrong. Please try again later."})
+         console.log(error);
+
+         if(error.message.includes("already allocated")){
+            return res.status(409).json({error:error.message})
+         }
+        return res.status(500).json({error:"Something went wrong. Please try again later."})   
     }
 }
 
 const getTimetableByClass = async(req,res) =>{
     const classId = Number(req.params.id);
-    const {day} = req.query;
+
 
     try{
         const timetable = await prisma.timetable.findMany({
             where:{
                 classId,
-                day
+             
+              
             },
             include:{
                 class:{
@@ -74,7 +97,7 @@ const getTimetableByClass = async(req,res) =>{
                 subject:true
             },
             orderBy:[
-                {day:"asc"},
+                
                 {periodId:"asc"}
             ]
         })
@@ -86,8 +109,58 @@ const getTimetableByClass = async(req,res) =>{
     }
 }
 
+const updateTimetable = async(req,res)=>{
+    const {class_id,timetable} = req.body;
+    const classId =Number(class_id)
+    if(!class_id || !Array.isArray(timetable) || timetable.length === 0){
+        return res.status(400).json({error:"Class and timetable are required"})
+    }
 
-const updateTimetable = async(req,res) =>{
+    for(const item of timetable){
+        if(!item.day || !item.period_id || !item.subject_id){
+            return res.status(400).json({error:"Day,Period and subject are required"})
+        }
+    }
+
+    try{
+        await prisma.$transaction(async(tx)=>{
+            for(const item of timetable){
+                const existing = await tx.timetable.findFirst({
+                    where:{
+                        day:item.day,
+                        periodId:item.period_id,
+                        classId
+                    }
+                })
+
+                if(!existing){
+                    throw new Error(`Timetable not found for ${item.day} ${item.period_id}`)
+                }
+
+                await tx.timetable.update({
+                    where:{
+                        id:existing.id
+                    },
+                    data:{
+                        subjectId:item.subject_id
+                    }
+                })
+            }
+
+
+        })
+
+        return res.status(200).json({message:"Timetable updated successfully"})
+    }catch(err){
+
+        console.log(err)
+        if(err.message.includes("not found")){
+            return res.status(404).json({error:err.message})
+        }
+        return res.status(500).json({error:"Something went wrong. Please try again later"})
+    }
+}
+const updateTimetale = async(req,res) =>{
     const {classId,periodId,day,subjectId} = req.body;
 
     const subject_id = Number(subjectId)
