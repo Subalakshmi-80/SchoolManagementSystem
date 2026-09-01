@@ -2,7 +2,7 @@
 
 <template>
 <TeacherNavbar>
-<div class="container d-flex flex-column justify-content-center align-items-center my-5">
+<div class="container d-flex flex-column justify-content-center align-items-center my-3">
 <h2 class="fs-2 text-danger fw-bold my-3">Add Test</h2>
 
 <form  class="w-50" @submit.prevent="saveTest()">
@@ -33,6 +33,11 @@
 <input class="form-control" type="date" v-model="test.test_date" >
 </div>
 
+<div class="m-3">
+<label class="fs-5 mb-2 fw-bold">Max Mark</label>
+<input class="form-control" type="number" min="1" v-model="test.max_marks" >
+</div>
+
 <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
 <button class="btn btn-success px-4 py-2  fw-bold" type="submit">Save Test</button>
 <button class="btn btn-secondary  px-4 py-2 fw-bold" @click="router.push('/test/list')">Cancel</button>
@@ -59,7 +64,8 @@ const test = ref({
     name:"",
     class_id:"",
     subject_id:"",
-    test_date:""
+    test_date:"",
+    max_marks:""
 })
 
 const getSubjects = async() =>{

@@ -1,8 +1,8 @@
 <template>
 <TeacherNavbar>
 
-<div class="container d-flex flex-column justify-content-center align-items-center my-5">
-<h2 class="fs-2 text-danger fw-bold my-3">Add Test</h2>
+<div class="container d-flex flex-column justify-content-center align-items-center my-3">
+<h2 class="fs-2 text-danger fw-bold my-3">Edit Test</h2>
 
 <form  class="w-50" @submit.prevent="updateTest()">
 
@@ -30,6 +30,11 @@
 <div class="m-3">
 <label class="fs-5 mb-2 fw-bold">Date</label>
 <input class="form-control" type="date" v-model="test.testDate" >
+</div>
+
+<div class="m-3">
+<label class="fs-5 mb-2 fw-bold">Max mark</label>
+<input class="form-control" type="number" min="1" v-model="test.maxMarks">
 </div>
 
 <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
@@ -102,7 +107,8 @@ const test = ref({
     name:"",
     classId:"",
     standardId:"",
-    testDate:""
+    testDate:"",
+    maxMarks:""
 })
 
 const getTest = async() =>{

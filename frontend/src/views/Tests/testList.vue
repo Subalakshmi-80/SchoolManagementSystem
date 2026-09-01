@@ -16,9 +16,11 @@
     
     <thead>
     <tr class="text-center">
+    <th class="p-3">S.No</th>
     <th class="p-3">Test Name</th>
     <th class="p-3">Class</th>
     <th class="p-3">Subject</th>
+    <th class="p-3">Max Marks</th>
     <th class="p-3">Date</th>
     <th class="p-3">Marks</th>
     <th class="p-3">Actions</th>
@@ -27,23 +29,27 @@
     </thead>
 
     <tbody>
-<tr v-for="test in tests" :key="test.id"  class="text-center">
+<tr v-for="(test,index) in tests" :key="test.id"  class="text-center align-middle">
+<td>{{ index+1 }}</td>
+<td>{{ test.name }}</td>
+<td>{{ test.class.standard.name }}-{{ test.class.name }}</td>
+<td>{{ test.subject.subjectName}}</td>
+<td>{{ test.maxMarks }}</td>
+<td>{{ formatDate(test.testDate) }}</td>
 
-<td class="p-3">{{ test.name }}</td>
-<td class="p-3">{{ test.class.standard.name }}-{{ test.class.name }}</td>
-<td class="p-3">{{ test.subject.subjectName}}</td>
-<td class="p-3">{{ formatDate(test.testDate) }}</td>
-
-<td class="p-3">
+<td>
 
 <div class="d-flex  align-items-center justify-content-center gap-2">
-<button class="btn btn-outline-primary" @click="router.push(`/test/enterMarks/${test.id}`)">Enter Marks</button>
+
+
+<button v-if="test.marksEntered" class="btn btn-outline-warning" @click="router.push(`/test/editMarks/${test.id}`)">Edit Marks</button>
+<button  v-else class="btn btn-outline-primary" @click="router.push(`/test/enterMarks/${test.id}`)">Enter Marks</button>
+
 <button class="btn btn-outline-success" @click="router.push(`/test/viewMarks/${test.id}`)">view Marks</button>
-<button class="btn btn-outline-warning" @click="router.push(`/test/editMarks/${test.id}`)">Edit Marks</button>
 
 </div>
 </td>
-<td class="p-3">
+<td>
 <div class="d-flex  align-items-center justify-content-center gap-2">
 
 <button class="btn btn-outline-secondary" @click="router.push(`/test/edit/${test.id}`)">Edit</button>
@@ -80,6 +86,7 @@ const router = useRouter()
             })
            
             tests.value = res.data
+            
         }catch(err){
             alert(err.response.data.error)
         }

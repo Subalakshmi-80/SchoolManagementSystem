@@ -10,28 +10,37 @@
                 </div>
 
                 <p v-if="timetable.length===0" class="text-danger text-center fw-bold my-3 fs-4">No Timetable Found</p>
-                <div v-else class="m-5 d-flex justify-content-center align-items-center flex-column">
-                <table class="table table-bordered w-75 text-center table-hover">
+                <div v-else class=" d-flex justify-content-center align-items-center flex-column">
+                 <p class="text-success fw-bold fs-4">{{timetable[0].class.standard.name}}-{{ timetable[0].class.name }} Timetable</p>
+                <table class="table table-bordered  text-center table-hover timetable-table mt-5">
                 <thead class="table-light">
-                <tr>
-                <th>Period</th>
-                <th>Time</th>
-                <th>Subject</th>
+                <tr class="text-center align-middle">
+                <th>Day/Period</th>
+                <th v-for="period in periods">
+                    <div>{{ period.periodNo }}</div>
+                    <small class="text-nowrap text-secondary">{{ period.startTime.slice(11,16) }}-{{ period.endTime.slice(11,16) }}</small>
+                </th>
                 </tr>
                 </thead>
 
                 <tbody>
-                <tr v-for="tt in timetable" :key="tt.id">
-                <td>{{ tt.period.periodNo }}</td>
-                <td>{{ tt.period.startTime.slice(11,16)}}-{{ tt.period.endTime.slice(11,16) }}</td>
-                <td>
-                <select v-model="tt.subjectId">
-               
-                <option v-for="subject in subjects" :key="subject.id" :value="subject.id">{{ subject.subjectName }}</option>
+          
+               <tr v-for="day in days" :key="day">
+                <td class="fw-bold">{{ day }}</td>
+               <td v-for="period in periods" :key="period.id">
+                <select v-if="getSchedule(day,period.id)"
+                class="form-select subject-select"
+                v-model="getSchedule(day,period.id).subjectId"
+                @keydown.enter.prevent="moveToNext(day,period.id)"
+                >
+                    <option v-for="subject in subjects" :key="subject.id" :value="subject.id">{{ subject.subjectName }}</option>
+                    
+                
                 </select>
-                </td>
 
-                </tr>
+                  <span v-else>-</span>
+               </td>
+               </tr>
                 </tbody>
                 </table>
                 
@@ -60,23 +69,37 @@
         const router = useRouter();
 
         const clsId = route.params.id;
-        const day=route.query.day
-        
     
+        const days = ref(["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"])
+    
+        const periods = ref([]);
+
+        const getPeriods = async()=>{
+            const token =  localStorage.getItem("token");
+
+            const res= await API.get("/api/periods",{
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            });
+
+            periods.value=res.data
+        }
+
+        onMounted(getPeriods)
         const timetable = ref([]);
 
         const getTimetable = async() =>{
             try{
                 const token = localStorage.getItem("token");
-                const res = await API.get(`/api/timetable/class/${clsId}?day=${day}`,{
+                const res = await API.get(`/api/timetable/class/${clsId}`,{
                     headers:{
                         Authorization:`Bearer ${token}`
                     }
                 })
                 timetable.value=res.data;
-                console.log(timetable.value)
-                
-            
+              
+     
             }catch(err){
                 console.log(err)
             }
@@ -104,31 +127,72 @@
 
         onMounted(getSubject);
 
+        const getSchedule = (day,periodId)=>{
+            return timetable.value.find(tt =>{
+                return tt.day===day && tt.periodId === periodId
+            })
+
+            
+        }
+
         const updateTimetable = async()=>{
             try{
                 const token = localStorage.getItem("token");
-                let updated= 0;
-                let response = "";
+               
+                const timetableData = timetable.value.map(tt=>({
+                    day:tt.day,
+                    period_id:tt.periodId,
+                    subject_id:tt.subjectId
 
-                for(const tt of timetable.value){
-                    const res = await API.put('/api/timetable',{
-                            classId: tt.classId,
-                            periodId: tt.periodId,
-                            day: tt.day,
-                            subjectId: tt.subjectId
-                    },
-                    {headers:{
+                }))
+
+                const res = await API.put("/api/timetable",{
+                    class_id:clsId,
+                    timetable:timetableData
+                },{
+                    headers:{
                         Authorization:`Bearer ${token}`
-                    }})
-                    updated+=1
-                    response = res.data.message
-                }
-if(updated === timetable.value.length){
-    alert(response);
-    router.push('/timetable/list')
-}
+                    }
+                })
+                alert(res.data.message);
+                router.push("/timetable/list")
             }catch(err){
                 alert(err.response.data.error)
             }
         }
+
+
+const moveToNext = () => {
+    const selects = document.querySelectorAll(".subject-select");
+
+    const currentIndex = Array.from(selects).indexOf(document.activeElement);
+
+    if (currentIndex < selects.length - 1) {
+        selects[currentIndex + 1].focus();
+    }
+};
     </script>
+
+    <style scoped>
+.timetable-table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.timetable-table th,
+.timetable-table td {
+    padding: 6px 4px;
+    vertical-align: middle;
+}
+
+
+.timetable-table td:first-child {
+    width: 80px;
+}
+
+.subject-select {
+    width: 100%;
+    min-width: 0;
+    font-size: 13px;
+}
+</style>

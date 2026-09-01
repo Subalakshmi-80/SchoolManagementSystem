@@ -8,43 +8,59 @@
         <h1 class="text-danger text-center fw-bold  mb-3 ">Create Timetable</h1>
 
     <div class="d-flex flex-sm-column justify-content-center align-items-center gap-4 mt-5 ">
-    <select v-model="timetable.class_id" class="form-select w-25" >
+    <select v-model="timetable.class_id" class="form-select w-25" required>
         <option value="" disabled>Select Class</option>
         <option  v-for="cls in classes" :key="cls.id" :value="cls.id">{{ cls.standard.name }} - {{ cls.name }}</option>
         </select>
 
-        <select v-model="timetable.day" class="form-select w-25">
-        <option value="" disabled>Select Day</option>
-        <option v-for="day in days" :key="day" :value="day">{{ day }}</option>
-        </select>
+
 
     </div>
    
     <div  class="w-100 d-flex flex-column justify-content-center align-items-center">
-    <table class="table table-bordered mt-5  text-center mx-5 w-75 ">
+    <table  class="table table-bordered text-center timetable-table mt-5">
             
         
             <thead class="table-light">
-            <tr>
+            <tr class="text-center align-middle">
         
-            <th>Period</th>
-            <th>Time</th>
-            <th>Subject</th>
+            <th>Day/Period</th>
+            <th v-for="period in periods" :key="period.id">
+                <div>{{ period.periodNo }}</div>
+
+                <small class="text-nowrap text-secondary">
+                {{ period.startTime.slice(11,16) }}-{{ period.endTime.slice(11,16) }}
+                </small>
+            </th>
                 </tr>
             </thead>
 
             <tbody>
-            <tr v-for="period in periods" :key="period.id">
-            <td  >{{ period.periodNo }}</td>
-            <td>{{ period.startTime.slice(11,16) }} - {{ period.endTime.slice(11,16) }}</td>
-            <td >
-            <select v-model="period.subject_id" >
-            <option value="" disabled>Select Subject</option>
-            <option v-for="sub in subjects" :key="sub.id" :value="sub.id" >{{ sub.subjectName }}</option>
-            </select>
-            </td>
-            </tr>
-            
+    
+             <tr v-for="day in days" :key="day">
+
+                <td class="fw-bold">{{ day }}</td>
+                
+                <td v-for="period in periods" :key="period.id" >
+                <select
+    class="form-select subject-select"
+    v-model="getSchedule(day, period.id).subject_id"
+    @keydown.enter.prevent="moveToNext(day, period.id)"
+   
+>
+    <option value="" disabled>Select subject</option>
+
+    <option
+        v-for="sub in subjects"
+        :key="sub.id"
+        :value="sub.id"
+    >
+        {{ sub.subjectName }}
+    </option>
+</select>
+           
+                </td>
+             </tr>
             </tbody>
             </table>
     <div class="d-flex gap-3 my-3">
@@ -115,6 +131,12 @@
             onMounted(getSubjects)
 
             const periods = ref([]);
+            const timetable =ref({
+                class_id:"",
+                schedule:[]
+                
+            })
+
 
             const getPeriods = async() =>{
                 try{
@@ -126,11 +148,17 @@
                         }
                     })
                     periods.value = res.data
+                    timetable.value.schedule=[]
 
-                    periods.value= periods.value.map(period =>({
-                        ...period,
-                        subject_id:""
-                    }))
+                    for(const day of days.value){
+                        for(const period of periods.value){
+                            timetable.value.schedule.push({
+                                day:day,
+                                period_id:period.id,
+                                subject_id:""
+                            })
+                        }
+                    }
 
 
                 }catch(err){
@@ -140,64 +168,85 @@
             }
             onMounted(getPeriods)
 
-            const timetable =ref({
-                class_id:"",
-                day:""
-                
-            })
-
-
+         
+const getSchedule = (day, periodId) => {
+    return timetable.value.schedule.find(item =>
+        item.day === day && item.period_id === periodId
+    );
+};
     const saveTimetable = async()=>{
-        if (!timetable.value.class_id || !timetable.value.day) {
-            alert("Please select class and day");
-            return;
-        }
-        for (const period of periods.value) {
-            if (!period.subject_id) {
-                alert(`Please select subject for Period ${period.periodNo}`);
-                return;
-            }
-        }
+     
+    if(!timetable.value.class_id){
+        alert("Please select class");
+        return
+    };
+
+    const emptySubject = timetable.value.schedule.some(item => !item.subject_id);
+
+    if(emptySubject){
+        alert("Please select subject for all periods");
+        return;
+    }
+
+   
 
     try{
         const token = localStorage.getItem("token");
-        let inserted=0
-        let response=""
-        
-        for(const period of periods.value){
-        
-            const res = await API.post("/api/timetable",{
-                class_id:timetable.value.class_id,
-                day:timetable.value.day,
-                period_id:period.id,
-                subject_id:period.subject_id
-            },{
-                headers:{
-                    Authorization:`Bearer ${token}`
-                }
-            })
-            inserted+=1
-            response=res.data.message;
 
-        }
-        if(inserted === periods.value.length){
-            alert(response);
-               timetable.value = {
-                    class_id: "",
-                    day: ""
-                };
+        const res=await API.post("/api/timetable",{
+            class_id:timetable.value.class_id,
+            timetable:timetable.value.schedule
+        },{
+            headers:{
+                Authorization:`Bearer ${token}`
+            }
+        })
 
-            periods.value = periods.value.map(period => ({
-                ...period,
-                subject_id: ""
-            }));
-    
-        }
-
-    }catch(err){
-        alert(err.response.data.error)
+        alert(res.data.message);
+        router.push('/timetable/list')
+    }catch(error){
+        alert(error.response.data.error)
     }
-    
+
     }
+const moveToNext = (day, periodId) => {
+
+    const currentIndex = timetable.value.schedule.findIndex(item =>
+        item.day === day && item.period_id === periodId
+    );
+
+    const nextIndex = currentIndex + 1;
+
+    const selects = document.querySelectorAll(".subject-select");
+
+    if (nextIndex < selects.length) {
+        selects[nextIndex].focus();
+    }
+
+};
         
 </script>
+
+<style scoped>
+.timetable-table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.timetable-table th,
+.timetable-table td {
+    padding: 6px 4px;
+    vertical-align: middle;
+}
+
+
+.timetable-table td:first-child {
+    width: 80px;
+}
+
+.subject-select {
+    width: 100%;
+    min-width: 0;
+    font-size: 13px;
+}
+</style>
