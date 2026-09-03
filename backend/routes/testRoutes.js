@@ -7,14 +7,14 @@ const router = express.Router()
 
 
 router.post("/tests",authMiddleware,roleMiddleware("teacher"),createTest);
-router.get("/tests",authMiddleware,roleMiddleware("teacher"),getTests);
-router.get("/tests/:id",authMiddleware,roleMiddleware("teacher"),getoneTest);
+router.get("/tests",authMiddleware,roleMiddleware("teacher","admin"),getTests);
+router.get("/tests/:id",authMiddleware,roleMiddleware("teacher","admin"),getoneTest);
 router.put("/tests/:id",authMiddleware,roleMiddleware("teacher"),updateTest);
 router.delete("/tests/:id",authMiddleware,roleMiddleware("teacher"),deleteTest);
 
 router.get("/tests/:id/students",authMiddleware,roleMiddleware("teacher"),getStudentByTest);
 router.post("/tests/:id/marks",authMiddleware,roleMiddleware("teacher"),storeMarks);
-router.get("/tests/:id/marks",authMiddleware,roleMiddleware("teacher"),viewMarks);
+router.get("/tests/:id/marks",authMiddleware,roleMiddleware("teacher","admin"),viewMarks);
 router.put("/tests/:id/marks",authMiddleware,roleMiddleware("teacher"),updateMarks)
 
 module.exports = router;

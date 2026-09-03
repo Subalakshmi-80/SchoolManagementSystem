@@ -2,8 +2,8 @@
 
 <template>
 <TeacherNavbar>
-<div class="container d-flex flex-column justify-content-center align-items-center my-3">
-<h2 class="fs-2 text-danger fw-bold my-3">Add Test</h2>
+<div class="container d-flex flex-column justify-content-center align-items-center my-2">
+<h2 class="fs-2 text-danger fw-bold ">Add Test</h2>
 
 <form  class="w-50" @submit.prevent="saveTest()">
 

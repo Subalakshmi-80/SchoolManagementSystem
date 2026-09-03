@@ -31,6 +31,8 @@ import FeesCollect from "../views/Fees/collectFee.vue";
 import timetableList from "../views/TimeTable/timetableList.vue";
 import AddTimeTable from "../views/TimeTable/addTimeTable.vue";
 import EditTimetable from "../views/TimeTable/editTimetable.vue";
+import AdminTestList from "../views/Tests/adminTestList.vue";
+import AdminTestDetails from "../views/Tests/adminTestDetails.vue";
 
 const routes =[
 {path:"/",component:Login},
@@ -53,6 +55,8 @@ const routes =[
 {path:'/subject/list',component:SubjectList,meta:{role:"admin"}},
 {path:'/subject/create',component:AddSubject,meta:{role:"admin"}},
 {path:'/subject/edit/:id',component:editSubject,meta:{role:"admin"}},
+{path:'/admin/testlist',component:AdminTestList,meta:{role:"admin"}},
+{path:'/admin/testDetails/:id',component:AdminTestDetails,meta:{role:"admin"}},
 {path:'/test/list',component:TestList,meta:{role:"teacher"}},
 {path:'/test/create',component:AddTest,meta:{role:"teacher"}},
 {path:'/test/edit/:id',component:EditTest,meta:{role:"teacher"}},

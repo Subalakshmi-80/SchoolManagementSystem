@@ -1,8 +1,8 @@
 <template>
 <TeacherNavbar>
-<div class="container d-flex flex-column justify-content-center align-items-center my-3">
-<h1>Add Marks</h1>
-<h2 class="fs-2 text-success fw-bold my-2 text-uppercase"
+<div class="container d-flex flex-column justify-content-center align-items-center mb-3">
+<h1 class="fs-4">Add Marks</h1>
+<h2 class="fs-5 text-success fw-bold  text-uppercase"
  v-if="tests && tests.class && tests.class.standard">
 {{ tests.name }} ({{tests.class.standard.name}}-{{ tests.class.name }})</h2>
 

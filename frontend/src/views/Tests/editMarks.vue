@@ -1,9 +1,9 @@
 <template>
 <TeacherNavbar>
 
-<div class="container d-flex flex-column justify-content-center align-items-center my-3">
-<h1>Edit Marks</h1>
-<h2 class="fs-2 text-success fw-bold my-2 text-uppercase"
+<div class="container d-flex flex-column justify-content-center align-items-center mb-3">
+<h1 class="fs-4">Edit Marks</h1>
+<h2 class="fs-5 text-success fw-bold  text-uppercase"
  v-if="tests && tests.class && tests.class.standard">{{ tests.name }} ({{ tests.class.standard.name }}-{{ tests.class.name }})</h2>
 
 
@@ -25,8 +25,8 @@
 <tr class="text-center align-middle">
 <th>S.No</th>
 <th>Register No</th>
-<th>First_Name</th>
-<th>Last_Name</th>
+<th>FirstName</th>
+<th>LastName</th>
 <th>Class</th>
 <th>Status</th>
 <th>Marks (Max marks:{{ tests.maxMarks }})</th>

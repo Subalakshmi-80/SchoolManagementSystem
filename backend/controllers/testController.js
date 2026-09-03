@@ -63,7 +63,10 @@ const getTests = async(req,res)=>{
                    
                 },
                 marks:true
-            }   
+            }  ,
+            orderBy:{
+                classId:"asc"
+            } 
         })
 
        
@@ -71,7 +74,7 @@ const getTests = async(req,res)=>{
             ...test,
             marksEntered:test.marks.length>0
         }))
-         console.log(result)
+        
         return res.status(200).json(result)
 
 

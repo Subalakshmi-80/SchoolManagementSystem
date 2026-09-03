@@ -3,7 +3,7 @@
     <TeacherNavbar>
     <div class="px-3">
 
-    <div class="d-flex justify-content-between  align-items-center mx-5 my-3">
+    <div class="d-flex justify-content-between  align-items-center mx-5">
     <h1 class="fs-2"  style=" color:rgb(97,32,19);">Test Lists</h1>
     <button class="btn btn-success fw-bold px-3 py-2" @click="router.push('/test/create')">Add Test</button>
     </div>
@@ -12,7 +12,20 @@
     <p v-if="tests.length ===0" class="m-5 text-danger fw-bold fs-5">No Test Record</p>
 
     <div v-else >
-    <table class="table table-bordered mt-5 w-100 shadow">
+
+        <div class="d-flex flex-column justify-content-center align-items-start ms-5 mt-2">
+        
+            <label class="fw-bold " >Filter by class</label>
+            <select class="form-select w-auto mt-2" v-model="selectedClass">
+
+        <option value="">All classes</option>
+        <option :value="cls.id" v-for="cls in classes" :key="cls.id">{{cls.standard.name}}-{{ cls.name }}</option>
+    
+    </select>
+        </div>
+
+        <div v-if="filteredTests.length === 0" class="fs-6 text-center text-danger fw-bold">No test found for selected class</div>
+    <table v-else class="table table-bordered mt-3 w-100 shadow">
     
     <thead>
     <tr class="text-center">
@@ -29,7 +42,7 @@
     </thead>
 
     <tbody>
-<tr v-for="(test,index) in tests" :key="test.id"  class="text-center align-middle">
+<tr v-for="(test,index) in filteredTests" :key="test.id"  class="text-center align-middle">
 <td>{{ index+1 }}</td>
 <td>{{ test.name }}</td>
 <td>{{ test.class.standard.name }}-{{ test.class.name }}</td>
@@ -68,7 +81,7 @@
 
     <script setup>
     import TeacherNavbar from '../../components/TeacherNavbar.vue';
-    import {ref,onMounted} from 'vue';
+    import {ref,onMounted, computed} from 'vue';
     import axios from 'axios';
     import {useRouter} from 'vue-router'
 import API from "../../services/api.js"
@@ -101,6 +114,38 @@ const router = useRouter()
     
     onMounted(getTests);
 
+    const selectedClass = ref('')
+
+    const classes = ref([])
+    const getClass = async()=>{
+        try{
+            const token = localStorage.getItem("token");
+
+            const res = await API.get("/api/classes",{
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            });
+
+            classes.value = res.data;
+            
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+    onMounted(getClass);
+
+
+    const filteredTests = computed(()=>{
+        if(!selectedClass.value){
+            return tests.value;
+        }
+
+        return tests.value.filter(test=>
+            test.classId === Number(selectedClass.value)
+        )
+    })
     const deleteTest = async(id) =>{
         const confirmDelete = confirm("Are you sure you want to delete this test?")
         if(!confirmDelete) return;

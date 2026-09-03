@@ -20,6 +20,11 @@
                 <i class="bi bi-mortarboard-fill px-3"></i>Students</router-link>
                 <hr class="m-0 border-1 border-secondary border-opacity-75 ">
 
+                <router-link to="/admin/testlist" class="link-style" :class="{'bg-success text-white fw-bold':route.path.startsWith('/admin/testlist')}" > 
+                <i class="bi bi-mortarboard-fill px-3"></i>Tests</router-link>
+                <hr class="m-0 border-1 border-secondary border-opacity-75 ">
+
+
                 <router-link to="/standard/list"  class="link-style" :class="{'bg-success text-white fw-bold':route.path.startsWith('/standard')}" >
                 <i class="bi bi-book px-3"></i>Standards</router-link>
                 <hr class="m-0 border-1 border-secondary border-opacity-75 ">
