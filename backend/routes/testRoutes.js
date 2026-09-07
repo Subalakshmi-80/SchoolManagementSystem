@@ -12,7 +12,7 @@ router.get("/tests/:id",authMiddleware,roleMiddleware("teacher","admin"),getoneT
 router.put("/tests/:id",authMiddleware,roleMiddleware("teacher"),updateTest);
 router.delete("/tests/:id",authMiddleware,roleMiddleware("teacher"),deleteTest);
 
-router.get("/tests/:id/students",authMiddleware,roleMiddleware("teacher"),getStudentByTest);
+router.get("/tests/:id/students",authMiddleware,roleMiddleware("teacher","admin"),getStudentByTest);
 router.post("/tests/:id/marks",authMiddleware,roleMiddleware("teacher"),storeMarks);
 router.get("/tests/:id/marks",authMiddleware,roleMiddleware("teacher","admin"),viewMarks);
 router.put("/tests/:id/marks",authMiddleware,roleMiddleware("teacher"),updateMarks)

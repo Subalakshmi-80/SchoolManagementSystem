@@ -13,7 +13,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3  ">
 
-<div>
+<div class="d-flex gap-3">
     <select v-model="selectedFilter" class="form-select w-auto">
         <option value="">All students</option>
         <option value="Present">Present</option>
@@ -24,6 +24,43 @@
         <option value="Top5">Top 5</option>
 
     </select>
+
+      <div class="dropdown ">
+    <button
+        class="btn btn-light border dropdown-toggle"
+        type="button"
+        data-bs-toggle="dropdown"
+    >
+        {{ sortOrderName }}
+    </button>
+
+    <ul class="dropdown-menu">
+        <li>
+            <button class="dropdown-item" @click="sortOrder = '';sortOrderName='Sort by Marks'">
+                Default
+            </button>
+        </li>
+
+        <li>
+            <button class="dropdown-item" @click="sortOrder = 'high';sortOrderName='Highest to Lowest'">
+                Highest to Lowest
+            </button>
+        </li>
+
+        <li>
+            <button class="dropdown-item" @click="sortOrder = 'low'; sortOrderName='Lowest to Highest'">
+                Lowest to Highest
+            </button>
+        </li>
+    </ul>
+</div>
+
+                <input
+                    type="search"
+                    class="form-control"
+                    placeholder="Search student..."
+                    v-model="searchStudent"
+                />
 </div>
 <div class="d-flex  gap-3 ">
 
@@ -131,7 +168,6 @@
 
     <script setup>
     import TeacherNavbar from '../../components/TeacherNavbar.vue';
-    import axios from 'axios';
     import {ref,onMounted, computed} from 'vue';
     import { useRouter,useRoute } from 'vue-router';
 import API from "../../services/api.js"
@@ -182,44 +218,73 @@ import API from "../../services/api.js"
     }
 
 
+    const sortOrder = ref('');
+    const sortOrderName = ref("Sort by Marks");
 
     const selectedFilter = ref('');
-
+ const searchStudent = ref('')
     const filteredMarks = computed(()=>{
-        if(!selectedFilter.value){
-            return marks.value
-        }
+        let result = marks.value
 
         if(selectedFilter.value === "Present"){
-            return marks.value.filter(mark => mark.status === "Present")
+            result = result.filter(mark => mark.status === "Present")
         }
 
         if(selectedFilter.value === "Absent"){
-            return marks.value.filter(mark=>mark.status==="Absent");
+            result = result.filter(mark=>mark.status==="Absent");
         }
 
         if(selectedFilter.value === "Pass"){
-            return marks.value.filter(mark=> mark.status === "Present" && mark.StdMarks >= getPassMark())
+            result = result.filter(mark=> mark.status === "Present" && mark.StdMarks >= getPassMark())
         }
 
         if(selectedFilter.value === "Fail"){
-            return marks.value.filter(mark => mark.status === "Present" && mark.StdMarks <getPassMark())
+            result = result.filter(mark => mark.status === "Present" && mark.StdMarks <getPassMark())
         }
         
         if(selectedFilter.value === "Top3"){
-            return marks.value.
+            result = result.
                 filter(mark=> mark.status === "Present" && mark.StdMarks >= getPassMark())
                 .sort((a,b)=>b.StdMarks - a.StdMarks)
                 .slice(0,3)
         }
 
         if(selectedFilter.value === "Top5"){
-            return marks.value
+            result = result
                 .filter(mark => mark.status === "Present" && mark.StdMarks >= getPassMark())
                 .sort((a,b)=>b.StdMarks - a.StdMarks)
                 .slice(0,5)
         }
+
+         if(sortOrder.value === "high"){
+           result =[...result].sort((a,b)=>b.StdMarks-a.StdMarks)
+        }
+
+        if(sortOrder.value === "low"){
+           result =[...result].sort((a,b)=>a.StdMarks-b.StdMarks)
+        }
+
+   
+        if (searchStudent.value.trim() !== '') {
+
+    const search = searchStudent.value.toLowerCase()
+
+    result = result.filter(mark =>
+        `${mark.student.firstName ?? ''} ${mark.student.lastName ?? ''}`
+            .toLowerCase()
+            .includes(search) ||
+
+        String(mark.student.regNo ?? '')
+            .toLowerCase()
+            .includes(search)
+    )
+}
+
+return result
+
     })
+
+     
     
         const summary = computed(()=>{
         return {
@@ -247,10 +312,10 @@ import API from "../../services/api.js"
         }
 
         .status-badge {
-    width: 40px;
-    display: inline-block;
-    text-align: center;
-}
+            width: 40px;
+            display: inline-block;
+            text-align: center;
+        }
 
 .stats-box {
     width: 140px;

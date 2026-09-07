@@ -72,43 +72,86 @@
             </div>
             
 
-            <div class="ms-5 mt-3 me-3 d-flex justify-content-between align-middle-center">
+            <div class="ms-5 my-3 me-3 d-flex justify-content-between align-middle-center">
+
+            <div class="d-flex gap-3">
+            
                 <div class="dropdown">
                     <button class="btn btn-light border dropdown-toggle" 
                     type="button"  
-                    data-bs-toggle="dropdown">All Students</button>
+                    data-bs-toggle="dropdown">{{ selectedFilter }}</button>
 
                     <ul class="dropdown-menu class-dropdown">
                         <li>
-                            <button class="dropdown-item">All Students</button>
+                            <button class="dropdown-item" @click="selectedFilter='All Students'">All Students</button>
                         </li>
 
                         <li>
-                            <button class="dropdown-item">Present</button>
+                            <button class="dropdown-item" @click="selectedFilter = 'Present'">Present</button>
                         </li>
 
                         <li>
-                            <button class="dropdown-item">Absent</button>
+                            <button class="dropdown-item" @click="selectedFilter = 'Absent'">Absent</button>
                         </li>
 
                          <li>
-                            <button class="dropdown-item">Pass</button>
+                            <button class="dropdown-item" @click="selectedFilter = 'Pass'">Pass</button>
                         </li>
 
                          <li>
-                            <button class="dropdown-item">Fail</button>
+                            <button class="dropdown-item" @click="selectedFilter = 'Fail'">Fail</button>
                         </li>
 
                          <li>
-                            <button class="dropdown-item">Top 3</button>
+                            <button class="dropdown-item" @click="selectedFilter = 'Top 3'">Top 3</button>
                         </li>
 
                          <li>
-                            <button class="dropdown-item">Top 5</button>
+                            <button class="dropdown-item" @click="selectedFilter = 'Top 5'">Top 5</button>
                         </li>
                     </ul>
                 </div>
-            
+
+
+                <div class="dropdown">
+    <button
+        class="btn btn-light border dropdown-toggle"
+        type="button"
+        data-bs-toggle="dropdown"
+    >
+        {{ sortOrderName }}
+    </button>
+
+    <ul class="dropdown-menu">
+        <li>
+            <button class="dropdown-item" @click="sortOrder = '';sortOrderName='Sort by Marks'">
+                Default
+            </button>
+        </li>
+
+        <li>
+            <button class="dropdown-item" @click="sortOrder = 'high';sortOrderName='Highest to Lowest'">
+                Highest to Lowest
+            </button>
+        </li>
+
+        <li>
+            <button class="dropdown-item" @click="sortOrder = 'low'; sortOrderName='Lowest to Highest'">
+                Lowest to Highest
+            </button>
+        </li>
+    </ul>
+</div>
+
+                <input
+                    type="search"
+                    class="form-control"
+                    placeholder="Search student..."
+                    v-model="searchStudent"
+                />
+            </div>
+
+                
                 <div class="d-flex justify-content-center align-items-center gap-3 ">
 
 <span class="badge text-bg-success rounded-pill px-3 py-2">P - Present</span>
@@ -116,8 +159,17 @@
 </div>
             </div>
 
-            <div>
-                <table class="table table-bordered table-hover">
+            <div class="mx-5">
+
+            <p v-if="marks.length === 0" class="text-danger fw-bold text-center mt-4">
+                No marks found for this test.
+            </p>
+
+
+            <p v-else-if="filteredMarks.length === 0" class="text-danger fw-bold text-center mt-4">
+                No students found for the selected filter or search.
+            </p>
+                <table v-else class="table table-bordered table-hover ">
                     <thead>
                         <tr class="text-center middle-center">
                             <th>S.No</th>
@@ -133,12 +185,34 @@
 
                     <tbody>
                     
-                        <tr v-for="(mark,index) in marks" :key="mark.id" class="text-center align-middle">
+                        <tr v-for="(mark,index) in filteredMarks" :key="mark.id" class="text-center align-middle">
                             <td>{{ index+1 }}</td>
                             <td>{{ mark.student.regNo }}</td>
                             <td>{{ mark.student.firstName }}</td>
                             <td>{{ mark.student.lastName }}</td>
-                            <td>{{ mark.class.standard.name }}-{{ mark.class.name }}</td>
+                            <td>{{ mark.test.class.standard.name }}-{{ mark.test.class.name }}</td>
+                            <td>
+
+      <div class="d-flex justify-content-center align-items-center gap-2">
+        <span v-if="mark.status === 'Present'"
+            class="badge text-bg-success rounded-pill  px-3 py-2 status-badge">P
+        
+        </span>
+
+        <span v-else
+            class="badge text-bg-danger rounded-pill  px-2 py-2 status-badge">AB
+        
+        </span>
+    
+    </div>
+</td>
+<td>{{ mark.StdMarks ?? '-'}}</td>
+
+<td>
+    <span v-if="mark.status === 'Absent'" class="badge text-bg-secondary px-3 py-2 result-badge">Absent</span>
+    <span v-else-if="mark.StdMarks >= getPassMark()" class="badge text-bg-success px-3 py-2 result-badge">Pass</span>
+    <span v-else class="badge text-bg-danger px-3 py-2 result-badge">Fail</span>
+</td>
                         </tr>
                     </tbody>
                 </table>
@@ -157,10 +231,10 @@ import AdminNavbar from '../../components/AdminNavbar.vue';
 import { useRoute,useRouter } from 'vue-router';
 import  {ref,onMounted,computed} from 'vue';
 import API from '../../services/api.js';
-import router from '../../router/index.js';
+
 
 const route = useRoute();
-
+const router = useRouter();
 const testId = route.params.id;
 
 const tests = ref({})
@@ -199,7 +273,7 @@ const getMarks = async()=>{
                 Authorization:`Bearer ${token}`
             }
         })
-        marks.value = res.data  
+        marks.value = res.data ; 
 
     }catch(error){
         console.log(error)
@@ -239,6 +313,85 @@ onMounted(getMarks)
 
     return Math.ceil(tests.value.maxMarks * 35 / 100)
     }
+
+    const selectedFilter = ref('All Students');
+ const searchStudent = ref('')
+    const filteredMarks = computed(()=>{
+        let result = marks.value
+
+        if(selectedFilter.value === "Present"){
+            result = result.filter(mark=>
+                mark.status === "Present"
+            )
+        }
+
+        if(selectedFilter.value === 'Absent'){
+            result = result.filter(mark=>
+                mark.status === 'Absent'
+            )
+        }
+
+        if(selectedFilter.value === "Pass"){
+            result = result.filter(mark=>
+                mark.status === "Present" && mark.StdMarks >= getPassMark()
+            )
+        }
+
+        if(selectedFilter.value === "Fail"){
+            result = result.filter(mark =>
+                mark.status === "Present" && mark.StdMarks < getPassMark()
+            )
+        }
+
+        if(selectedFilter.value === "Top 3"){
+           result = result.filter(mark =>
+                    mark.status === "Present" && mark.StdMarks >= getPassMark()
+                )
+                .sort((a,b)=>b.StdMarks - a.StdMarks)
+                .slice(0,3)
+        }
+
+        if(selectedFilter.value === "Top 5"){
+            result = result.filter(mark=>
+                    mark.status==="Present" && mark.StdMarks >= getPassMark()
+                )
+                .sort((a,b)=>b.StdMarks - a.StdMarks)
+                .slice(0,5)
+        }
+
+        if(sortOrder.value === "high"){
+           result =[...result].sort((a,b)=>b.StdMarks-a.StdMarks)
+        }
+
+        if(sortOrder.value === "low"){
+           result =[...result].sort((a,b)=>a.StdMarks-b.StdMarks)
+        }
+
+   
+        if (searchStudent.value.trim() !== '') {
+
+    const search = searchStudent.value.toLowerCase()
+
+    result = result.filter(mark =>
+        `${mark.student.firstName ?? ''} ${mark.student.lastName ?? ''}`
+            .toLowerCase()
+            .includes(search) ||
+
+        String(mark.student.regNo ?? '')
+            .toLowerCase()
+            .includes(search)
+    )
+}
+
+        return result;
+    })
+
+    
+  
+    const sortOrder = ref('');
+    const sortOrderName = ref("Sort by Marks");
+
+
 </script>
 
 
