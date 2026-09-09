@@ -111,7 +111,7 @@ const editClass = async() =>{
 </script>
 
 
-<style setup>
+<style scoped>
 .class-box{
     width:500px;
     margin: 60px auto;

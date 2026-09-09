@@ -104,9 +104,9 @@
                 <div class="table-responsive m-5">
                     <div v-if="filteredStudents.length === 0" class=" text-danger fw-bold">No Student found</div>
                 
-                        <table v-else class="table  align-middle table-light table-opacity-50 border-secondary border-opacity-25 ">
+                        <table v-else class="table table-hover table-light table-opacity-50 border-secondary border-opacity-25 ">
                             <thead class="align-middle">
-                                <tr>
+                                <tr class="text-center align-middle ">
                                     <th>S.No</th>
                                     <th>Reg No</th>
                                     <th>Full Name</th>
@@ -123,7 +123,7 @@
                             </thead>
 
                             <tbody  >
-                                <tr v-for="(student,index) in paginatedStudents" :key="student.id" >
+                                <tr v-for="(student,index) in paginatedStudents" :key="student.id" class="text-center " >
                                     <td>{{ (currentPage-1) * itemPerPage +index+1 }}</td>
                                     <td >{{ student.regNo }}</td>
                                     <td>{{ student.user.name }}</td>
@@ -132,7 +132,7 @@
                                     <td>{{ formatDate(student.dob) }}</td>
                                     <td>{{ student.class.standard.name }}-{{ student.class.name }}</td>
                                     <td>{{ student.phone }}</td>
-                                    <td >{{ student.addressLine1 }},<br>
+                                    <td class="text-start">{{ student.addressLine1 }},<br>
                                         {{ student.addressLine2 }},<br>
                                         {{ student.city }},
                                         {{ student.state }}</td>
@@ -463,3 +463,12 @@
 
     </script>
 
+<style scoped>
+table th{
+    font-size: 14px;
+}
+
+table td{
+    font-size: 12px;
+}
+</style>

@@ -33,6 +33,8 @@ import AddTimeTable from "../views/TimeTable/addTimeTable.vue";
 import EditTimetable from "../views/TimeTable/editTimetable.vue";
 import AdminTestList from "../views/Tests/adminTestList.vue";
 import AdminTestDetails from "../views/Tests/adminTestDetails.vue";
+import addTeacher from "../views/teacher/addTeacher.vue";
+import editTeacher from "../views/teacher/editTeacher.vue";
 
 const routes =[
 {path:"/",component:Login},
@@ -46,6 +48,8 @@ const routes =[
 {path:"/student/create",component:addStudent,meta:{role:"admin"}},
 {path:'/student/edit/:id',component:editStudent,meta:{role:"admin"}},
 {path:'/teacher/list',component:TeacherList,meta:{role:"admin"}},
+{path:'/teacher/create',component:addTeacher,meta:{role:"admin"}},
+{path:'/teacher/edit/:id',component:editTeacher,meta:{role:"admin"}},
 {path:'/standard/list',component:standardList,meta:{role:"admin"}},
 {path:'/standard/create',component:addStandard,meta:{role:"admin"}},
 {path:'/standard/edit/:id',component:editStandard,meta:{role:"admin"}},
