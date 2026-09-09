@@ -1,0 +1,20 @@
+const express = require('express');
+const authMiddleware = require('../middleware/authMiddleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
+const { createTest, getTests, getoneTest, updateTest, deleteTest, getStudentByTest, storeMarks, viewMarks, updateMarks } = require('../controllers/testController');
+
+const router = express.Router()
+
+
+router.post("/tests",authMiddleware,roleMiddleware("teacher"),createTest);
+router.get("/tests",authMiddleware,roleMiddleware("teacher","admin"),getTests);
+router.get("/tests/:id",authMiddleware,roleMiddleware("teacher","admin"),getoneTest);
+router.put("/tests/:id",authMiddleware,roleMiddleware("teacher"),updateTest);
+router.delete("/tests/:id",authMiddleware,roleMiddleware("teacher"),deleteTest);
+
+router.get("/tests/:id/students",authMiddleware,roleMiddleware("teacher","admin"),getStudentByTest);
+router.post("/tests/:id/marks",authMiddleware,roleMiddleware("teacher"),storeMarks);
+router.get("/tests/:id/marks",authMiddleware,roleMiddleware("teacher","admin"),viewMarks);
+router.put("/tests/:id/marks",authMiddleware,roleMiddleware("teacher"),updateMarks)
+
+module.exports = router;
