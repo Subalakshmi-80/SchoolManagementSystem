@@ -1,0 +1,7 @@
+﻿name,email,password,empId,firstName,lastName,gender,dob,phone,classIncharge,classSection,subject,qualification,addressLine1,addressLine2,city,state
+Arun,arun.teacher@gm.com,Pass123,EMP1001,Arun,Kumar,Male,15-06-1995,9876543210,10,A,Mathematics,M.Sc.,10 School Road,Near Bus Stand,Nagapattinam,Tamil Nadu
+Priya,priya.teacher@gm.com,Pass123,EMP1002,Priya,Devi,Female,20-08-1993,9876543211,,,Science,M.Sc.,20 Main Road,Near Temple,Nagapattinam,Tamil Nadu
+Karthik,karthik.teacher@gm.com,Pass123,EMP1003,Karthik,Raj,Male,12-01-1996,9876543212,8,B,English,M.A.,30 School Road,Near Market,Nagapattinam,Tamil Nadu
+Divya,divya.teacher@gm.com,Pass123,EMP1004,Divya,Sri,Female,25-11-1994,9876543213,,,Computer Science,MCA,40 College Road,Near Hospital,Nagapattinam,Tamil Nadu
+Suresh,suresh.teacher@gm.com,Pass123,EMP1005,Suresh,Kumar,Male,10-03-1992,9876543214,6,A,Physics,M.Sc.,50 Beach Road,Near Beach,Nagapattinam,Tamil Nadu
+Meena,meena.teacher@gm.com,Pass123,EMP1006,Meena,Devi,Female,18-07-1995,9876543215,,,Chemistry,M.Sc.,60 School Road,Near Ground,Nagapattinam,Tamil Nadu
