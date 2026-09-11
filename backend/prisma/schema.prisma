@@ -25,6 +25,7 @@ model Standard {
   id      Int     @id @default(autoincrement())
   name    String  @unique @db.VarChar(50)
   classes Class[]
+  feeStructures FeeStructure[]
 
   @@map("standards")
 }
@@ -157,12 +158,36 @@ model PasswordReset {
   @@map("password_reset")
 }
 
-model fees {
-  id     Int  @id @default(autoincrement())
-  amount Int?
-}
+
 
 model schema_migrations {
   id        Int    @id @default(autoincrement())
   file_name String @unique @db.VarChar(100)
+}
+
+
+model AcademicYear {
+  id        Int      @id @default(autoincrement())
+  name String @unique @db.VarChar(20)
+  startDate DateTime @db.Date
+  endDate   DateTime @db.Date
+  isActive  Boolean  @default(false)
+
+  feeStructures FeeStructure[]
+
+  @@map("academic_year")
+}
+
+model FeeStructure {
+  id             Int      @id @default(autoincrement())
+  academicYearId Int      @map("academic_year_id")
+  standardId     Int      @map("standard_id")
+  feeType        String   @db.VarChar(50)
+  amount         Decimal  @db.Decimal(10, 2)
+  dueDate        DateTime? @map("due_date") @db.Date
+
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  standard       Standard     @relation(fields: [standardId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("fee_structure")
 }

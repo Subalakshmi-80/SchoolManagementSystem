@@ -237,7 +237,7 @@
     import AdminNavbar from "../../components/AdminNavbar.vue";
     import {ref,onMounted, computed,watch} from 'vue';
     import {useRouter} from 'vue-router'
-    import API from "../../components/api.js"
+    import API from "../../services/api.js";
 
     const router = useRouter();
 

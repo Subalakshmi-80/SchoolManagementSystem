@@ -35,6 +35,9 @@ import AdminTestList from "../views/Tests/adminTestList.vue";
 import AdminTestDetails from "../views/Tests/adminTestDetails.vue";
 import addTeacher from "../views/teacher/addTeacher.vue";
 import editTeacher from "../views/teacher/editTeacher.vue";
+import AcademicYearList from "../views/academicYear/academicYearList.vue";
+import AddAcademicYear from "../views/academicYear/addAcademicYear.vue";
+import EditAcademicYear from "../views/academicYear/editAcademicYear.vue";
 
 const routes =[
 {path:"/",component:Login},
@@ -71,7 +74,11 @@ const routes =[
 {path:'/fees/collect',component:FeesCollect,meta:{role:'admin'}},
 {path:'/timetable/list',component:timetableList,meta:{role:'admin'}},
 {path:'/timetable/create',component:AddTimeTable,meta:{role:'admin'}},
-{path:'/timetable/edit/:id',component:EditTimetable,meta:{role:'admin'}}
+{path:'/timetable/edit/:id',component:EditTimetable,meta:{role:'admin'}},
+
+{path:'/academic-year/list',component:AcademicYearList,meta:{role:'admin'}},
+{path:'/academic-year/create',component:AddAcademicYear,meta:{role:'admin'}},
+{path:'/academic-year/edit/:id',component:EditAcademicYear,meta:{role:'admin'}}
 ]
 
 const router = createRouter({

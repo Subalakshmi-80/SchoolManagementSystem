@@ -49,6 +49,11 @@
                 <i class="bi bi-cash-stack px-3"></i>Fees</router-link>
                 <hr class="m-0 border-1 border-secondary border-opacity-75 ">
 
+                <router-link to="/academic-year/list" class="link-style" :class="{'bg-success text-white fw-bold':route.path.startsWith('/academic-year')}">
+                <i class="bi bi-calendar-event px-3"></i>Academic Year
+                </router-link>
+
+                <hr class="m-0 border-1 border-secondary border-opacity-75 ">
                 
                 
                 </div>
