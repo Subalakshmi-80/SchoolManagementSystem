@@ -27,7 +27,7 @@ app.use("/api",require("./routes/timetableRoutes"))  //TimeTable Routes
 
 
 app.use("/api",require("./routes/academicYearRoutes"));
-
+app.use("/api",require("./routes/feeStructureRoutes"));
 app.listen(PORT,()=>{
   console.log(`Server is running on port ${PORT}`)
 })

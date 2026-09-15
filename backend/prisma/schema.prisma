@@ -182,7 +182,7 @@ model FeeStructure {
   id             Int      @id @default(autoincrement())
   academicYearId Int      @map("academic_year_id")
   standardId     Int      @map("standard_id")
-  feeType        String   @db.VarChar(50)
+  feeType        String   @db.VarChar(50)  @map("fee_type") 
   amount         Decimal  @db.Decimal(10, 2)
   dueDate        DateTime? @map("due_date") @db.Date
 
