@@ -44,11 +44,27 @@
                 <i class="bi bi-calendar2-check-fill px-3"></i>Timetable</router-link>
                 <hr class="m-0 border-1 border-secondary border-opacity-75 ">
 
+                <div class="link-style"
+                   
+                    @click="feesOpen = !feesOpen">
 
-                <router-link to="/fees/Dashboard"  class="link-style" :class="{'bg-success text-white fw-bold':route.path.startsWith('/fees')}">
-                <i class="bi bi-cash-stack px-3"></i>Fees</router-link>
-                <hr class="m-0 border-1 border-secondary border-opacity-75 ">
+                    <i class="bi bi-cash-stack px-3"></i>Fees
+                    <i class="bi ms-auto" :class="feesOpen ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>                    
+                </div>
+                <hr class="m-0 border-1 border-secondary border-opacity-75 "> 
 
+                <div v-if="feesOpen">
+                    <router-link
+                        to="/fees-structure/list"
+                        class="link-style ps-5"
+                        :class="{ 'bg-success text-white fw-bold': route.path.startsWith('/fees-structure') }"
+                    >
+                        <i class="bi bi-list-ul px-3"></i>Fees Structure
+                    </router-link>
+
+                    <hr class="m-0 border-1 border-secondary border-opacity-75">
+                </div>
+            
                 <router-link to="/academic-year/list" class="link-style" :class="{'bg-success text-white fw-bold':route.path.startsWith('/academic-year')}">
                 <i class="bi bi-calendar-event px-3"></i>Academic Year
                 </router-link>
@@ -66,15 +82,17 @@
         <script setup>
 
         import { useRoute } from 'vue-router';
+        import {ref} from 'vue';
 
         const route = useRoute();
 
-    
+       const feesOpen = ref(route.path.startsWith('/fees-structure'));
         </script>
 
         <style>
 
         .link-style{
+            display: block;
             text-decoration:none;
             color:black;
             padding:12px;

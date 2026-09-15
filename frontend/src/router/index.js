@@ -38,6 +38,7 @@ import editTeacher from "../views/teacher/editTeacher.vue";
 import AcademicYearList from "../views/academicYear/academicYearList.vue";
 import AddAcademicYear from "../views/academicYear/addAcademicYear.vue";
 import EditAcademicYear from "../views/academicYear/editAcademicYear.vue";
+import FeeStructureList from "../views/feeStructure/feeStructureList.vue";
 
 const routes =[
 {path:"/",component:Login},
@@ -78,7 +79,9 @@ const routes =[
 
 {path:'/academic-year/list',component:AcademicYearList,meta:{role:'admin'}},
 {path:'/academic-year/create',component:AddAcademicYear,meta:{role:'admin'}},
-{path:'/academic-year/edit/:id',component:EditAcademicYear,meta:{role:'admin'}}
+{path:'/academic-year/edit/:id',component:EditAcademicYear,meta:{role:'admin'}},
+
+{path:'/fees-structure/list',component:FeeStructureList,meta:{role:'admin'}}
 ]
 
 const router = createRouter({
