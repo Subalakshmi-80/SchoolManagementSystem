@@ -59,7 +59,18 @@
                         class="link-style ps-5"
                         :class="{ 'bg-success text-white fw-bold': route.path.startsWith('/fees-structure') }"
                     >
-                        <i class="bi bi-list-ul px-3"></i>Fees Structure
+                        <i class="bi bi-list-ul px-2"></i>Fees Structure
+                    </router-link>
+
+                    <hr class="m-0 border-1 border-secondary border-opacity-75">
+
+
+                       <router-link
+                        to="/fees/Dashboard"
+                        class="link-style ps-5"
+                        :class="{ 'bg-success text-white fw-bold': route.path.startsWith('/fees/Dashboard') }"
+                    >
+                        <i class="bi bi-bar-chart-line-fill px-2"></i>Fees Dashboard
                     </router-link>
 
                     <hr class="m-0 border-1 border-secondary border-opacity-75">
@@ -86,7 +97,10 @@
 
         const route = useRoute();
 
-       const feesOpen = ref(route.path.startsWith('/fees-structure'));
+     const feesOpen = ref(
+    route.path.startsWith('/fees-structure') ||
+    route.path.startsWith('/fees/Dashboard')
+);
         </script>
 
         <style>

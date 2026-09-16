@@ -39,6 +39,8 @@ import AcademicYearList from "../views/academicYear/academicYearList.vue";
 import AddAcademicYear from "../views/academicYear/addAcademicYear.vue";
 import EditAcademicYear from "../views/academicYear/editAcademicYear.vue";
 import FeeStructureList from "../views/feeStructure/feeStructureList.vue";
+import AddFeeStructure from "../views/feeStructure/feeStructureCreate.vue";
+import EditFeeStructure from "../views/feeStructure/editFeeStructure.vue";
 
 const routes =[
 {path:"/",component:Login},
@@ -71,7 +73,7 @@ const routes =[
 {path:'/test/enterMarks/:id',component:EnterMarks,meta:{role:"teacher"}},
 {path:'/test/viewMarks/:id',component:viewMarks,meta:{role:"teacher"}},
 {path:'/test/editMarks/:id',component:editMarks,meta:{role:"teacher"}},
-{path:'/fees/Dashboard',component:FeesDashboard,meta:{role:'admin'}},
+
 {path:'/fees/collect',component:FeesCollect,meta:{role:'admin'}},
 {path:'/timetable/list',component:timetableList,meta:{role:'admin'}},
 {path:'/timetable/create',component:AddTimeTable,meta:{role:'admin'}},
@@ -81,7 +83,11 @@ const routes =[
 {path:'/academic-year/create',component:AddAcademicYear,meta:{role:'admin'}},
 {path:'/academic-year/edit/:id',component:EditAcademicYear,meta:{role:'admin'}},
 
-{path:'/fees-structure/list',component:FeeStructureList,meta:{role:'admin'}}
+{path:'/fees-structure/list',component:FeeStructureList,meta:{role:'admin'}},
+{path:'/fees-structure/create',component:AddFeeStructure,meta:{role:'admin'}},
+{path:'/fees-structure/edit/:id',component:EditFeeStructure,meta:{role:'admin'}},
+
+{path:'/fees/Dashboard',component:FeesDashboard,meta:{role:'admin'}}
 ]
 
 const router = createRouter({
