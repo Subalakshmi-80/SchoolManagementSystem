@@ -1,115 +1,125 @@
 <template>
 <AdminNavbar>
-<div class="p-5">
-<div class="row align-items-center">
-<div class="col-md-3">
-<button class="btn btn-outline-secondary" @click="router.push('/fees/Dashboard')"><i class=" bi bi-arrow-left me-2"></i>Back</button>
+    <div class="container-fluid px-5">
+        <h1 class="fs-4 text-success fw-bold mb-4 d-flex justify-content-center align-items-center">
+    <i class="bi bi-cash-coin me-2 mt-2"></i>
+    <span >Collect Fees</span>
+</h1>
+
+      <div class="row g-4 align-items-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold text-success mb-3">
+                        <i class="bi bi-search me-2"></i>
+                        Find Student
+                    </h5>
+
+                    <label class="form-label fw-semibold">
+                        Register No
+                    </label>
+
+                    <div class="input-group mt-2">
+
+                        <input type="text" class="form-control" v-model="regNo" required
+                            placeholder="Enter Register Number">
+
+                        <button type="button" class="btn  btn-success" @click="searchStudent">Search</button>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+
+<div class="col-md-6">
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-body p-4">
+
+            <h5 class="fw-bold mb-3 text-success">
+                <i class="bi bi-person-vcard me-2"></i>
+                Student Details
+            </h5>
+
+            <div class="row">
+                <div class="col-sm-6 mb-3">
+                    <p class="text-muted mb-1">Name</p>
+                    <p class="fw-semibold mb-0">{{ student?  student.user.name : '-' }}</p>
+                </div>
+
+                <div class="col-sm-6 mb-3">
+                    <p class="text-muted mb-1">Register No</p>
+                    <p class="fw-semibold mb-0">{{ student? student.regNo :"-" }}</p>
+                </div>
+
+                <div class="col-sm-6">
+                    <p class="text-muted mb-1">Class</p>
+                    <p class="fw-semibold mb-0">
+                    {{ student? `${student.class.standard.name} - ${student.class.name}` :"-"}} 
+                    </p>
+                </div>
+
+                <div class="col-sm-6">
+                    <p class="text-muted mb-1">Phone</p>
+                    <p class="fw-semibold mb-0">
+                    {{ student?student.phone:"-" }}
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 
-<div class="col-md-9 text-center">
+    <div v-if="studentFees && studentFees.fees" class="card shadow border-0 rounded-4 mt-4">
+    <div class="card-body p-4">
+        <h5 class="fw-bold text-success mb-4"> <i class="bi bi-receipt me-2"></i>
+            Fee Details</h5>
+            
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center">
+                    <thead>
+                        <tr>
+                            <th>Fee Type</th>
+                            <th>Total Amount</th>
+                            <th>Paid</th>
+                            <th>Balance</th>
+                            <th>Due Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
 
+                    <tbody>
+                        <tr v-for="fee in studentFees.fees" :key="fee.feeId">
+                            <td>{{ fee.feeType }}</td>
+                            <td>₹{{Number(fee.totalAmount).toLocaleString("en-IN")  }}</td>
+                            <td>₹{{ Number(fee.totalPaid).toLocaleString("en-IN") }}</td>
+                            <td>₹{{ Number(fee.balance).toLocaleString("en-IN") }}</td>
+                            <td>
+                                {{ fee.dueDate ? new Date(fee.dueDate).toLocaleDateString("en-GB") : "-" }}
+                            </td>
+                            <td>
+                            <button
+                                v-if="fee.balance > 0"
+                                class="btn btn-sm btn-success"
+                            >
+                                Collect
+                            </button>
 
-<h2 class="col-md-9">Collect Student Fee</h2>
-</div>
-
-</div>
-
-
-<div class="card shadow-sm bg-white mt-4 p-3">
-
-<h5 class="fs-4 fw-bold"><i class="bi bi-person me-2 text-primary fs-3"></i>Student Information</h5>
-<hr class=" text-primary opacity-75">
-
-
-<form >
-<div class="row align-items-center">
-<div class="col-md-6 mb-3">
-<label class="for-label fw-semibold">Register Number <span class="text-danger">*</span></label>
-
-<div class="input-group  border-secondary rounded  w-auto">
-<input type="search" class="form-control shadow-none" placeholder="Search register number">
-<span class="input-group-text bg-white"><i class="bi bi-search "></i></span>
-</div>
-
-</div>
-
-<div class="col-md-6 mb-3">
-<label class="for-label fw-semibold">Student Name</label>
-<input type="text" class="form-control shadow-none" value="Kavitha" readonly>
-</div>
-
-<div class="col-md-6 mb-3">
-<label class="for-label fw-semibold">Class</label>
-<input type="text" class="form-control shadow-none" value="10-A" readonly>
-
-</div>
-
-<div class="col-md-6 mb-3">
-<label class="for-label fw-semibold">Academic Year</label>
-<input type="text" class="form-control shadow-none" value="2026-2027" readonly>
-
-</div>
-
-</div>
-
-
-
-
-</form>
-
-</div>
-
-
-<div class="card shadow-sm bg-white mt-4 p-3">
-
-<h5 class="fs-4 fw-bold"><i class="bi bi-file-earmark me-2 text-primary fs-3"></i>Fee Information</h5>
-<hr class=" text-primary opacity-75">
-
-
-<form>
-
-<div class="row align-items-center">
-
-<div class="col-md-6 mb-3">
-<label class="form-label fw-semibold">Fee Type <span class="text-danger">*</span></label>
-<select class="form-select shadow-none required">
-<option value="" disabled>Select Fee Type</option>
-<option>Term 1</option>
-<option>Term 2</option>
-<option>Term 3</option>
-<option>Transport Fees</option>
-<option>Hostel Fees</option>
-
-
-</select>
-</div>
-
-
-<div class="col-md-6 mb-3">
-<label class="form-label fw-semibold">Amount <span class="text-danger">*</span></label>
-<input type="number" class="form-control shadow-none" placeholder="Enter amount" required>
-</div>
-
-<div class="col-md-6 mb-3">
-<label class="form-label fw-semibold">Payment Date <span class="text-danger">*</span></label>
-<input type="date" class="form-control shadow-none" v-model="paymentDate" required>
-</div>
-
-<div class="col-md-6 mb-3">
-<label class="form-label fw-semibold">Remarks</label>
-<textarea class="form-control" placeholder="Enter remarks (if any)"></textarea></div>
-</div>
-
-<div class="d-grid d-md-flex justify-content-md-end align-items-center gap-3">
-
-<button class="btn btn-secondary opacity-75 fw-bold px-md-3 py-md-2" @click="router.push('/fees/Dashboard')">Cancel</button>
-<button class="btn btn-primary fw-bold px-md-4 py-md-2">Collect Fee</button>
-</div>
-</form>
-</div>
-
-</div>
-
+                            <span
+                                v-else
+                                class="badge bg-success-subtle text-success"
+                            >
+                                Paid
+                            </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+    </div>
+      </div>
+    </div>
 
 </AdminNavbar>
     </template>
@@ -118,13 +128,79 @@
     <script setup>
     import AdminNavbar from '../../components/AdminNavbar.vue';
     import { useRouter } from 'vue-router';
-    import {ref} from 'vue';
+    import {ref,onMounted} from 'vue';
+import API from '../../services/api.js';
 
-    const today = new Date()
 
-    console.log(today)
-
-    const paymentDate = ref(today)
-   
     const router = useRouter();
+
+    const regNo = ref("");
+    const student = ref(null)
+
+    const searchStudent = async()=>{
+         if (!regNo.value.trim()) {
+        alert("Please enter Register Number");
+        return;
+    }
+        try{
+            
+            const token = localStorage.getItem("token");
+
+            const res = await API.get(`/api/students/regno/${regNo.value}`,{
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            })
+
+            student.value = res.data;
+            await getStudentFees();
+           
+        }catch(err){
+            alert(err.response.data.error);
+        }
+    }
+
+    const academicYear = ref(null);
+
+    const getActiveAcademicYear = async()=>{
+        try{
+            const token = localStorage.getItem("token");
+
+            const res = await API.get("/api/academicyears",{
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            })
+            academicYear.value = res.data.find(
+                year => year.isActive
+            )
+        }catch(err){
+            console.log(err.response.data.error)
+        }
+    }
+
+    onMounted(getActiveAcademicYear);
+
+    const studentFees = ref([])
+    const getStudentFees = async()=>{
+        try{
+            const token = localStorage.getItem("token");
+
+            const res = await API.get(`/api/students/${student.value.id}/fees/${academicYear.value.id}`,{
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            })
+            studentFees.value = res.data;
+            console.log(studentFees.value.fees)
+
+        }catch(err){
+            console.log(err.response.data.error);
+        }
+    }
+
     </script>
+
+    <style scoped>
+  
+    </style>

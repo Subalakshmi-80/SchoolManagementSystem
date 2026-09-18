@@ -389,4 +389,52 @@
             })
         )
     }
-    module.exports = { createStudent, getStudents, getOneStd, updateStd,deleteStd ,importStudents};
+
+
+    const getStudentByRegNo = async(req,res)=>{
+        const regNo = req.params.regNo;
+
+        try{
+
+            if(!regNo){
+                return res.status(422).json({error:"Register number is required."})
+            }
+            const student = await prisma.student.findUnique({
+                where:{
+                    regNo
+                },
+                include:{
+                    user:{
+                        select:{
+                            name:true,
+                            email:true
+                        }
+                    },
+                    class:{
+                        include:{
+                            standard:true
+                        }
+                    }
+                }
+            })
+
+            if(!student){
+                return res.status(404).json({
+                    error:"Student not found."
+                })
+            }
+            return res.status(200).json(student)
+        }catch(err){
+            console.log(err);
+            return res.status(500).json({
+                error:"Something went wrong. Please try again later."
+            })
+        }
+
+       
+       
+    }
+    module.exports = { createStudent, getStudents, getOneStd, updateStd,deleteStd ,
+        importStudents,
+        getStudentByRegNo
+    };

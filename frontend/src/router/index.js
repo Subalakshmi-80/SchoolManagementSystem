@@ -74,7 +74,7 @@ const routes =[
 {path:'/test/viewMarks/:id',component:viewMarks,meta:{role:"teacher"}},
 {path:'/test/editMarks/:id',component:editMarks,meta:{role:"teacher"}},
 
-{path:'/fees/collect',component:FeesCollect,meta:{role:'admin'}},
+
 {path:'/timetable/list',component:timetableList,meta:{role:'admin'}},
 {path:'/timetable/create',component:AddTimeTable,meta:{role:'admin'}},
 {path:'/timetable/edit/:id',component:EditTimetable,meta:{role:'admin'}},
@@ -87,7 +87,8 @@ const routes =[
 {path:'/fees-structure/create',component:AddFeeStructure,meta:{role:'admin'}},
 {path:'/fees-structure/edit/:id',component:EditFeeStructure,meta:{role:'admin'}},
 
-{path:'/fees/Dashboard',component:FeesDashboard,meta:{role:'admin'}}
+{path:'/fees/Dashboard',component:FeesDashboard,meta:{role:'admin'}},
+{path:'/fees/collect',component:FeesCollect,meta:{role:'admin'}}
 ]
 
 const router = createRouter({

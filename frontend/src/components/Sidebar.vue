@@ -68,7 +68,7 @@
                        <router-link
                         to="/fees/Dashboard"
                         class="link-style ps-5"
-                        :class="{ 'bg-success text-white fw-bold': route.path.startsWith('/fees/Dashboard') }"
+                        :class="{ 'bg-success text-white fw-bold': route.path.startsWith('/fees/Dashboard') || route.path.startsWith('/fees/collect') }"
                     >
                         <i class="bi bi-bar-chart-line-fill px-2"></i>Fees Dashboard
                     </router-link>
@@ -99,7 +99,8 @@
 
      const feesOpen = ref(
     route.path.startsWith('/fees-structure') ||
-    route.path.startsWith('/fees/Dashboard')
+    route.path.startsWith('/fees/Dashboard') ||
+    route.path.startsWith('/fees/collect')
 );
         </script>
 

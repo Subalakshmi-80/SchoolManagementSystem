@@ -1,8 +1,12 @@
 <template>
 <AdminNavbar>
     <div class="container-fluid px-5 ">
-
+        <div class="d-flex justify-content-between align-items-center">
+    
         <h1 class="fs-4 text-success text-center fw-bold mb-4">Fees Dashboard</h1>
+        <button class="btn btn-success fw-bold" @click="router.push('/fees/collect')">+ Collect Fees</button>
+        </div>
+
         <div>
         <div class="dropdown mb-4">
             <button
@@ -18,7 +22,7 @@
                     <button
                         class="dropdown-item"
                         type="button"
-                        @click="selectedAcademicYear = academicYear"
+                        @click="selectAcademicYear(academicYear)"
                     >
                         {{ academicYear.name }}
                     </button>
@@ -28,37 +32,45 @@
         </div>
         <div class="row g-4 mb-4">
             <div class="col-md-6 col-xl-3">
-                <div class="card shadow-sm border-0">
+                <div class="card shadow border-0">
                     <div class="card-body">
                         <p class="text-muted mb-1">Total Fees</p>
-                        <h3 class="fw-bold mb-0"><i class="bi bi-currency-rupee"></i>0</h3>
+                        <h3 class="fw-bold mb-0"><i class="bi bi-currency-rupee"></i>
+                            {{ (feeDashboardData?.summary?.totalFee || 0 ).toLocaleString("en-IN")}}
+                        </h3>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-6 col-xl-3">
-                <div class="card shadow-sm border-0">
+                <div class="card shadow border-0">
                     <div class="card-body">
                         <p class="text-muted mb-1">Today's Received</p>
-                        <h3 class="fw-bold mb-0"><i class="bi bi-currency-rupee"></i>0</h3>
+                        <h3 class="fw-bold mb-0"><i class="bi bi-currency-rupee"></i>
+                            {{ (feeDashboardData?.summary?.todayReceived || 0 ).toLocaleString("en-IN")}}
+                        </h3>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-6 col-xl-3">
-                <div class="card shadow-sm border-0">
+                <div class="card shadow border-0">
                     <div class="card-body">
                         <p class="text-muted mb-1">Total Paid</p>
-                        <h3 class="fw-bold mb-0"><i class="bi bi-currency-rupee"></i>0</h3>
+                        <h3 class="fw-bold mb-0"><i class="bi bi-currency-rupee"></i>
+                            {{ (feeDashboardData?.summary?.totalPaid || 0).toLocaleString("en-IN") }}
+                        </h3>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-6 col-xl-3">
-                <div class="card shadow-sm border-0">
+                <div class="card shadow border-0">
                     <div class="card-body">
                         <p class="text-muted mb-1">Total Pending</p>
-                        <h3 class="fw-bold mb-0"><i class="bi bi-currency-rupee"></i>0</h3>
+                        <h3 class="fw-bold mb-0"><i class="bi bi-currency-rupee"></i>
+                            {{ (feeDashboardData?.summary?.totalPending || 0).toLocaleString("en-IN") }}
+                        </h3>
                     </div>
                 </div>
             </div>
@@ -115,12 +127,12 @@
 
 
                     <tbody>
-                        <tr v-for="cls in filteredClasses" :key="cls.id">
-                            <td>{{ cls.standard.name }}-{{ cls.name }}</td>
-                            <td>{{ getStudentCount(cls.id) }}</td>
-                            <td>20</td>
-                            <td>3</td>
-                            <td>2</td>
+                        <tr v-for="cls in filteredClasses" :key="cls.classId">
+                            <td>{{ cls.standard }}-{{ cls.className }}</td>
+                            <td>{{ cls.totalStudents }}</td>
+                            <td>{{ cls.paid }}</td>
+                            <td>{{ cls.partial }}</td>
+                            <td>{{ cls.pending }}</td>
                             <td>
                                 <button class="btn btn-sm btn-outline-success">
                                     View Details
@@ -140,7 +152,9 @@
 import AdminNavbar from '../../components/AdminNavbar.vue';
 import {ref,onMounted, computed} from 'vue';
 import API from '../../services/api';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const classes = ref([]);
 const selectedClass = ref(null)
 const getClasses =async()=>{
@@ -188,12 +202,41 @@ const getAcademicYears = async()=>{
 }
 onMounted(getAcademicYears);
 
-const filteredClasses = computed(()=>{
-    if(!selectedClass.value){
-        return classes.value
+const feeDashboardData = ref(null);
+
+const getFeeDashoard = async()=>{
+    try{
+        const token = localStorage.getItem("token");
+
+        const res = await API.get("/api/feesdashboard",{
+            params:{
+                academicYearId: selectedAcademicYear.value?.id
+            },
+            headers:{
+                Authorization:`Bearer ${token}`
+            }
+        })
+        feeDashboardData.value = res.data
+    }catch(err){
+        console.log(err.response.data.error)
     }
-    return classes.value.filter(
-        cls=>cls.id === selectedClass.value.id
+}
+
+onMounted(getFeeDashoard);
+
+const selectAcademicYear = (academicYear)=>{
+    selectedAcademicYear.value = academicYear;
+    getFeeDashoard();
+}
+const filteredClasses = computed(()=>{
+    const  dashboardClasses = feeDashboardData.value?.classes || [];
+
+    if(!selectedClass.value){
+        return dashboardClasses;
+    }
+
+    return dashboardClasses.filter(
+        cls => cls.classId === selectedClass.value.id
     )
 })
 

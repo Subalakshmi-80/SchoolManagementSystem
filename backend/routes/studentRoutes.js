@@ -1,7 +1,7 @@
 const express = require("express");
 const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
-const {createStudent,getStudents ,getOneStd,updateStd,deleteStd, importStudents}= require("../controllers/studentController");
+const {createStudent,getStudents ,getOneStd,updateStd,deleteStd, importStudents, getStudentByRegNo}= require("../controllers/studentController");
 const router = express.Router();
 
 const multer = require("multer");
@@ -32,4 +32,6 @@ router.delete("/students/:id",authMiddleware,roleMiddleware("admin"),deleteStd);
 
 router.post("/students/upload",authMiddleware,roleMiddleware("admin"),upload.single("file"),importStudents)
 
+
+router.get("/students/regno/:regNo",authMiddleware,roleMiddleware('admin'),getStudentByRegNo);
 module.exports = router;
