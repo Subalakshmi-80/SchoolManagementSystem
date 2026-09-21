@@ -74,12 +74,12 @@ const getOneSubject = async(req,res)=>{
 }
 
 const updateSubject = async(req,res)=>{
-    const {subject_name} = req.body;
+    const {subjectName} = req.body;
 
     const id = Number(req.params.id);
 
     try{
-        if(!subject_name){
+        if(!subjectName){
             return res.status(422).json({error:"Please enter the subject name"})
         }
         const subject = await prisma.subject.findUnique({where:{id}})
@@ -89,7 +89,7 @@ const updateSubject = async(req,res)=>{
         }
         const checkExistingSubject = await prisma.subject.findFirst({
             where:{
-                subjectName:subject_name,
+                subjectName:subjectName,
                 id:{
                     not:id
                 }
@@ -105,7 +105,7 @@ const updateSubject = async(req,res)=>{
                 id:id
             },
             data:{
-                subjectName:subject_name
+                subjectName:subjectName
             }
         })
 
@@ -117,8 +117,6 @@ const updateSubject = async(req,res)=>{
     })
     }
 }
-
-
 
 const deleteSubject = async(req,res)=>{
     const id = Number(req.params.id);

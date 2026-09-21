@@ -109,7 +109,7 @@ const getStudentFees = async(req,res)=>{
                     include:{
                         standard:true
                     }
-                }
+                },user:true
             }
         })
 
@@ -154,12 +154,24 @@ const getStudentFees = async(req,res)=>{
                 const totalPaid = paymentTotal._sum.amountPaid || 0;
                 const balance = Number(fee.amount) - Number(totalPaid);
 
+
+                let status;
+
+                if(totalPaid === 0){
+                    status="Pending"
+                }else if(balance === 0){
+                    status = "Paid"
+                }else{
+                    status = "Partial"
+                }
+
                 return{
                     feeId:fee.id,
                     feeType:fee.feeType,
                     totalAmount:fee.amount,
                     totalPaid,
                     balance,
+                    status,
                     dueDate:fee.dueDate
                 }
             })
@@ -177,6 +189,104 @@ const getStudentFees = async(req,res)=>{
         })
     }
 }
+
+
+const getClassStudentsFees = async (req, res) => {
+    const classId = Number(req.params.classId);
+    const academicYearId = Number(req.query.academicYearId);
+
+    try {
+        const students = await prisma.student.findMany({
+            where: {
+                classId: classId
+            },
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                        email: true
+                    }
+                },
+                class:{
+                    include:{
+                        standard:true   
+                    }
+                }
+            },
+            orderBy: {
+                id: "asc"
+            }
+        });
+
+        if(students.length === 0){
+            return res.status(404).json({error:"Students not found."})
+        }
+        const feeStructures = await prisma.feeStructure.findMany({
+            where:{
+                academicYearId:academicYearId,
+                standardId:students[0].class?.standard?.id
+            }
+        })
+
+        const studentsData = await Promise.all(
+            students.map(async (student) =>{
+                const fees = await Promise.all(
+                    feeStructures.map(async (fee) => {
+
+                        const paymentTotal = await prisma.feePayment.aggregate({
+                            where:{
+                                studentId:student.id,
+                                feeStructureId:fee.id,
+                                
+                            },
+                            _sum:{
+                                amountPaid:true
+                            }
+                        })
+
+                        const totalPaid = paymentTotal._sum.amountPaid || 0;
+                        const balance = Number(fee.amount) - Number(totalPaid);
+
+                        let status;
+
+                        if(totalPaid === 0){
+                            status="Pending"
+                        }else if(balance === 0){
+                            status = "Paid"
+                        }else{
+                            status = "Partial"
+                        }
+
+                        return {
+                            feeId :fee.id,
+                            feeType:fee.feeType,
+                            totalAmount:fee.amount,
+                            totalPaid,
+                            balance,
+                            status,
+                            dueDate:fee.dueDate
+                        }
+                    })
+                )
+
+                return {
+                    studentId:student.id,
+                    name:student.user.name,
+                    regNo:student.regNo,
+                    email:student.user.email,
+                    fees
+                }
+            })
+        )
+        return res.status(200).json(studentsData);
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            error: "Something went wrong. Please try again later."
+        });
+    }
+};
 
 const getFeeDashboard = async(req,res)=>{
     const academicYearId = req.query.academicYearId ? Number(req.query.academicYearId):null;
@@ -398,4 +508,4 @@ const getFeeDashboard = async(req,res)=>{
         })
     }
 }
-module.exports = {createFeePayment,getStudentFees,getFeeDashboard}
+module.exports = {createFeePayment,getStudentFees,getFeeDashboard,getClassStudentsFees}

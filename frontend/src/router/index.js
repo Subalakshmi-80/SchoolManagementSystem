@@ -41,6 +41,8 @@ import EditAcademicYear from "../views/academicYear/editAcademicYear.vue";
 import FeeStructureList from "../views/feeStructure/feeStructureList.vue";
 import AddFeeStructure from "../views/feeStructure/feeStructureCreate.vue";
 import EditFeeStructure from "../views/feeStructure/editFeeStructure.vue";
+import FeesClassDetails from "../views/Fees/feesClassDetails.vue";
+import FeeStudentDetails from "../views/Fees/feeStudentDetails.vue";
 
 const routes =[
 {path:"/",component:Login},
@@ -88,7 +90,9 @@ const routes =[
 {path:'/fees-structure/edit/:id',component:EditFeeStructure,meta:{role:'admin'}},
 
 {path:'/fees/Dashboard',component:FeesDashboard,meta:{role:'admin'}},
-{path:'/fees/collect',component:FeesCollect,meta:{role:'admin'}}
+{path:'/fees/collect',component:FeesCollect,meta:{role:'admin'}},
+{path:'/fees/class/:classId',component:FeesClassDetails,meta:{role:'admin'}},
+{path: '/fees/student/:studentId',component:FeeStudentDetails,meta:{role:'admin'}}
 ]
 
 const router = createRouter({

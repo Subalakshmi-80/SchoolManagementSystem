@@ -134,7 +134,7 @@
                             <td>{{ cls.partial }}</td>
                             <td>{{ cls.pending }}</td>
                             <td>
-                                <button class="btn btn-sm btn-outline-success">
+                                <button class="btn btn-sm btn-outline-success" @click="router.push(`/fees/class/${cls.classId}?academicYearId=${selectedAcademicYear.id}`)">
                                     View Details
                                 </button>
                             </td>

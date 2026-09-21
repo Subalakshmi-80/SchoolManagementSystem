@@ -44,7 +44,7 @@
 
                <div class="form-group">
                 <label >Class <span class="text-danger">*</span></label>
-                <select v-model="student.class_id" required>
+                <select v-model="student.class_id" required class="form-control">
                 <option disabled value="">Select Class</option>
                 <option v-for="cls in classes" :key="cls.id" :value="cls.id">{{cls.standard.name}}-{{ cls.name }}</option>
                 </select>

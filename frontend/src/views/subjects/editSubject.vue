@@ -6,7 +6,7 @@
 <form @submit.prevent="updateSubject()" class=" w-50">
 <div class="d-grid">
 <label class="fs-4 text-black fw-bold">Subject Name</label>
-<input type="text" v-model="subjects.subject_name" class="form-control p-3 my-3"required>
+<input type="text" v-model="subjects.subjectName" class="form-control p-3 my-3"required>
 </div>
 
  <div class="d-flex gap-4 mt-3 justify-content-center align-items-center">
@@ -38,7 +38,7 @@ const route = useRoute();
 
 
 const subjects = ref({
-    subject_name:""
+    subjectName:""
 })
 
 const id = route.params.id;
@@ -52,6 +52,7 @@ const getSubject = async() => {
             }
         })
         subjects.value = res.data
+        console.log(subjects.value)
     }catch(err){
         alert(err.response.data.error)
     }
