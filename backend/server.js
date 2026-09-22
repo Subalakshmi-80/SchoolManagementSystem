@@ -25,10 +25,14 @@ app.use("/api",require("./routes/forgotPasswordRoutes"));  //forgot password rou
 app.use("/api",require("./routes/testRoutes")) //test and Marks routes
 app.use("/api",require("./routes/timetableRoutes"))  //TimeTable Routes
 
-
+//fees routes
 app.use("/api",require("./routes/academicYearRoutes"));
 app.use("/api",require("./routes/feeStructureRoutes"));
 app.use("/api",require("./routes/feePaymentRoutes"));
+
+//attendance routes
+app.use("/api",require("./routes/attendanceRoutes"));
+
 app.listen(PORT,()=>{
   console.log(`Server is running on port ${PORT}`)
 })

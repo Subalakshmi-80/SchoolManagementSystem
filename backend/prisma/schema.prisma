@@ -3,28 +3,39 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+}
+
+enum CalendarType {
+  HOLIDAY
+  WEEKLY_OFF
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  name     String   @db.VarChar(100)
-  email    String   @unique @db.VarChar(100)
-  password String   @db.VarChar(100)
-  role     String   @db.VarChar(20)
-  student  Student?
-  teacher  Teacher?
+  id             Int              @id @default(autoincrement())
+  name           String           @db.VarChar(100)
+  email          String           @unique @db.VarChar(100)
+  password       String           @db.VarChar(100)
+  role           String           @db.VarChar(20)
+  student        Student?
+  teacher        Teacher?
+  attendances    Attendance[]
+  schoolCalendar SchoolCalendar[]
 
   @@map("users")
 }
 
 model Standard {
-  id      Int     @id @default(autoincrement())
-  name    String  @unique @db.VarChar(50)
-  classes Class[]
+  id            Int            @id @default(autoincrement())
+  name          String         @unique @db.VarChar(50)
+  classes       Class[]
   feeStructures FeeStructure[]
 
   @@map("standards")
@@ -75,25 +86,26 @@ model Teacher {
 }
 
 model Student {
-  id           Int       @id @default(autoincrement())
-  userId       Int       @unique @map("user_id")
-  regNo        String    @unique @map("regno") @db.VarChar(50)
-  firstName    String    @map("first_name") @db.VarChar(100)
-  lastName     String?   @map("last_name") @db.VarChar(100)
-  gender       String?   @db.VarChar(20)
-  dob          DateTime? @db.Date
-  phone        String?   @db.VarChar(15)
-  classId      Int       @map("class_id")
-  addressLine1 String?   @map("address_line1") @db.VarChar(255)
-  addressLine2 String?   @map("address_line2") @db.VarChar(255)
-  city         String?   @db.VarChar(100)
-  state        String?   @db.VarChar(100)
-  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  id           Int          @id @default(autoincrement())
+  userId       Int          @unique @map("user_id")
+  regNo        String       @unique @map("regno") @db.VarChar(50)
+  firstName    String       @map("first_name") @db.VarChar(100)
+  lastName     String?      @map("last_name") @db.VarChar(100)
+  gender       String?      @db.VarChar(20)
+  dob          DateTime?    @db.Date
+  phone        String?      @db.VarChar(15)
+  classId      Int          @map("class_id")
+  addressLine1 String?      @map("address_line1") @db.VarChar(255)
+  addressLine2 String?      @map("address_line2") @db.VarChar(255)
+  city         String?      @db.VarChar(100)
+  state        String?      @db.VarChar(100)
+  createdAt    DateTime?    @default(now()) @map("created_at") @db.Timestamp(6)
   marks        Mark[]
-  feePayments FeePayment[]
+  feePayments  FeePayment[]
+  attendances  Attendance[]
 
-  class        Class     @relation(fields: [classId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  class Class @relation(fields: [classId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("students")
 }
@@ -104,7 +116,7 @@ model Test {
   classId   Int      @map("class_id")
   subjectId Int      @map("subject_id")
   testDate  DateTime @map("test_date") @db.Date
-  maxMarks Int @map("max_marks")
+  maxMarks  Int      @map("max_marks")
   marks     Mark[]
   class     Class    @relation(fields: [classId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -116,8 +128,8 @@ model Mark {
   id        Int       @id @default(autoincrement())
   testId    Int       @map("test_id")
   studentId Int       @map("student_id")
-  StdMarks  Int?       @map("std_marks")
-  status String @default("Present")
+  StdMarks  Int?      @map("std_marks")
+  status    String    @default("Present")
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
   student   Student   @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   test      Test      @relation(fields: [testId], references: [id], onDelete: Cascade, onUpdate: NoAction)
@@ -160,17 +172,14 @@ model PasswordReset {
   @@map("password_reset")
 }
 
-
-
 model schema_migrations {
   id        Int    @id @default(autoincrement())
   file_name String @unique @db.VarChar(100)
 }
 
-
 model AcademicYear {
   id        Int      @id @default(autoincrement())
-  name String @unique @db.VarChar(20)
+  name      String   @unique @db.VarChar(20)
   startDate DateTime @db.Date
   endDate   DateTime @db.Date
   isActive  Boolean  @default(false)
@@ -181,33 +190,62 @@ model AcademicYear {
 }
 
 model FeeStructure {
-  id             Int      @id @default(autoincrement())
-  academicYearId Int      @map("academic_year_id")
-  standardId     Int      @map("standard_id")
-  feeType        String   @db.VarChar(50)  @map("fee_type") 
-  amount         Decimal  @db.Decimal(10, 2)
+  id             Int       @id @default(autoincrement())
+  academicYearId Int       @map("academic_year_id")
+  standardId     Int       @map("standard_id")
+  feeType        String    @map("fee_type") @db.VarChar(50)
+  amount         Decimal   @db.Decimal(10, 2)
   dueDate        DateTime? @map("due_date") @db.Date
 
-  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  standard       Standard     @relation(fields: [standardId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  academicYear AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  standard     Standard     @relation(fields: [standardId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   feePayments FeePayment[]
+
   @@map("fee_structure")
 }
 
-
 model FeePayment {
-  id  Int  @id @default(autoincrement())
-  receiptNo String @unique @map("receipt_no") @db.VarChar(30)
-  studentId Int @map("student_id")
-  feeStructureId Int @map("fee_structure_id")
-  amountPaid Decimal @map("amount_paid") @db.Decimal(10,2)
-  paymentDate DateTime @map("payment_date") @db.Date
-  remarks String? @db.VarChar(255)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  id             Int      @id @default(autoincrement())
+  receiptNo      String   @unique @map("receipt_no") @db.VarChar(30)
+  studentId      Int      @map("student_id")
+  feeStructureId Int      @map("fee_structure_id")
+  amountPaid     Decimal  @map("amount_paid") @db.Decimal(10, 2)
+  paymentDate    DateTime @map("payment_date") @db.Date
+  remarks        String?  @db.VarChar(255)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp(6)
 
-  student Student @relation(fields: [studentId] ,references: [id],onDelete: NoAction)
-  feeStructure FeeStructure @relation(fields: [feeStructureId],references: [id],onDelete: NoAction)
+  student      Student      @relation(fields: [studentId], references: [id], onDelete: NoAction)
+  feeStructure FeeStructure @relation(fields: [feeStructureId], references: [id], onDelete: NoAction)
 
   @@map("fee_payment")
+}
+
+model Attendance {
+  id        Int              @id @default(autoincrement())
+  studentId Int              @map("student_id")
+  date      DateTime         @db.Date
+  status    AttendanceStatus
+  markedBy  Int              @map("marked_by")
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime         @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user    User    @relation(fields: [markedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([studentId, date])
+  @@map("attendance")
+}
+
+model SchoolCalendar {
+  id        Int          @id @default(autoincrement())
+  date      DateTime     @unique @db.Date
+  type      CalendarType
+  reason    String?      @db.VarChar(255)
+  createdBy Int          @map("created_by")
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamp(6)
+
+  user User @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("school_calendar")
 }

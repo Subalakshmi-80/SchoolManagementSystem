@@ -144,7 +144,7 @@ const getStudentFees = async(req,res)=>{
             feeStructure.map(async(fee)=>{
                 const paymentTotal = await prisma.feePayment.aggregate({
                     where:{
-                        studentId:studentId,
+                        studentId:student.id,
                         feeStructureId:fee.id
                     },
                     _sum:{
