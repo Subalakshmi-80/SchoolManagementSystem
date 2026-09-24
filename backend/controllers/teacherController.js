@@ -356,4 +356,52 @@ const importTeachers = async(req,res)=>{
     )
 }
 
-module.exports ={createTeacher,getTeacher,getSingleTeacher,updateTeacher,deleteTeacher,importTeachers};
+
+const getMyTeacherClass = async(req,res)=>{
+    try{
+        const teacher = await prisma.teacher.findUnique({
+            where:{
+                userId:req.user.id
+            }
+        });
+
+        if(!teacher){
+            return res.status(404).json({error:"Teacher not found."})
+        }
+
+        if(teacher.classIncharge !== "Yes"){
+            return res.status(403).json({error:"You are not assigned as a class incharge."})
+        }
+
+        if(!teacher.classSection){
+            return res.status(404).json({
+                error:"Class section not assigned."
+            })
+        }
+
+        const [standardName ,className] = teacher.classSection.split("-");
+
+        const selectedClass = await prisma.class.findFirst({
+            where:{
+                name:className,
+                standard:{
+                    name:standardName
+                }
+            },include:{
+                standard:true
+            }
+        })
+
+        if(!selectedClass){
+            return res.status(404).json({error:"Assigned class not found."})
+        }
+
+        return res.status(200).json(selectedClass);
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({
+            error:"Something went wrong. Please try again later."
+        })
+    }
+}
+module.exports ={createTeacher,getTeacher,getSingleTeacher,updateTeacher,deleteTeacher,importTeachers,getMyTeacherClass};

@@ -12,7 +12,7 @@ const {createAcademicYear,
 const router = express.Router();
 
 router.post('/academicyears',authMiddleware,roleMiddleware("admin"),createAcademicYear);
-router.get('/academicyears',authMiddleware,roleMiddleware("admin"),getAcademicYears);
+router.get('/academicyears',authMiddleware,roleMiddleware("admin","teacher"),getAcademicYears);
 router.get('/academicyears/:id',authMiddleware,roleMiddleware("admin"),getOneAcademicYear);
 router.put('/academicyears/:id',authMiddleware,roleMiddleware("admin"),updateAcademicYear);
 router.delete('/academicyears/:id',authMiddleware,roleMiddleware("admin"),deleteAcademicYear);

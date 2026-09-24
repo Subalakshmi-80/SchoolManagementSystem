@@ -76,6 +76,55 @@
                     <hr class="m-0 border-1 border-secondary border-opacity-75">
                 </div>
             
+
+                <div
+                    class="link-style"
+                    @click="attendanceOpen = !attendanceOpen"
+                >
+                    <i class="bi bi-calendar-check px-3"></i>Attendance
+                    <i
+                        class="bi ms-auto"
+                        :class="attendanceOpen ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"
+                    ></i>
+                </div>
+
+<hr class="m-0 border-1 border-secondary border-opacity-75">
+
+<div v-if="attendanceOpen">
+<!-- 
+    <router-link
+        to="/attendance/dashboard"
+        class="link-style ps-5"
+        :class="{ 'bg-success text-white fw-bold': route.path.startsWith('/attendance/dashboard') }"
+    >
+        <i class="bi bi-bar-chart-line-fill px-2"></i>Dashboard
+    </router-link>
+
+    <hr class="m-0 border-1 border-secondary border-opacity-75"> -->
+
+    <router-link
+        to="/school-calendar/list"
+        class="link-style ps-5"
+        :class="{ 'bg-success text-white fw-bold': route.path.startsWith('/school-calendar') }"
+    >
+        <i class="bi bi-calendar-event px-2"></i>School Calendar
+    </router-link>
+
+    <hr class="m-0 border-1 border-secondary border-opacity-75">
+
+    <router-link
+        to="/attendance/list"
+        class="link-style ps-5"
+        :class="{ 'bg-success text-white fw-bold': route.path.startsWith('/attendance/') }"
+    >
+        <i class="bi bi-person-check-fill px-2"></i>Attendance
+    </router-link>
+
+    <hr class="m-0 border-1 border-secondary border-opacity-75">
+
+</div>
+
+
                 <router-link to="/academic-year/list" class="link-style" :class="{'bg-success text-white fw-bold':route.path.startsWith('/academic-year')}">
                 <i class="bi bi-calendar-event px-3"></i>Academic Year
                 </router-link>
@@ -100,6 +149,11 @@
      const feesOpen = ref(
     
     route.path.startsWith('/fees')
+);
+
+const attendanceOpen = ref(
+    route.path.startsWith('/attendance') ||
+    route.path.startsWith('/school-calendar')
 );
         </script>
 

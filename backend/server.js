@@ -32,6 +32,7 @@ app.use("/api",require("./routes/feePaymentRoutes"));
 
 //attendance routes
 app.use("/api",require("./routes/attendanceRoutes"));
+app.use("/api/calendar",require("./routes/calendarRoutes"));
 
 app.listen(PORT,()=>{
   console.log(`Server is running on port ${PORT}`)

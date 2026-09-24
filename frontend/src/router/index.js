@@ -43,6 +43,14 @@ import AddFeeStructure from "../views/feeStructure/feeStructureCreate.vue";
 import EditFeeStructure from "../views/feeStructure/editFeeStructure.vue";
 import FeesClassDetails from "../views/Fees/feesClassDetails.vue";
 import FeeStudentDetails from "../views/Fees/feeStudentDetails.vue";
+import SchoolCalendarList from "../views/schoolCalendar/SchoolCalendarList.vue";
+import AddHoliday from "../views/schoolCalendar/AddHoliday.vue";
+import EditHoliday from "../views/schoolCalendar/EditHoliday.vue";
+import AttendanceList from "../views/admin-attendance/AttendanceList.vue";
+import MarkAttendance from "../views/admin-attendance/markAttendance.vue";
+import ViewAttendance from "../views/admin-attendance/viewAttendance.vue";
+import AttendanceSumary from "../views/admin-attendance/AttendanceSumary.vue";
+import TeacherAttendance from "../views/teacher-attendance/TeacherAttendance.vue";
 
 const routes =[
 {path:"/",component:Login},
@@ -92,7 +100,17 @@ const routes =[
 {path:'/fees/Dashboard',component:FeesDashboard,meta:{role:'admin'}},
 {path:'/fees/collect',component:FeesCollect,meta:{role:'admin'}},
 {path:'/fees/class/:classId',component:FeesClassDetails,meta:{role:'admin'}},
-{path: '/fees/student/:studentId',component:FeeStudentDetails,meta:{role:'admin'}}
+{path: '/fees/student/:studentId',component:FeeStudentDetails,meta:{role:'admin'}},
+
+{path:'/school-calendar/list',component:SchoolCalendarList,meta:{role:'admin'}},
+{path:'/school-calendar/create',component:AddHoliday,meta:{role:'admin'}},
+{path:'/school-calendar/edit/:groupId',component:EditHoliday,meta:{role:'admin'}},
+
+{path:'/attendance/list',component:AttendanceList,meta:{role:'admin'}},
+{path:'/attendance/mark',component:MarkAttendance,meta:{roles:['admin','teacher']}},
+{path:'/attendance/view',component:ViewAttendance,meta:{roles:['admin','teacher']}},
+{path:'/attendance/summary',component:AttendanceSumary,meta:{roles:['admin','teacher']}},
+{path:'/attendance/teacher/list',component:TeacherAttendance,meta:{role:'teacher'}}
 ]
 
 const router = createRouter({
@@ -104,6 +122,7 @@ const router = createRouter({
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
     const requiredRole = to.meta.role;
+    const requiredRoles = to.meta.roles;
 
     if(to.path === "/" || to.path === "/forgot-password" || to.path === "/otp-verification" || to.path === "/reset-password"){
         next()
@@ -112,7 +131,7 @@ const router = createRouter({
         next("/")
     }
 
-    else if(requiredRole === role){
+    else if((requiredRole && requiredRole === role) || (requiredRoles && requiredRoles.includes(role))){
         next()
     }
     else{
