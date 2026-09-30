@@ -1,6 +1,5 @@
 const prisma = require("../prisma/prisma");
 
-
 const crypto = require("crypto");
 
 const createHoliday = async(req,res)=>{
@@ -134,7 +133,6 @@ const createHoliday = async(req,res)=>{
         })
     }
 }
-
 
 const getHolidays = async(req,res) =>{
     const { academicYearId } = req.query;
@@ -285,7 +283,7 @@ const getHolidayByGroupId = async (req, res) => {
             error: "Something went wrong. Please try again later."
         });
     }
-};
+}
 
 
 const checkCalendarDate = async (req, res) => {
@@ -343,35 +341,34 @@ const checkCalendarDate = async (req, res) => {
             where: {
                 date: selectedDate
             }
-        });
+        })
 
         if (!calendarEntry) {
             return res.status(200).json({
                 isBlocked: false
-            });
+            })
         }
 
         if (calendarEntry.academicYearId !== selectedAcademicYear.id) {
             return res.status(200).json({
                 isBlocked: false
-            });
+            })
         }
 
         return res.status(200).json({
             isBlocked: true,
             type: calendarEntry.type,
             reason: calendarEntry.reason
-        });
+        })
 
     } catch (error) {
 
         console.log(error);
-
         return res.status(500).json({
             error: "Something went wrong. Please try again later."
         });
     }
-};
+}
 
 
 const updateHoliday = async (req, res) => {
@@ -390,17 +387,17 @@ const updateHoliday = async (req, res) => {
     if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
         return res.status(422).json({
             error: "Invalid date."
-        });
+        })
     }
 
     if (fromDate > toDate) {
         return res.status(422).json({
             error: "From date cannot be after to date."
-        });
+        })
     }
 
     try {
-        // Check whether the holiday group exists
+        
         const existingHoliday = await prisma.schoolCalendar.findMany({
             where: {
                 holidayGroupId: groupId,
@@ -423,31 +420,28 @@ const updateHoliday = async (req, res) => {
 
         const academicYearId = existingHoliday[0].academicYearId;
 
-        // Get the Academic Year
         const academicYear = await prisma.academicYear.findUnique({
             where: {
                 id: academicYearId
             }
-        });
+        })
 
         if (!academicYear) {
             return res.status(404).json({
                 error: "Academic Year not found."
-            });
+            })
         }
 
-        // Check whether new dates are within Academic Year
         if (
             fromDate < academicYear.startDate ||
             toDate > academicYear.endDate
         ) {
             return res.status(422).json({
                 error: "Holiday dates must be within the Academic Year."
-            });
+            })
         }
 
         const dates = [];
-
         const currentDate = new Date(fromDate);
 
         while (currentDate <= toDate) {
@@ -474,12 +468,12 @@ const updateHoliday = async (req, res) => {
         if (existingDates.length > 0) {
             const duplicateDates = existingDates.map((item) => {
                 return item.date.toISOString().split("T")[0];
-            });
+            })
 
             return res.status(422).json({
                 error: "Holiday already exists for these dates.",
                 dates: duplicateDates
-            });
+            })
         }
 
         const result = await prisma.$transaction(async (tx) => {
@@ -504,22 +498,21 @@ const updateHoliday = async (req, res) => {
                         }
                     });
                 })
-            );
-        });
+            )
+        })
 
         return res.status(200).json({
             message: "Holiday updated successfully.",
             holidays: result
-        });
+        })
 
     } catch (error) {
-        console.log(error);
-
+        console.log(error)
         return res.status(500).json({
             error: "Something went wrong. Please try again later."
-        });
+        })
     }
-};
+}
 
 
 const deleteHoliday = async (req, res) => {
@@ -534,12 +527,12 @@ const deleteHoliday = async (req, res) => {
             select: {
                 id: true
             }
-        });
+        })
 
         if (existingHoliday.length === 0) {
             return res.status(404).json({
                 error: "Holiday not found."
-            });
+            })
         }
 
         await prisma.schoolCalendar.deleteMany({
@@ -547,19 +540,17 @@ const deleteHoliday = async (req, res) => {
                 holidayGroupId: groupId,
                 type: "HOLIDAY"
             }
-        });
+        })
 
         return res.status(200).json({
             message: "Holiday deleted successfully."
-        });
+        })
 
     } catch (error) {
-        console.log(error);
-
+        console.log(error)
         return res.status(500).json({
             error: "Something went wrong. Please try again later."
-        });
+        })
     }
-};
-
+}
 module.exports = {createHoliday,getHolidays,getHolidayByGroupId,updateHoliday,deleteHoliday,checkCalendarDate};

@@ -43,12 +43,12 @@
                                 </label>
 
                                 <input
-    type="date"
-    class="form-control"
-    v-model="academicYear.endDate"
-    :min="academicYear.startDate"
-    required
->
+                                    type="date"
+                                    class="form-control"
+                                    v-model="academicYear.endDate"
+                                    :min="academicYear.startDate"
+                                    required
+                                >
                             </div>
                         </div>
 
@@ -119,7 +119,6 @@ const updateAcademicYear = () => {
 
     academicYear.value.name = `${year}-${year + 1}`;
 
-    // Clear previous End Date when Start Date changes
     academicYear.value.endDate = "";
 };
 

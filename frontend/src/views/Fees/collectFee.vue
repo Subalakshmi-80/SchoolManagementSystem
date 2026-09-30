@@ -2,9 +2,9 @@
 <AdminNavbar>
     <div class="container-fluid px-5">
         <h1 class="fs-4 text-success fw-bold mb-4 d-flex justify-content-center align-items-center">
-    <i class="bi bi-cash-coin me-2 mt-2"></i>
-    <span >Collect Fees</span>
-</h1>
+            <i class="bi bi-cash-coin me-2 mt-2"></i>
+            <span >Collect Fees</span>
+        </h1>
 
       <div class="row g-4 align-items-center">
         <div class="col-md-6">
@@ -31,44 +31,44 @@
         
         </div>
 
-<div class="col-md-6">
-    <div class="card shadow border-0 rounded-4">
-        <div class="card-body p-4">
+    <div class="col-md-6">
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-body p-4">
 
-            <h5 class="fw-bold mb-3 text-success">
-                <i class="bi bi-person-vcard me-2"></i>
-                Student Details
-            </h5>
+                <h5 class="fw-bold mb-3 text-success">
+                    <i class="bi bi-person-vcard me-2"></i>
+                    Student Details
+                </h5>
 
-            <div class="row">
-                <div class="col-sm-6 mb-3">
-                    <p class="text-muted mb-1">Name</p>
-                    <p class="fw-semibold mb-0">{{ student?  student.user.name : '-' }}</p>
+                <div class="row">
+                    <div class="col-sm-6 mb-3">
+                        <p class="text-muted mb-1">Name</p>
+                        <p class="fw-semibold mb-0">{{ student?  student.user.name : '-' }}</p>
+                    </div>
+
+                    <div class="col-sm-6 mb-3">
+                        <p class="text-muted mb-1">Register No</p>
+                        <p class="fw-semibold mb-0">{{ student? student.regNo :"-" }}</p>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <p class="text-muted mb-1">Class</p>
+                        <p class="fw-semibold mb-0">
+                        {{ student? `${student.class.standard.name} - ${student.class.name}` :"-"}} 
+                        </p>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <p class="text-muted mb-1">Phone</p>
+                        <p class="fw-semibold mb-0">
+                        {{ student?student.phone:"-" }}
+                        </p>
+                    </div>
                 </div>
 
-                <div class="col-sm-6 mb-3">
-                    <p class="text-muted mb-1">Register No</p>
-                    <p class="fw-semibold mb-0">{{ student? student.regNo :"-" }}</p>
-                </div>
-
-                <div class="col-sm-6">
-                    <p class="text-muted mb-1">Class</p>
-                    <p class="fw-semibold mb-0">
-                    {{ student? `${student.class.standard.name} - ${student.class.name}` :"-"}} 
-                    </p>
-                </div>
-
-                <div class="col-sm-6">
-                    <p class="text-muted mb-1">Phone</p>
-                    <p class="fw-semibold mb-0">
-                    {{ student?student.phone:"-" }}
-                    </p>
-                </div>
             </div>
-
         </div>
     </div>
-</div>
 
     <div v-if="studentFees && studentFees.fees" class="card shadow border-0 rounded-4 mt-4">
     <div class="card-body p-4">
@@ -289,12 +289,8 @@
 
     <script setup>
     import AdminNavbar from '../../components/AdminNavbar.vue';
-    import { useRouter } from 'vue-router';
     import {ref,onMounted} from 'vue';
-import API from '../../services/api.js';
-
-
-    const router = useRouter();
+    import API from '../../services/api.js';
 
     const regNo = ref("");
     const student = ref(null)
@@ -425,7 +421,6 @@ const collectPayment = async()=>{
 const printReceipt = () => {
 
     const receipt = paymentReceipt.value;
-
     const printWindow = window.open("", "_blank", "width=500,height=700");
 
     printWindow.document.write(`

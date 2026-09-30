@@ -41,22 +41,25 @@ const createFeeStructure = async(req,res)=>{
         }
 
         const newFeeStructure = await prisma.feeStructure.create({
-    data: {
-        academicYearId: Number(academicYearId),
-        standardId: Number(standardId),
-        feeType,
-        amount,
-        dueDate: dueDate ? new Date(dueDate) : null
-    }
-});
+            data: {
+                academicYearId: Number(academicYearId),
+                standardId: Number(standardId),
+                feeType,
+                amount,
+                dueDate: dueDate ? new Date(dueDate) : null
+            }
+        });
 
-return res.status(201).json({
-    data: newFeeStructure,
-    message: "Fee structure created successfully."
-});
+        return res.status(201).json({
+            data: newFeeStructure,
+            message: "Fee structure created successfully."
+        })
+
     }catch(error){
         console.log(error);
-        return res.status(500).json({error:"Something went wrong. Please try again later."})
+        return res.status(500).json({
+            error:"Something went wrong. Please try again later."
+        })
     }
 }
 
@@ -72,7 +75,8 @@ const getFeeStructures = async(req,res)=>{
         if(feeStructures.length === 0){
             return res.status(404).json({error:"Fee Structures not found."})
         }
-        return res.status(200).json(feeStructures)
+        return res.status(200).json(feeStructures);
+
     }catch(error){
         console.log(error);
         return res.status(500).json({
@@ -110,7 +114,6 @@ const getOneFeeStructure = async(req,res)=>{
         });
     }
 }
-
 
 const updateFeeStructure = async(req,res)=>{
     const id = Number(req.params.id);
@@ -184,10 +187,16 @@ const updateFeeStructure = async(req,res)=>{
             }
         });
 
-        return res.status(200).json({data:updatedFeeStructure,message:"Fees Structure updated successfully."})
+        return res.status(200).json({
+            data:updatedFeeStructure,
+            message:"Fees Structure updated successfully."
+        })
+
     }catch(error){
         console.log(error);
-        return res.status(500).json({error:"Something went wrong. Please try again later."})
+        return res.status(500).json({
+            error:"Something went wrong. Please try again later."
+        })
     }
  
 }
@@ -195,26 +204,29 @@ const updateFeeStructure = async(req,res)=>{
 const deleteFeeStructure = async(req,res)=>{
     const id = Number(req.params.id);
     try{
-    const existingFeeStructure = await prisma.feeStructure.findUnique({
-        where:{
-            id
-        }
-    });
+        const existingFeeStructure = await prisma.feeStructure.findUnique({
+            where:{
+                id
+            }
+        });
 
-    if(!existingFeeStructure){
-        return res.status(404).json({error:"Fees Structure not found."})
+        if(!existingFeeStructure){
+            return res.status(404).json({error:"Fees Structure not found."})
+        }
+
+        await prisma.feeStructure.delete({
+            where:{
+                id
+            }
+        })
+
+        return res.status(200).json({
+            message:"Fees structure deleted successfully."
+        })
+
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong. Please try again later."})
     }
-
-    await prisma.feeStructure.delete({
-        where:{
-            id
-        }
-    })
-
-    return res.status(200).json({message:"Fees structure deleted successfully."})
-}catch(error){
-    console.log(error);
-    return res.status(500).json({error:"Something went wrong. Please try again later."})
-}
 }
 module.exports = {createFeeStructure,getFeeStructures,getOneFeeStructure,updateFeeStructure,deleteFeeStructure};

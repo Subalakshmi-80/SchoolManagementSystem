@@ -26,27 +26,28 @@ const createSubject = async(req,res)=>{
                 data:newSubject
             })
     }catch(error){
-           console.log(error)
+        console.log(error)
         return res.status(500).json({
-        error:"Something went wrong. Please try again later."
-    })
+            error:"Something went wrong. Please try again later."
+        })
     }
   
 }
 
 const getSubjects = async(req,res)=>{
     try{
-    const subjects = await prisma.subject.findMany({
-        orderBy:{
-            id:"asc"
-        }
-    })
-    return res.status(200).json(subjects)
+        const subjects = await prisma.subject.findMany({
+            orderBy:{
+                id:"asc"
+            }
+        })
+        return res.status(200).json(subjects);
+
     }catch(error){
-          console.log(error)
+        console.log(error)
         return res.status(500).json({
-        error:"Something went wrong. Please try again later."
-    })
+            error:"Something went wrong. Please try again later."
+        });
     }
 
 }
@@ -55,20 +56,21 @@ const getOneSubject = async(req,res)=>{
     const id = Number(req.params.id);
 
     try{
-    const subjects = await prisma.subject.findUnique({
-        where:{
-            id:id
+        const subjects = await prisma.subject.findUnique({
+            where:{
+                id:id
+            }
+        })
+        if(!subjects){
+            return res.status(404).json({error:"Subject not found."})
         }
-    })
-    if(!subjects){
-        return res.status(404).json({error:"Subject not found."})
-    }
-    return res.status(200).json(subjects)
+        return res.status(200).json(subjects);
+
     }catch(error){
-          console.log(error)
+        console.log(error)
         return res.status(500).json({
-        error:"Something went wrong. Please try again later."
-    })
+            error:"Something went wrong. Please try again later."
+        })
     }
 
 }
@@ -109,12 +111,13 @@ const updateSubject = async(req,res)=>{
             }
         })
 
-        return res.status(200).json({message:"Subject updated successfully."})
+        return res.status(200).json({message:"Subject updated successfully."});
+
     }catch(error){
-        console.log(error)
+        console.log(error);
         return res.status(500).json({
-        error:"Something went wrong. Please try again later."
-    })
+            error:"Something went wrong. Please try again later."
+        });
     }
 }
 
@@ -122,22 +125,26 @@ const deleteSubject = async(req,res)=>{
     const id = Number(req.params.id);
 
     try{
-   const subjects = await prisma.subject.findUnique({where:{id}})
+        const subjects = await prisma.subject.findUnique({where:{id}})
 
-    if(!subjects){
-        return res.status(404).json({error:"Subject not found."})
-    }
-    await prisma.subject.delete({
-        where:{
-            id
+        if(!subjects){
+            return res.status(404).json({error:"Subject not found."})
         }
-    })
-    return res.status(200).json({message:"Subject deleted Successfully.",data:subjects})
+        await prisma.subject.delete({
+            where:{
+                id
+            }
+        })
+        return res.status(200).json({
+            message:"Subject deleted Successfully.",
+            data:subjects
+        });
+
     }catch(error){
         console.log(error)
         return res.status(500).json({
-        error:"Something went wrong. Please try again later."
-    })
+            error:"Something went wrong. Please try again later."
+        })
     }
  
 }

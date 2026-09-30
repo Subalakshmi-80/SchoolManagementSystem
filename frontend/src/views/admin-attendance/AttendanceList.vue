@@ -40,13 +40,12 @@
                     </ul>
                 </div>
 
-                <!-- Class -->
                 <div class="dropdown">
                     <button
                         class="btn btn-outline-secondary dropdown-toggle"
                         type="button"
-                        data-bs-toggle="dropdown"
-                    >
+                        data-bs-toggle="dropdown">
+
                         {{ selectedClass
                             ? `${selectedClass.standard.name} - ${selectedClass.name}`
                             : "Select Class" }}
@@ -55,14 +54,13 @@
                     <ul class="dropdown-menu">
                         <li
                             v-for="classItem in classes"
-                            :key="classItem.id"
-                        >
+                            :key="classItem.id">
+
                             <button
                                 class="dropdown-item"
                                 type="button"
-                                @click="selectedClass = classItem ;checkExistingAttendance()"
+                                @click="selectedClass = classItem ;checkExistingAttendance()">
 
-                            >
                                 {{ classItem.standard.name }} - {{ classItem.name }}
                             </button>
                         </li>
@@ -98,12 +96,11 @@
                 </button>
             </div>
 
-              <div
-    v-if="errorMessage"
-    class="text-danger fw-bold px-5 mb-3"
->
-    {{ errorMessage }}
-</div>
+            <div
+                v-if="errorMessage"
+                class="text-danger fw-bold px-5 mb-3">
+                {{ errorMessage }}
+            </div>
 
         </div>
     </AdminNavbar>

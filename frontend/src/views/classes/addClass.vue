@@ -36,7 +36,6 @@
 <script setup>
 import AdminNavbar from '../../components/AdminNavbar.vue';
 import {useRouter} from 'vue-router';
-import axios from "axios";
 import {ref,onMounted} from 'vue';
 import API from "../../services/api.js"
 
@@ -82,8 +81,6 @@ const saveClass = async() =>{
         alert(res.data.message);
         router.push('/class/list')
     }catch(err){
-          
-
         alert(err.response.data.error)
     }
 }

@@ -63,23 +63,17 @@
 
             </div>
 
-
-            <!-- Student List -->
-
             <div class="px-5 mt-4">
 
                 <div
                     v-if="Students.length === 0"
-                    class="text-danger text-center fw-bold"
-                >
+                    class="text-danger text-center fw-bold">
                     No students found.
                 </div>
 
-
                 <div
                     v-else
-                    class="table-responsive w-75 mx-auto"
-                >
+                    class="table-responsive w-75 mx-auto">
 
                     <div class="text-center mb-3 fs-5 fw-bold text-success">
                         Student List
@@ -107,31 +101,22 @@
                             <tr
                                 v-for="(student, index) in Students"
                                 :key="student.studentId"
-                                class="text-center align-middle"
-                            >
+                                class="text-center align-middle">
 
                                 <td>
                                     {{ index + 1 }}
                                 </td>
 
-
                                 <td>
                                     {{ student.regNo }}
                                 </td>
-
 
                                 <td>
                                     {{ student.name }}
                                 </td>
 
-
                                 <td>
-
-                                    <div
-                                        class="d-flex justify-content-center align-items-center gap-2"
-                                    >
-
-                                        <!-- Present -->
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
 
                                         <button
                                             :ref="el => presentButtons[index] = el"
@@ -152,9 +137,6 @@
                                             Present
                                         </button>
 
-
-                                        <!-- Absent -->
-
                                         <button
                                             type="button"
                                             class="btn btn-outline-danger"
@@ -174,15 +156,8 @@
                                         </button>
 
 
-                                        <!-- Required -->
-
-                                        <div
-                                            v-if="
-                                                showValidation &&
-                                                !student.status
-                                            "
-                                            class="text-danger small fw-bold ms-2"
-                                        >
+                                        <div v-if="showValidation && !student.status"
+                                            class="text-danger small fw-bold ms-2">
                                             Required
                                         </div>
 
@@ -196,23 +171,15 @@
 
                     </table>
 
-
-                    <!-- Buttons -->
-
-                    <div
-                        class="d-flex justify-content-center my-4 gap-3"
-                    >
+                    <div class="d-flex justify-content-center my-4 gap-3">
 
                         <button
                             type="button"
                             class="btn btn-outline-success px-4"
-                            @click="saveAttendance"
-                        >
+                            @click="saveAttendance">
 
                             {{
-                                attendanceExists
-                                    ? "Update Attendance"
-                                    : "Save Attendance"
+                                attendanceExists ? "Update Attendance": "Save Attendance"
                             }}
 
                         </button>
@@ -221,8 +188,7 @@
                         <button
                             type="button"
                             class="btn btn-outline-secondary px-4"
-                            @click="goBack"
-                        >
+                            @click="goBack">
                             Cancel
                         </button>
 
@@ -328,16 +294,12 @@ const formatDate = (date) => {
 const saveAttendance = async () => {
 
     showValidation.value = true;
-
-
-    const unMarkedIndex =
-        Students.value.findIndex(
+    const unMarkedIndex = Students.value.findIndex(
             student => !student.status
         );
 
 
     if (unMarkedIndex !== -1) {
-
         presentButtons.value[
             unMarkedIndex
         ]?.focus();
@@ -351,6 +313,7 @@ const saveAttendance = async () => {
                 student_id:student.studentId,
                 status:student.status
             }))
+            
         const data = {
             class_id:Number(classId),
             date:date,
@@ -358,7 +321,7 @@ const saveAttendance = async () => {
             attendance:attendance
         }
 
-        let res
+        let res;
         if (attendanceExists.value) {
             res = await API.put("/api/attendance",data,{
                     headers: {

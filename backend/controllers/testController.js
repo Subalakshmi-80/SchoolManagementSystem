@@ -1,5 +1,4 @@
 
-
 const prisma = require("../prisma/prisma");
 
 const createTest = async(req,res)=>{
@@ -102,20 +101,19 @@ const getoneTest = async(req,res) =>{
         if(!test){
             return res.status(404).json({error:"Test not found"})
         }
-        return res.status(200).json(test)
+
+        return res.status(200).json(test);
+
     }catch(error){
         console.log(error);
         return res.status(500).json({error:"Something went wrong. Please try again later"})
     }
 }
 
-
-
 const updateTest = async(req,res) =>{
     const {name,classId,subjectId,testDate,maxMarks} = req.body;
 
     const id = Number(req.params.id);
-
 
     try{
         const existingTest = await prisma.test.findUnique({
@@ -133,10 +131,10 @@ const updateTest = async(req,res) =>{
                     maxMarks === undefined || maxMarks === null ? existingTest.maxMarks : Number(maxMarks); 
 
         if (!Number.isInteger(updatedMaxMarks) || updatedMaxMarks <= 0) {
-        return res.status(422).json({
-            error: "Maximum marks must be greater than 0"
-        });
-}
+            return res.status(422).json({
+                error: "Maximum marks must be greater than 0"
+            });
+        }
 
         const checkExistingTest = await prisma.test.findFirst({
             where:{
@@ -158,8 +156,11 @@ const updateTest = async(req,res) =>{
                 testId:id
             }
         })
+
         if(marksEntered.length>0 && updatedClassId !== existingTest.classId){
-            return res.status(409).json({error:"Cannot change class. Marks have already been entered for this test."})
+            return res.status(409).json({
+                error:"Cannot change class. Marks have already been entered for this test."
+            })
         }
 
         await prisma.test.update({
@@ -172,15 +173,14 @@ const updateTest = async(req,res) =>{
                 maxMarks:updatedMaxMarks
             }
         })
-        return res.status(200).json({message:"Test updated successfully"})
+        return res.status(200).json({message:"Test updated successfully"});
+
     }catch(error){
         console.log(error);
-        return res.status(500).json({error:"Something went wrong. Please try again later"})
+        return res.status(500).json({error:"Something went wrong. Please try again later"});
     }
    
 }
-
-
 
 const deleteTest = async(req,res)=>{
     const id = Number(req.params.id);
@@ -198,16 +198,14 @@ const deleteTest = async(req,res)=>{
             }
         })
 
-        return res.status(200).json({message:`${test.name} deleted successfully`})
+        return res.status(200).json({message:`${test.name} deleted successfully`});
+
     }catch(error){
         console.log(error);
         return res.status(500).json({error:"Something went wrong. Please try again later"})
     }
 }
 
-
-
-// get students by test
 const getStudentByTest = async(req,res) =>{
     const testId = Number(req.params.id);
 
@@ -234,7 +232,7 @@ const getStudentByTest = async(req,res) =>{
             }
         })
 
-        return res.status(200).json(studentByTest)
+        return res.status(200).json(studentByTest);
        
     }catch(error){
         console.log(error);
@@ -242,71 +240,70 @@ const getStudentByTest = async(req,res) =>{
     }
 }
 
-//store marks
 const storeMarks = async(req,res)=>{
     const testId =Number(req.params.id);
 
     try{
 
-    const test = await prisma.test.findUnique({where:{id:testId}})
+        const test = await prisma.test.findUnique({where:{id:testId}})
 
-    if(!test){
-        return res.status(404).json({error:"Test not found"})
-    }
-
-    const checkExistingMarks = await prisma.mark.findMany({where:{testId}})
-    
-    if(checkExistingMarks.length > 0){
-        return res.status(409).json({error:"Marks already entered for this test"})
-    }
-
-    const { marks } = req.body;
-
-    if( !marks  || marks.length=== 0 ){
-        return res.status(400).json({error:"Marks are required"})
-    }
-
-    await prisma.$transaction(async (tx)=>{
-        for(const mark of marks){
-            let stdId = mark.student_id;
-            let enteredMark = mark.mark;
-            let status = mark.status
-
-            if(status === "Present"){
-
-                if(enteredMark === null || enteredMark === undefined || enteredMark === ''){
-                    throw new Error("Mark is required for present student")
-                }
-                if(enteredMark < 0 || enteredMark > test.maxMarks){
-                    throw new Error("Entered mark is greater than max mark")
-                }
-            }
-
-            if(status === "Absent"){
-                enteredMark =null;
-            }
-
-            if(status !== "Present" && status !== "Absent"){
-                throw new Error("Invalid status")
-            }
-
-            if(!await tx.student.findUnique({
-                where:{
-                    id:stdId
-                }
-            })){
-                throw new Error("Student not found")
-            }
-
-            await tx.mark.create({
-                data:{
-                    testId,
-                    studentId:stdId,
-                    StdMarks:enteredMark,
-                    status:status
-                }
-            })
+        if(!test){
+            return res.status(404).json({error:"Test not found"})
         }
+
+        const checkExistingMarks = await prisma.mark.findMany({where:{testId}})
+    
+        if(checkExistingMarks.length > 0){
+            return res.status(409).json({error:"Marks already entered for this test"})
+        }
+
+        const { marks } = req.body;
+
+        if( !marks  || marks.length=== 0 ){
+            return res.status(400).json({error:"Marks are required"})
+        }
+
+        await prisma.$transaction(async (tx)=>{
+            for(const mark of marks){
+                let stdId = mark.student_id;
+                let enteredMark = mark.mark;
+                let status = mark.status
+
+                if(status === "Present"){
+
+                    if(enteredMark === null || enteredMark === undefined || enteredMark === ''){
+                        throw new Error("Mark is required for present student")
+                    }
+                    if(enteredMark < 0 || enteredMark > test.maxMarks){
+                        throw new Error("Entered mark is greater than max mark")
+                    }
+                }
+
+                if(status === "Absent"){
+                    enteredMark =null;
+                }
+
+                if(status !== "Present" && status !== "Absent"){
+                    throw new Error("Invalid status")
+                }
+
+                if(!await tx.student.findUnique({
+                    where:{
+                        id:stdId
+                    }
+                })){
+                    throw new Error("Student not found")
+                }
+
+                await tx.mark.create({
+                    data:{
+                        testId,
+                        studentId:stdId,
+                        StdMarks:enteredMark,
+                        status:status
+                    }
+                })
+            }
 
     })
       return res.status(201).json({message:"Marks added successfully"})
@@ -329,46 +326,49 @@ const viewMarks = async(req,res) =>{
 
     try{
 
-    const test = await prisma.test.findUnique({where:{id:testId}})
+        const test = await prisma.test.findUnique({where:{id:testId}})
 
-    if(!test){
-        return res.status(404).json({error:"Test not found"})
-    }
-
-    const marks = await prisma.mark.findMany({
-        where:{
-            testId
-        },include:{
-            student:{
-                select:{
-                    id:true,
-                    firstName:true,
-                    lastName:true,
-                    regNo:true
-                }
-            },test:{
-                include:{
-                    class:{
-                include:{
-                    standard:true
-                }
-            }
-                }
-            }
-          
-        },
-        orderBy:{
-            student:{
-                regNo:"asc"
-            }
+        if(!test){
+            return res.status(404).json({error:"Test not found"})
         }
 
-    })
-    return res.status(200).json(marks);
-}catch(error){
-    console.log(error);
-    return res.status(500).json({error:"Something went wrong. Please try again later"})
-}
+        const marks = await prisma.mark.findMany({
+            where:{
+                testId
+            },include:{
+                student:{
+                    select:{
+                        id:true,
+                        firstName:true,
+                        lastName:true,
+                        regNo:true
+                    }
+                },test:{
+                    include:{
+                        class:{
+                    include:{
+                        standard:true
+                    }
+                }
+                    }
+                }
+            
+            },
+            orderBy:{
+                student:{
+                    regNo:"asc"
+                }
+            }
+
+        })
+        return res.status(200).json(marks);
+
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({
+            error:"Something went wrong. Please try again later"
+        });
+    }
 }
 
 const updateMarks = async(req,res) =>{
@@ -378,7 +378,6 @@ const updateMarks = async(req,res) =>{
   
     try{
 
-       
         const test = await prisma.test.findUnique({where:{id:testId}})
 
         if(!test){
@@ -388,7 +387,6 @@ const updateMarks = async(req,res) =>{
         if(!updateMark || updateMark.length === 0){
             return res.status(400).json({error:"Marks are required"})
         }
-
 
         await prisma.$transaction(async(tx)=>{
             for(const mark of updateMark){
@@ -436,7 +434,7 @@ const updateMarks = async(req,res) =>{
             }
         })
 
-            return res.status(200).json({message:"Marks updated successfully"})
+        return res.status(200).json({message:"Marks updated successfully"})
 
     }catch(error){
         console.log(error);
@@ -447,11 +445,12 @@ const updateMarks = async(req,res) =>{
              || error.message.includes("Mark is required")){
             return res.status(400).json({error:error.message})
         }
-        return res.status(500).json({error:"Something went wrong. Please try again later"})
+        return res.status(500).json({
+            error:"Something went wrong. Please try again later"
+        });
+
     }
 }
-
-
 
 module.exports = {
     createTest,

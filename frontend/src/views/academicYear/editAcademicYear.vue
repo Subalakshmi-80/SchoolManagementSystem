@@ -149,7 +149,6 @@ const updateAcademicYear = () => {
 
     academicYear.value.name = `${year}-${year + 1}`;
 
-    // Start date changed, so select end date again
     academicYear.value.endDate = "";
 };
 

@@ -1,19 +1,18 @@
 
-
 const prisma = require('../prisma/prisma');
 
 const getPeriods = async(req,res)=>{
     try{
-    const periods = await prisma.period.findMany({
-        orderBy:{
-            periodNo:"asc"
+        const periods = await prisma.period.findMany({
+            orderBy:{
+                periodNo:"asc"
+            }
+        })
+        if(periods.length === 0){
+            return res.status(404).json({error:"Periods not found."})
         }
-    })
-    if(periods.length === 0){
-        return res.status(404).json({error:"Periods not found."})
-    }
 
-    return res.status(200).json(periods)
+        return res.status(200).json(periods);
     }catch(error){
         console.log(error);
         return res.status(500).json({error:"Something went wrong. please try again later"})
@@ -65,7 +64,8 @@ const createTimetable = async(req,res)=>{
             }
        })
 
-       return res.status(201).json({message:"Timetable created successfully"})
+       return res.status(201).json({message:"Timetable created successfully"});
+
     }catch(error){
          console.log(error);
 
@@ -79,13 +79,10 @@ const createTimetable = async(req,res)=>{
 const getTimetableByClass = async(req,res) =>{
     const classId = Number(req.params.id);
 
-
     try{
         const timetable = await prisma.timetable.findMany({
             where:{
                 classId,
-             
-              
             },
             include:{
                 class:{
@@ -96,10 +93,9 @@ const getTimetableByClass = async(req,res) =>{
                 period:true,
                 subject:true
             },
-            orderBy:[
-                
+            orderBy:
                 {periodId:"asc"}
-            ]
+            
         })
 
         return res.status(200).json(timetable)
@@ -160,42 +156,6 @@ const updateTimetable = async(req,res)=>{
         return res.status(500).json({error:"Something went wrong. Please try again later"})
     }
 }
-const updateTimetale = async(req,res) =>{
-    const {classId,periodId,day,subjectId} = req.body;
 
-    const subject_id = Number(subjectId)
-
-    try{
-        const existingTimetable = await prisma.timetable.findFirst({
-            where:{
-                classId,
-                periodId,
-                day
-            }
-        })
-
-        if(!existingTimetable){
-            return res.status(404).json({error:"Timetable not found"})
-        }
-
-      
-        await prisma.timetable.update({
-            where:{
-              id:existingTimetable.id
-            },
-            data:{
-                subjectId:subject_id
-            }
-        })
-
-        return res.status(200).json({message:"Updated successfully"})
-
-    }catch(error){
-        console.log(error);
-        return res.status(500).json({error:"Something went wrong. Please try again later"})
-    }
-}
-
-    
 
 module.exports = {getPeriods,createTimetable,getTimetableByClass,updateTimetable}

@@ -27,34 +27,35 @@
 
                     <tbody>
                     
-<tr
-    v-for="academicyear in academicYears"
-    :key="academicyear.id"
-    class="text-center align-middle"
-    :class="{ 'table-success': academicyear.isActive }"
->
+                        <tr
+                            v-for="academicyear in academicYears"
+                            :key="academicyear.id"
+                            class="text-center align-middle"
+                            :class="{ 'table-success': academicyear.isActive }"
+                        >
                             <td>{{ academicyear.name }}</td>
                             <td>{{ formatDate(academicyear.startDate) }}</td>
                             <td>{{formatDate(academicyear.endDate) }}</td>
-                          <td>
-    <span
-        class="badge"
-        :class="academicyear.isActive ? 'bg-success' : 'bg-secondary'"
-    >
-        {{ academicyear.isActive ? 'Active' : 'Inactive' }}
-    </span>
-</td>
+                            <td>
+                                <span
+                                    class="badge"
+                                    :class="academicyear.isActive ? 'bg-success' : 'bg-secondary'"
+                                >
+                                    {{ academicyear.isActive ? 'Active' : 'Inactive' }}
+                                </span>
+                            </td>
                             <td>
 
-                            <div class="d-flex justify-content-center align-items-center gap-3">
-                            <i class="bi bi-pencil-square text-primary pointer" @click="router.push(`/academic-year/edit/${academicyear.id}`)"></i>
-                            <i class="bi bi-trash3-fill text-danger pointer" @click="deleteAcademicYear(academicyear.id)"></i>
-                            </div>
+                                <div class="d-flex justify-content-center align-items-center gap-3">
+                                <i class="bi bi-pencil-square text-primary pointer" @click="router.push(`/academic-year/edit/${academicyear.id}`)"></i>
+                                <i class="bi bi-trash3-fill text-danger pointer" @click="deleteAcademicYear(academicyear.id)"></i>
+                                </div>
                             
                             </td>
                         
                         </tr>
                     </tbody>
+                    
                 </table>
             </div>
         </div>

@@ -14,13 +14,9 @@
 
                     <button
                         class="btn btn-outline-secondary dropdown-toggle"
-                        data-bs-toggle="dropdown"
-                    >
+                        data-bs-toggle="dropdown">
 
-                        {{
-                            selectedAcademicYear?.name ||
-                            "Academic Year"
-                        }}
+                        {{selectedAcademicYear?.name || "Academic Year"}}
 
                     </button>
 
@@ -29,16 +25,12 @@
 
                         <li
                             v-for="academicYear in academicYears"
-                            :key="academicYear.id"
-                        >
+                            :key="academicYear.id">
+
                             <button
                                 class="dropdown-item"
                                 type="button"
-                                @click="
-                                    selectedAcademicYear = academicYear;
-                                    getAttendance()
-                                "
-                            >
+                                @click=" selectedAcademicYear = academicYear; getAttendance()">
 
                                 {{ academicYear.name }}
 
@@ -53,33 +45,21 @@
 
                     <button
                         class="btn btn-outline-secondary dropdown-toggle"
-                        data-bs-toggle="dropdown"
-                    >
+                        data-bs-toggle="dropdown">
 
-                        {{
-                            selectedClass
-                                ? `${selectedClass.standard.name} - ${selectedClass.name}`
-                                : "Class"
-                        }}
+                        {{ selectedClass ? `${selectedClass.standard.name} - ${selectedClass.name}` : "Class" }}
 
                     </button>
 
 
                     <ul class="dropdown-menu">
 
-                        <li
-                            v-for="classItem in classes"
-                            :key="classItem.id"
-                        >
+                        <li v-for="classItem in classes" :key="classItem.id">
 
                             <button
                                 class="dropdown-item"
                                 type="button"
-                                @click="
-                                    selectedClass = classItem;
-                                    getAttendance()
-                                "
-                            >
+                                @click="selectedClass = classItem; getAttendance()">
 
                                 {{ classItem.standard.name }} -
                                 {{ classItem.name }}
@@ -92,20 +72,15 @@
 
                 </div>
 
-
-                <!-- Teacher Assigned Class -->
-
                 <div v-else>
 
                     <button
                         type="button"
                         class="btn btn-outline-secondary"
-                        disabled
-                    >
+                        disabled>
 
                         {{
-                            selectedClass
-                                ? `${selectedClass.standard.name} - ${selectedClass.name}`
+                            selectedClass ? `${selectedClass.standard.name} - ${selectedClass.name}`
                                 : "Loading Class..."
                         }}
 
@@ -113,27 +88,18 @@
 
                 </div>
 
-
-                <!-- Date -->
-
                 <div>
 
                     <input
                         type="date"
                         class="form-control"
-                        v-model="selectedDate"
-                    >
+                        v-model="selectedDate">
 
                 </div>
-
-
-                <!-- View -->
-
                 <button
                     type="button"
                     class="btn btn-outline-success"
-                    @click="getAttendance"
-                >
+                    @click="getAttendance">
 
                     View
 
@@ -141,40 +107,22 @@
 
             </div>
 
-
-            <!-- Error -->
-
             <div
                 v-if="errorMessage"
-                class="text-danger fw-bold px-5 mb-3"
-            >
-
+                class="text-danger fw-bold px-5 mb-3">
                 {{ errorMessage }}
-
             </div>
 
-
-            <!-- Attendance -->
-
-            <div
-                v-if="attendanceMarked"
-                class="px-5 mt-4"
-            >
-
-                <!-- Attendance Details Card -->
+            <div v-if="attendanceMarked" class="px-5 mt-4" >
 
                 <div class="card shadow-sm">
 
                     <div class="card-body position-relative">
-
-                        <!-- Edit -->
-
                         <button
                             type="button"
                             class="btn btn-outline-danger position-absolute top-0 end-0 m-2"
                             title="Edit Attendance"
-                            @click="editAttendance"
-                        >
+                            @click="editAttendance">
 
                             <i class="bi bi-pencil"></i>
 
@@ -182,8 +130,6 @@
 
 
                         <div class="row text-center">
-
-                            <!-- Academic Year -->
 
                             <div class="col-md-4">
 
@@ -199,9 +145,6 @@
 
                             </div>
 
-
-                            <!-- Class -->
-
                             <div class="col-md-4">
 
                                 <div class="text-secondary small">
@@ -210,16 +153,12 @@
 
                                 <div class="fw-bold text-success">
 
-                                    {{ selectedClass?.standard?.name }}
-                                    -
-                                    {{ selectedClass?.name }}
+                                    {{ selectedClass?.standard?.name }} - {{ selectedClass?.name }}
 
                                 </div>
 
                             </div>
 
-
-                            <!-- Date -->
 
                             <div class="col-md-4">
 
@@ -241,17 +180,10 @@
 
                 </div>
 
-
-                <!-- Student Table -->
-
                 <div class="table-responsive w-75 mx-auto mt-4">
 
-                    <div
-                        class="text-center mb-3 fs-5 fw-bold text-success"
-                    >
-
+                    <div class="text-center mb-3 fs-5 fw-bold text-success">
                         Student List
-
                     </div>
 
 
@@ -276,8 +208,7 @@
                             <tr
                                 v-for="(student, index) in Students"
                                 :key="student.studentId"
-                                class="text-center align-middle"
-                            >
+                                class="text-center align-middle">
 
                                 <td>
                                     {{ index + 1 }}
@@ -294,21 +225,15 @@
                                 <td>
 
                                     <span
-                                        v-if="
-                                            student.status === 'PRESENT'
-                                        "
-                                        class="badge bg-success"
-                                    >
+                                        v-if="student.status === 'PRESENT'"
+                                        class="badge bg-success">
 
                                         Present
-
                                     </span>
 
 
                                     <span
-                                        v-else-if="
-                                            student.status === 'ABSENT'
-                                        "
+                                        v-else-if="student.status === 'ABSENT'"
                                         class="badge bg-danger"
                                     >
 
@@ -326,21 +251,14 @@
 
                 </div>
 
-
-                <!-- Back -->
-
-                <div
-                    class="d-flex justify-content-center gap-3 my-4"
-                >
+                <div class="d-flex justify-content-center gap-3 my-4">
 
                     <button
                         type="button"
                         class="btn btn-outline-secondary px-4"
-                        @click="goBack"
-                    >
+                        @click="goBack" >
 
                         Back
-
                     </button>
 
                 </div>
@@ -359,17 +277,14 @@
             >
 
                 <div class="text-danger fw-bold mb-3">
-
                     Attendance not marked yet for the selected date.
-
                 </div>
 
 
                 <button
                     type="button"
                     class="btn btn-outline-success"
-                    @click="editAttendance"
-                >
+                    @click="editAttendance">
 
                     Mark Attendance
 

@@ -31,40 +31,36 @@ const createTeacher = async(req,res) =>{
 
             await prisma.$transaction(async(tx)=>{
 
-            const newUser = await tx.user.create({
-                data:{
-                    name,
-                    email,
-                    password:hash,
-                    role:"teacher"
-                }
+                const newUser = await tx.user.create({
+                    data:{
+                        name,
+                        email,
+                        password:hash,
+                        role:"teacher"
+                    }
+                })
+                const newTeacher = await tx.teacher.create({
+                    data:{
+                        empId,
+                        userId:newUser.id,
+                        firstName,
+                        lastName,
+                        gender,
+                        dob:teacherdob,
+                        phone,
+                        classIncharge,
+                        classSection,
+                        subject,
+                        qualification,
+                        addressLine1,
+                        addressLine2,
+                        city,
+                        state
+
+                    }
+                })
+
             })
-            const newTeacher = await tx.teacher.create({
-                data:{
-                    empId,
-                    userId:newUser.id,
-                    firstName,
-                    lastName,
-                    gender,
-                    dob:teacherdob,
-                    phone,
-                    classIncharge,
-                    classSection,
-                    subject,
-                    qualification,
-                    addressLine1,
-                    addressLine2,
-                    city,
-                    state
-
-                }
-            })
-
-            })
-
-
-
-
             return res.status(201).json({message:"Teacher created successfully"})
 
         }catch(error){
@@ -116,7 +112,8 @@ const getSingleTeacher = async(req,res) =>{
             return res.status(404).json({error:"Teacher not found"})
         }
 
-        return res.status(200).json(teacher)
+        return res.status(200).json(teacher);
+
     }catch(error){
         console.log(error);
         return res.status(500).json({error:"Something went wrong. Please try again later"})
@@ -191,7 +188,7 @@ const updateTeacher = async(req,res) =>{
         })
 
 
-            return res.status(200).json({message:"Teacher data updated successfully"})
+        return res.status(200).json({message:"Teacher data updated successfully"})
 
     }catch(error){
         console.log(error);
@@ -213,7 +210,7 @@ const deleteTeacher = async(req,res) =>{
         }
 
         await prisma.$transaction(async(tx)=>{
-                await tx.teacher.delete({
+            await tx.teacher.delete({
                 where:{id}
             })
 
@@ -222,16 +219,15 @@ const deleteTeacher = async(req,res) =>{
                     id:existingTeacher.userId
                 }
             })
-        })
+        });
 
+        return res.status(200).json({message:"Teacher data deleted successfully"});
 
-        return res.status(200).json({message:"Teacher data deleted successfully"})
     }catch(error){
         console.log(error);
         return res.status(500).json({error:"Something went wrong. Please try again later"})
     }
 }
-
 
 const importTeachers = async(req,res)=>{
     if(!req.file){
@@ -318,7 +314,7 @@ const importTeachers = async(req,res)=>{
                                 city:row["city"],
                                 state:row["state"]
 
-                }
+                            }
                         })
 
                     })
@@ -397,6 +393,7 @@ const getMyTeacherClass = async(req,res)=>{
         }
 
         return res.status(200).json(selectedClass);
+
     }catch(error){
         console.log(error);
         return res.status(500).json({
@@ -404,4 +401,5 @@ const getMyTeacherClass = async(req,res)=>{
         })
     }
 }
-module.exports ={createTeacher,getTeacher,getSingleTeacher,updateTeacher,deleteTeacher,importTeachers,getMyTeacherClass};
+module.exports ={createTeacher,getTeacher,getSingleTeacher,updateTeacher,deleteTeacher,
+    importTeachers,getMyTeacherClass};

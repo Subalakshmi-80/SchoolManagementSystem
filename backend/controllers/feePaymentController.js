@@ -3,13 +3,11 @@ const prisma = require('../prisma/prisma');
 const createFeePayment = async(req,res)=>{
 
     const {studentId,feeStructureId,amountPaid,paymentDate,remarks} = req.body;
-
     const receiptNo = `REC-${Date.now()}`;
-
 
     try{
         if(!studentId || !feeStructureId || !amountPaid || !paymentDate){
-        return res.status(422).json({error:"Required fields are missing"})
+            return res.status(422).json({error:"Required fields are missing"})
         }
 
         if(Number(amountPaid)<= 0){
@@ -63,7 +61,6 @@ const createFeePayment = async(req,res)=>{
         })
 
         const totalPaid = paymentTotal._sum.amountPaid || 0;
-
         const remainingBalance = Number(existingFeeStructure.amount)-Number(totalPaid);
 
         if(Number(amountPaid) >remainingBalance){
@@ -87,6 +84,7 @@ const createFeePayment = async(req,res)=>{
             data:newFeePayment,
             message:`${existingStudent.class.standard.name}-${existingStudent.class.name} ${existingStudent.user.name} ${existingFeeStructure.feeType} paid successfully`        
             })
+
     }catch(err){
         console.log(err);
         return res.status(500).json({
@@ -190,7 +188,6 @@ const getStudentFees = async(req,res)=>{
     }
 }
 
-
 const getClassStudentsFees = async (req, res) => {
     const classId = Number(req.params.classId);
     const academicYearId = Number(req.query.academicYearId);
@@ -221,6 +218,7 @@ const getClassStudentsFees = async (req, res) => {
         if(students.length === 0){
             return res.status(404).json({error:"Students not found."})
         }
+
         const feeStructures = await prisma.feeStructure.findMany({
             where:{
                 academicYearId:academicYearId,
@@ -232,7 +230,6 @@ const getClassStudentsFees = async (req, res) => {
             students.map(async (student) =>{
                 const fees = await Promise.all(
                     feeStructures.map(async (fee) => {
-
                         const paymentTotal = await prisma.feePayment.aggregate({
                             where:{
                                 studentId:student.id,
@@ -284,9 +281,9 @@ const getClassStudentsFees = async (req, res) => {
         console.log(err);
         return res.status(500).json({
             error: "Something went wrong. Please try again later."
-        });
+        })
     }
-};
+}
 
 const getFeeDashboard = async(req,res)=>{
     const academicYearId = req.query.academicYearId ? Number(req.query.academicYearId):null;
@@ -300,6 +297,7 @@ const getFeeDashboard = async(req,res)=>{
                     id:academicYearId
                 }
             })
+
         }else{
             academicYear = await prisma.academicYear.findFirst({
                 where:{
@@ -307,6 +305,7 @@ const getFeeDashboard = async(req,res)=>{
                 }
                 
             })
+
             if(!academicYear){
                 academicYear = await prisma.academicYear.findFirst({
                     orderBy:{
@@ -330,8 +329,8 @@ const getFeeDashboard = async(req,res)=>{
                 students:true
             },
               orderBy: {
-        id: "asc"
-    }
+                id: "asc"
+            }
         })
 
         const classData = await Promise.all(
@@ -501,6 +500,7 @@ const getFeeDashboard = async(req,res)=>{
             },
             classes:classData
         })
+        
     }catch(err){
         console.log(err);
         return res.status(500).json({

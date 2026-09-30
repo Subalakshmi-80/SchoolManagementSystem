@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt")
 const axios = require('axios');
 const prisma = require('../prisma/prisma')
 
-
 const API_BASE_URL = process.env.BASEURL
 const API_EMAIL = process.env.EMAIL;
 const API_TOKEN = process.env.TOKEN;
@@ -25,24 +24,24 @@ const forgotPassword = async(req,res) =>{
             where:{email}
         })
         
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();  
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();  
 
-    const now = new Date();
+        const now = new Date();
 
-    const expires_at =new Date(now.getTime()+1*60*1000)
-    const resend_available_at = expires_at;
+        const expires_at =new Date(now.getTime()+1*60*1000)
+        const resend_available_at = expires_at;
 
-    await prisma.passwordReset.create({
-        data:{
-            otp,
-            email,
-            expiresAt:expires_at,
-            resendAvailableAt:resend_available_at
+        await prisma.passwordReset.create({
+            data:{
+                otp,
+                email,
+                expiresAt:expires_at,
+                resendAvailableAt:resend_available_at
 
-        }
-    })
+            }
+        })
 
-     const response = await axios.post(API_URL,
+        const response = await axios.post(API_URL,
                 {
                     "title":"Password Reset OTP",
                     "message":`This is a OTP for Reset Password ${otp}`,
@@ -57,7 +56,7 @@ const forgotPassword = async(req,res) =>{
 
                 }
             )
-             return res.status(200).send(response.data)
+        return res.status(200).send(response.data)
 
     }catch(error){
         console.log(error);
@@ -84,7 +83,8 @@ const verifyOTP = async(req,res) =>{
             return res.status(400).json({error:"OTP Expired"});
         }
 
-        return res.status(200).json({message:"OTP verified"})
+        return res.status(200).json({message:"OTP verified"});
+
     }catch(error){
         console.log(error);
         return res.status(500).json({error:"Something went wrong. Please try again later."})
@@ -96,10 +96,10 @@ const resetPassword = async(req,res) =>{
     const {email,password} = req.body;
 
     if (!email || !password) {
-    return res.status(400).json({
-        error: "Email and password are required"
-    })
-}
+        return res.status(400).json({
+            error: "Email and password are required"
+        })
+    }
 
     try{
         const user = await prisma.user.findUnique({where:{email}})
@@ -112,16 +112,16 @@ const resetPassword = async(req,res) =>{
 
         await prisma.$transaction(async (tx)=>{
 
-        await tx.user.update({
-            where:{email},
-            data:{
-                password:hash
-            }
-        })
+            await tx.user.update({
+                where:{email},
+                data:{
+                    password:hash
+                }
+            })
 
-        await tx.passwordReset.deleteMany({
-            where:{email}
-        })
+            await tx.passwordReset.deleteMany({
+                where:{email}
+            })
         })
 
         return res.status(200).json({message:"Password updated successfully"})
@@ -144,8 +144,6 @@ const resendOTP = async(req,res)=>{
             return res.status(404).json({error:"User not found"})
         }
         const now = new Date();
-
-
 
         const resendOtp = await prisma.passwordReset.findFirst({
             where:{

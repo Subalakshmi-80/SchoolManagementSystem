@@ -3,7 +3,7 @@
     <AdminNavbar>
         <div class="class-box">
              <h2>Edit Class</h2>
-        <h3>Update class details below.</h3>
+            <h3>Update class details below.</h3>
 
         <form @submit.prevent="editClass()">
 
@@ -35,7 +35,6 @@
 
     <script setup>
 import AdminNavbar from '../../components/AdminNavbar.vue';
-import axios from 'axios';
 import { useRouter ,useRoute } from 'vue-router';
 import {ref,onMounted} from 'vue';
 import API from "../../services/api.js"
